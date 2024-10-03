@@ -10,16 +10,12 @@ import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
 import { useRouter } from "expo-router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import {
-  Dimensions,
-  Image,
-  Pressable,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
+import { Image, StyleSheet, TouchableOpacity } from "react-native";
 import PagerView from "react-native-pager-view";
 import Animated, {
   Easing,
+  FadeIn,
+  FadeOut,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
@@ -66,17 +62,15 @@ export default function Index() {
   const [activePage, setActivePage] = useState<number>(0);
   const ref = useRef<any>(null);
   const translateX = useSharedValue<number>(0);
-  const opacity = useSharedValue<number>(100);
 
   const animatedStyles = useAnimatedStyle(() => ({
     transform: [{ translateX: withSpring(translateX.value) }],
-    // opacity:  opacity.value,
   }));
 
   const hanldeNext = () => {
     ref.current?.setPage(activePage + 1);
-    if(activePage === dummy.length-1){
-      router.push("/onboard/final")
+    if (activePage === dummy.length - 1) {
+      router.push("/onboard/final");
     }
   };
   const handlePrev = () => {
@@ -86,10 +80,8 @@ export default function Index() {
   useEffect(() => {
     if (activePage === 0) {
       translateX.value = -100;
-      // opacity.value = 0;
     } else {
       translateX.value = 0;
-      // opacity.value = 100;
     }
   }, [activePage]);
   return (
@@ -114,7 +106,8 @@ export default function Index() {
           onPageSelected={(e) => setActivePage(e.nativeEvent.position)}
         >
           {useMemo(
-            () => dummy.map((data) => <Image key={data.id} source={data.image} />),
+            () =>
+              dummy.map((data) => <Image key={data.id} source={data.image} />),
             [dummy]
           )}
         </PagerView>
@@ -164,17 +157,18 @@ export default function Index() {
           }}
         >
           {dummy.map((_, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[{ backgroundColor: Colors["transparent"] }]}
-              onPress={()=>ref.current?.setPage(index)}
-            >
-              {activePage === index ? (
-                <IconDotActive />
-              ) : (
-                <IconDotInActive color="primary-30" />
-              )}
-            </TouchableOpacity>
+            <Animated.View key={index} entering={FadeIn} exiting={FadeOut}>
+              <TouchableOpacity
+                style={[{ backgroundColor: Colors["transparent"] }]}
+                onPress={() => ref.current?.setPage(index)}
+              >
+                {activePage === index ? (
+                  <IconDotActive />
+                ) : (
+                  <IconDotInActive color="primary-30" />
+                )}
+              </TouchableOpacity>
+            </Animated.View>
           ))}
         </View>
         <Animated.View>

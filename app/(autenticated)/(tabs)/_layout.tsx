@@ -1,19 +1,87 @@
 import { Tabs } from "expo-router";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Pressable, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import {
+  Dimensions,
+  Pressable,
+  StyleSheet,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from "react-native";
 import View from "@/components/view";
 import { Typography } from "@/components/typography";
-import { IconHome } from "@/components/icons";
+import {
+  IconHome,
+  IconInformation,
+  IconNotepad,
+  IconUser,
+} from "@/components/icons";
 import { useAppTheme } from "@/context/theme-context";
+import Animated, {
+  LinearTransition,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 
 export default function TabLayout() {
   const { Colors } = useAppTheme();
   const insets = useSafeAreaInsets();
+
+  // const [activePage, setActivePage] = useState<string>("home");
+  const [activePage, setActivePage] = useState<number>(0);
+
+  const translateX = useSharedValue<number>(0);
+
+  const animatedStyles = useAnimatedStyle(() => ({
+    transform: [
+      {
+        translateX: withSpring(translateX.value, {
+          damping: 15,
+          stiffness: 100,
+          mass: 1,
+        }),
+      },
+    ],
+  }));
+
+  const dimensionWidth = Dimensions.get("window").width - 20;
+
+  // const calculateGap = (dimensionWidth - (60 * 3 + 120)) / 4;
+  const calculateGap = (dimensionWidth - (60 * 3 + 120)) / 4;
+  // useEffect(() => {
+  //   if (activePage === "Home") {
+  //     translateX.value = 0;
+  //   }
+  //   if (activePage === "Riwayat") {
+  //     translateX.value = 50 + calculateGap * 2;
+  //   }
+  //   if (activePage === "Informasi") {
+  //     translateX.value = 115 + calculateGap * 3;
+  //   }
+  //   if (activePage === "Profile") {
+  //     translateX.value = 180 + calculateGap * 4;
+  //   }
+  // }, [activePage]);
+
+  useEffect(() => {
+    if (activePage === 0) {
+      translateX.value = 0;
+    }
+    if (activePage === 1) {
+      translateX.value = 50 + calculateGap * 2;
+    }
+    if (activePage === 2) {
+      translateX.value = 58 * 2 + calculateGap * 3;
+    }
+    if (activePage === 3) {
+      translateX.value = 60 * 3 + calculateGap * 4;
+    }
+  }, [activePage]);
 
   return (
     <Tabs
@@ -21,9 +89,10 @@ export default function TabLayout() {
         headerShown: false,
       }}
       tabBar={({ state, descriptors, navigation }) => {
+        setActivePage(state.index);
         return (
-          <View
-            backgroundColor="white"
+          <Animated.View
+            layout={LinearTransition}
             style={[style.container, { paddingBottom: insets.bottom }]}
           >
             {state.routes.map((route, index) => {
@@ -43,7 +112,7 @@ export default function TabLayout() {
                   target: route.key,
                   canPreventDefault: true,
                 });
-
+                // setActivePage(label as string);
                 if (!isFocused && !event.defaultPrevented) {
                   navigation.navigate(route.name, route.params);
                 }
@@ -57,14 +126,18 @@ export default function TabLayout() {
               };
 
               return (
-                <TouchableWithoutFeedback
+                <TouchableOpacity
                   key={route.key}
                   onPress={onPress}
                   onLongPress={onLongPress}
                 >
-                  <View
-                    style={[style.tabBarWrapper]}
-                    backgroundColor={isFocused ? "primary-50" : "white"}
+                  <Animated.View
+                    style={[
+                      style.tabBarWrapper,
+                      { width: isFocused ? 120 : 60 },
+                    ]}
+                    layout={LinearTransition}
+                    // backgroundColor={isFocused ? "primary-80" : "transparent"}
                   >
                     <View style={style.navIconWrapper}>
                       {options?.tabBarIcon?.({
@@ -75,18 +148,34 @@ export default function TabLayout() {
                     </View>
                     {isFocused && (
                       <Typography
-                        fontFamily="Poppins-Bold"
+                        fontFamily="Poppins-Medium"
                         color={isFocused ? "white" : "primary-30"}
-                        fontSize={10}
+                        fontSize={14}
                       >
                         {label as string}
                       </Typography>
                     )}
-                  </View>
-                </TouchableWithoutFeedback>
+                  </Animated.View>
+                </TouchableOpacity>
               );
             })}
-          </View>
+            <Animated.View
+              style={[
+                animatedStyles,
+                {
+                  width: 120,
+                  height: 50,
+                  borderRadius: 10,
+                  marginBottom: 10,
+                  backgroundColor: Colors["primary-50"],
+                  position: "absolute",
+                  bottom: 0,
+                  left: 10,
+                  zIndex: -1,
+                },
+              ]}
+            />
+          </Animated.View>
         );
       }}
     >
@@ -97,6 +186,19 @@ export default function TabLayout() {
           tabBarIcon: ({ focused }) => (
             <IconHome
               color={focused ? "white" : "primary-30"}
+              width={20}
+              height={20}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="history"
+        options={{
+          title: "Riwayat",
+          tabBarIcon: ({ focused }) => (
+            <IconNotepad
+              color={focused ? "white" : "primary-30"}
               width={24}
               height={24}
             />
@@ -104,11 +206,24 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="riwayat"
+        name="information"
         options={{
-          title: "Riwayat",
+          title: "Informasi",
           tabBarIcon: ({ focused }) => (
-            <IconHome
+            <IconInformation
+              color={focused ? "white" : "primary-30"}
+              width={24}
+              height={24}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: "Profile",
+          tabBarIcon: ({ focused }) => (
+            <IconUser
               color={focused ? "white" : "primary-30"}
               width={24}
               height={24}
@@ -124,7 +239,7 @@ const style = StyleSheet.create({
   container: {
     flexDirection: "row",
     padding: 10,
-    gap: 10,
+    justifyContent: "space-between",
   },
   tabBarWrapper: {
     height: 50,

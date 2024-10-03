@@ -26,6 +26,7 @@ import {
   Poppins_700Bold,
   Poppins_700Bold_Italic,
 } from "@expo-google-fonts/poppins";
+import Animated from "react-native-reanimated";
 
 export type TypographyProps = {
   fontFamily?: keyof typeof appFonts;
@@ -69,7 +70,7 @@ export function Typography(props: TypographyProps) {
   const { Colors } = useAppTheme();
 
   return (
-    <Text
+    <Animated.Text
       style={[
         { fontFamily, color: Colors[color as AppColorUnion], fontSize },
         style,
@@ -77,6 +78,6 @@ export function Typography(props: TypographyProps) {
       {...rest}
     >
       {children}
-    </Text>
+    </Animated.Text>
   );
 }

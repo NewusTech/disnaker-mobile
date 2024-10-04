@@ -3,8 +3,8 @@ import { StyleSheet, TextInput, TextInputProps } from "react-native";
 
 import { useAppTheme } from "@/context/theme-context";
 
-import { IconMagnifyingGlass } from "../icons";
-import View from "../view";
+import { IconMagnifyingGlass } from "../../icons";
+import View from "../../view";
 
 export type SearchBoxProps = {
   trailingIcon?: ReactNode;

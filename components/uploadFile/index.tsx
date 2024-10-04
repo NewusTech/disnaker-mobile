@@ -2,7 +2,7 @@ import { ImageBackground, Pressable } from "react-native";
 
 import { useAppTheme } from "@/context/theme-context";
 
-import { Typography } from "../typography";
+import { Typography } from "../ui/typography";
 import React from "react";
 import { IconPlus } from "../icons/IconPlus";
 import View from "../view";

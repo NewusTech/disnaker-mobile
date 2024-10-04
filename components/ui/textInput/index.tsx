@@ -8,16 +8,18 @@ import {
 
 import { useAppTheme } from "@/context/theme-context";
 
-import View from "../view";
+import View from "../../view";
 import { Typography } from "../typography";
-import { IconEye } from "../icons";
+import { IconEye } from "../../icons";
+import { AppColorUnion } from "@/constants/Colors";
 
 export type TextInputProps = {
-  label: string;
+  label?: string;
   trailingIcon?: ReactNode;
   errorMessage?: string;
   borderRadius?: number;
   textAlignVertical?: "top" | "center";
+  color?: AppColorUnion;
 } & RNTextInputProps;
 export default function TextInput(props: TextInputProps) {
   const {
@@ -29,6 +31,7 @@ export default function TextInput(props: TextInputProps) {
     trailingIcon,
     borderRadius = 100,
     textAlignVertical = "center",
+    color = "line-stroke-50",
     ...rest
   } = props;
 
@@ -38,14 +41,16 @@ export default function TextInput(props: TextInputProps) {
 
   return (
     <View style={styles.container}>
-      <Typography fontFamily="Poppins-Medium" fontSize={14}>
-        {label}
-      </Typography>
+      {label && (
+        <Typography fontFamily="Poppins-Medium" fontSize={14}>
+          {label}
+        </Typography>
+      )}
       <View
-        backgroundColor={editable ? "transparent" : "line-stroke-50"}
+        backgroundColor={editable ? "transparent" : "line-stroke-30"}
         style={[
           styles.inputWrapper,
-          { borderColor: Colors["line-stroke-30"], borderRadius },
+          { borderColor: Colors[color], borderRadius },
         ]}
       >
         <View style={{ flex: 1 }}>
@@ -86,7 +91,7 @@ const styles = StyleSheet.create({
   inputWrapper: {
     borderWidth: 1,
     paddingVertical: 10,
-    paddingHorizontal: 26,
+    paddingHorizontal: 12,
     gap: 10,
     flexDirection: "row",
     alignItems: "center",

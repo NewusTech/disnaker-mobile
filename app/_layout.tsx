@@ -10,7 +10,7 @@ import { useEffect } from "react";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { appFonts } from "@/components/typography";
+import { appFonts } from "@/components/ui/typography";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "@/lib/transtack-query";
 import { AppThemeProvider } from "@/context/theme-context";

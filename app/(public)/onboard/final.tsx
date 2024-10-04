@@ -1,5 +1,5 @@
-import { Button } from "@/components/button";
-import { Typography } from "@/components/typography";
+import { Button } from "@/components/ui/button";
+import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
 import { useRouter } from "expo-router";

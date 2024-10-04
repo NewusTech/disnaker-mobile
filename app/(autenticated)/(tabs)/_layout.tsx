@@ -13,7 +13,7 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import View from "@/components/view";
-import { Typography } from "@/components/typography";
+import { Typography } from "@/components/ui/typography";
 import {
   IconHome,
   IconInformation,

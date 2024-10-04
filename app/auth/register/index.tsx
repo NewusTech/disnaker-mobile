@@ -1,7 +1,7 @@
-import { Button } from "@/components/button";
-import TextInput from "@/components/textInput";
-import TextLink from "@/components/textLink";
-import { Typography } from "@/components/typography";
+import { Button } from "@/components/ui/button";
+import TextInput from "@/components/ui/textInput";
+import TextLink from "@/components/ui/textLink";
+import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";

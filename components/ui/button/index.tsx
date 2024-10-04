@@ -5,7 +5,7 @@ import { ViewProps } from "react-native-svg/lib/typescript/fabric/utils";
 import { useAppTheme } from "@/context/theme-context";
 
 import { Typography } from "../typography";
-import View from "../view";
+import View from "../../view";
 
 export type ButtonProps = {
   children: ReactNode;

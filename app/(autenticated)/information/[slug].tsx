@@ -3,8 +3,8 @@ import React from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useAppTheme } from "@/context/theme-context";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Appbar from "@/components/appBar";
-import { Typography } from "@/components/typography";
+import Appbar from "@/components/ui/appBar";
+import { Typography } from "@/components/ui/typography";
 import RenderHTML, { defaultSystemFonts } from "react-native-render-html";
 
 export default function DetailInformationEvent() {

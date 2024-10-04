@@ -1,5 +1,5 @@
-import Appbar from "@/components/appBar";
-import { Button } from "@/components/button";
+import Appbar from "@/components/ui/appBar";
+import { Button } from "@/components/ui/button";
 import {
   IconCaretRight,
   IconFilwArrowDown,
@@ -7,8 +7,8 @@ import {
   IconUserProfile,
 } from "@/components/icons";
 import { IconPencilLine } from "@/components/icons/IconPencilLine";
-import ModalSwipe from "@/components/modalSwipe";
-import { Typography } from "@/components/typography";
+import ModalSwipe from "@/components/ui/modalSwipe";
+import { Typography } from "@/components/ui/typography";
 import UploadFile from "@/components/uploadFile";
 import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
@@ -71,6 +71,7 @@ export default function Profile() {
             gap: 10,
             borderRadius: 100,
           }}
+          onPress={()=>router.push("/(autenticated)/profile/editProfile")}
         >
           <IconPencilLine />
           <Typography color="primary-50">Ubah Profile</Typography>
@@ -198,6 +199,7 @@ export default function Profile() {
             padding: 10,
             borderColor: Colors["line-stroke-30"],
           }}
+          onPress={()=>router.push("/profile")}
         >
           <IconUserProfile />
           <Typography

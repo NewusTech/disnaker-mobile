@@ -1,6 +1,6 @@
-import { Button } from "@/components/button";
-import { SearchBox } from "@/components/searchBox";
-import { Typography } from "@/components/typography";
+import { Button } from "@/components/ui/button";
+import { SearchBox } from "@/components/ui/searchBox";
+import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
 import { useRouter } from "expo-router";

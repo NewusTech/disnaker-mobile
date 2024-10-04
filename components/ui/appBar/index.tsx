@@ -4,8 +4,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { AppColorUnion } from "@/constants/Colors";
 import { useAppTheme } from "@/context/theme-context";
-import View, { ViewProps } from "../view";
-import { IconCaretLeft } from "../icons";
+import View, { ViewProps } from "../../view";
+import { IconCaretLeft } from "../../icons";
 import { Typography } from "../typography";
 
 

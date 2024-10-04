@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { StyleSheet } from "react-native";
 import { useNavigation, useRouter } from "expo-router";
 import View from "@/components/view";
-import Loader from "@/components/loader";
+import Loader from "@/components/ui/loader";
 import { getItem } from "@/lib/async-storage";
 
 export default function InitialScreen() {
@@ -21,7 +21,8 @@ export default function InitialScreen() {
     //   } else {
     //     router.replace("/auth/initial");
     //   }
-        router.replace("/(public)/onboard")
+        // router.replace("/(public)/onboard")
+        router.replace("/profile/editTentangSaya")
     };
 
     initAuth();

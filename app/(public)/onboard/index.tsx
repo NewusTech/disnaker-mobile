@@ -1,11 +1,11 @@
-import { Button } from "@/components/button";
+import { Button } from "@/components/ui/button";
 import {
   IconCaretLeft,
   IconCaretRight,
   IconDotActive,
   IconDotInActive,
 } from "@/components/icons";
-import { Typography } from "@/components/typography";
+import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
 import { useRouter } from "expo-router";

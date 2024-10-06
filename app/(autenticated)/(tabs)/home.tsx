@@ -24,11 +24,15 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const coreMenu = [
+const coreMenu: {
+  title: string;
+  image: any;
+  link: any;
+}[] = [
   {
-    title: "Logongan Pekerjaan",
+    title: "Lowongan Pekerjaan",
     image: require("@/assets/images/checklist.png"),
-    link: "",
+    link: "/jobVacancy",
   },
   {
     title: "Daftar Kartu Kuning",
@@ -146,6 +150,7 @@ export default function Home() {
                   rowGap: 10,
                 },
               ]}
+              onPress={() => router.push(item.link)}
             >
               {({ pressed }) => (
                 <>
@@ -197,14 +202,19 @@ export default function Home() {
             height: 160,
             paddingVertical: 10,
             marginLeft: 10,
-            marginTop:10
+            marginTop: 10,
             // backgroundColor: "red",
           }}
           initialPage={0}
           onPageSelected={(e) => setActivePage(e.nativeEvent.position)}
         >
           {PromoItemList.map((data, index) => (
-              <PromoItem key={index} imgUrl={data.image} width={350} borderRadius={20} />
+            <PromoItem
+              key={index}
+              imgUrl={data.image}
+              width={350}
+              borderRadius={20}
+            />
           ))}
         </PagerView>
       </View>

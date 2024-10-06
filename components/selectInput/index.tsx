@@ -7,7 +7,7 @@ import View from "../view";
 import { Typography } from "../ui/typography";
 
 
-type DataItem = {
+export type DataItem = {
   title: string | number;
 };
 export type SelectInputProps = {

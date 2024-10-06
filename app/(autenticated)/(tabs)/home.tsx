@@ -37,7 +37,7 @@ const coreMenu: {
   {
     title: "Daftar Kartu Kuning",
     image: require("@/assets/images/credit-card.png"),
-    link: "",
+    link: "/registerYellowCard",
   },
   {
     title: "Daftar Transmigrasi",

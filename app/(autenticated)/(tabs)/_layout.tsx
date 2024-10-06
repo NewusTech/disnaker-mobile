@@ -93,7 +93,7 @@ export default function TabLayout() {
         return (
           <Animated.View
             layout={LinearTransition}
-            style={[style.container, { paddingBottom: insets.bottom }]}
+            style={[style.container, { paddingBottom: insets.bottom , backgroundColor:Colors.white}]}
           >
             {state.routes.map((route, index) => {
               const { options } = descriptors[route.key];

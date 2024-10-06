@@ -5,7 +5,7 @@ import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAppTheme } from "@/context/theme-context";
 import TextLink from "../ui/textLink";
-import { FlatList, Image, TouchableOpacity } from "react-native";
+import { FlatList, Image, Pressable, TouchableOpacity } from "react-native";
 import { IconBookmarks } from "../icons/IconBookmarks";
 import { IconGraduation } from "../icons/IconGraduation";
 import { IconTipJar } from "../icons/IconTipJat";
@@ -26,7 +26,9 @@ export default function SectionLowonganPendidikan() {
           alignItems: "center",
         }}
       >
-        <Typography fontSize={16} color="black-80">Rekomendasi Pekerjaan</Typography>
+        <Typography fontSize={16} color="black-80">
+          Rekomendasi Pekerjaan
+        </Typography>
         <TextLink fontSize={14} label="Lihat Semua" />
       </View>
       {/*  */}
@@ -41,9 +43,17 @@ export default function SectionLowonganPendidikan() {
         ]}
         horizontal
         renderItem={(item) => (
-          <View
-            backgroundColor="white"
-            style={{ padding: 20, width: 342, borderRadius: 15, gap: 15, borderWidth:1, borderColor:Colors["line-stroke-30"] }}
+          <Pressable
+            style={{
+              padding: 20,
+              width: 342,
+              borderRadius: 15,
+              gap: 15,
+              borderWidth: 1,
+              borderColor: Colors["line-stroke-30"],
+              backgroundColor: Colors.white,
+            }}
+            onPress={() => router.push(`/jobVacancy/z`)}
           >
             <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
               <Image
@@ -140,9 +150,9 @@ export default function SectionLowonganPendidikan() {
             >
               Note: Update 2 Hari yang lalu
             </Typography>
-          </View>
+          </Pressable>
         )}
-        style={{marginBottom:10}}
+        style={{ marginBottom: 10 }}
         contentContainerStyle={{
           paddingLeft: 20,
           paddingRight: 20,

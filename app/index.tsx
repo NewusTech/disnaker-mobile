@@ -46,8 +46,9 @@ export default function InitialScreen() {
       //   } else {
       //     router.replace("/auth/initial");
       //   }
-      // router.replace("/(public)/onboard")
-      router.replace("/jobVacancy")
+      router.replace("/(public)/onboard")
+      // router.replace("/(autenticated)/(tabs)/home")
+      // router.replace("/(autenticated)/registerYellowCard")
     };
 
     initAuth();

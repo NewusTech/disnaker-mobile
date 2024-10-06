@@ -5,7 +5,7 @@ import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAppTheme } from "@/context/theme-context";
 import TextLink from "../ui/textLink";
-import { FlatList, Image, TouchableOpacity } from "react-native";
+import { FlatList, Image, Pressable, TouchableOpacity } from "react-native";
 import { IconBookmarks } from "../icons/IconBookmarks";
 import { IconGraduation } from "../icons/IconGraduation";
 import { IconTipJar } from "../icons/IconTipJat";
@@ -41,9 +41,9 @@ export default function SectionRekomendasi() {
         ]}
         horizontal
         renderItem={(item) => (
-          <View
-            backgroundColor="white"
-            style={{ padding: 20, width: 342, borderRadius: 15, gap: 15 }}
+          <Pressable
+            style={{backgroundColor:Colors.white, padding: 20, width: 342, borderRadius: 15, gap: 15 }}
+            onPress={()=>router.push(`/jobVacancy/z`)}
           >
             <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
               <Image
@@ -140,7 +140,7 @@ export default function SectionRekomendasi() {
             >
               Note: Update 2 Hari yang lalu
             </Typography>
-          </View>
+          </Pressable>
         )}
         style={{marginBottom:10}}
         contentContainerStyle={{

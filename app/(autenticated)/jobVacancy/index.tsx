@@ -1,3 +1,4 @@
+import { IconNotification } from "@/components/icons";
 import SectionBerdasarkanProfesi from "@/components/jobVacancy/sectionBerdasarkanProfesi";
 import SectionEvent from "@/components/jobVacancy/sectionEvent";
 import SectionLowonganDibutuhkanSegera from "@/components/jobVacancy/sectionLowonganDibutuhkanSegera";
@@ -86,6 +87,9 @@ export default function JobVacancy() {
             <Typography fontSize={18} style={{}} color="white">
               Hi, Irsyad Abi Izzulhaq
             </Typography>
+            <TouchableOpacity style={{marginLeft:"auto"}}>
+              <IconNotification color="white"/>
+            </TouchableOpacity>
           </View>
           <SearchBox placeholder="Search" />
         </View>

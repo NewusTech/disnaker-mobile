@@ -1,38 +1,46 @@
-import React from "react";
+import React, { useState } from "react";
 import View from "../view";
-import { Typography } from "../ui/typography";
+import { DataItem, SelectInput } from "../selectInput";
+import { IconCaretDown } from "../icons/IconCeretDown";
+import { Dimensions, FlatList, Image, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAppTheme } from "@/context/theme-context";
-import TextLink from "../ui/textLink";
-import { FlatList, Image, Pressable, TouchableOpacity } from "react-native";
+import { Typography } from "../ui/typography";
 import { IconBookmarks } from "../icons/IconBookmarks";
 import { IconGraduation } from "../icons/IconGraduation";
 import { IconTipJar } from "../icons/IconTipJat";
 import { IconLocation } from "../icons/IconLocation";
+import Separator from "../ui/separator";
+import { Pressable } from "react-native";
 
-export default function SectionLowonganDibutuhkanSegera() {
+export default function HistoryLowongan() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
 
+  const [filter, setFilter] = useState("Status 1");
+
+  const dataFilter: DataItem[] = [
+    { title: "Status 1" },
+    { title: "Status 2" },
+    { title: "Status 3" },
+  ];
+
+  const handleSelectFilter = (selectedItem: DataItem, index: number) => {
+    setFilter(selectedItem.title as string);
+  };
+
   return (
-    <View backgroundColor="white" style={{ paddingVertical: 20, gap: 10 }}>
-      <View
-        style={{
-          paddingHorizontal: 20,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <Typography fontSize={16} color="black-80">
-          Rekomendasi Pekerjaan
-        </Typography>
-        <TextLink fontSize={14} label="Lihat Semua" />
-      </View>
-      {/*  */}
+    <View style={{ marginTop: 20 }}>
+      <SelectInput
+        data={dataFilter}
+        value={filter}
+        onSelect={handleSelectFilter}
+        trailingIcon={<IconCaretDown />}
+      />
       <FlatList
+        scrollEnabled={false}
         data={[
           {
             tes: "",
@@ -41,12 +49,11 @@ export default function SectionLowonganDibutuhkanSegera() {
             tes: "",
           },
         ]}
-        horizontal
         renderItem={(item) => (
           <Pressable
             style={{
               padding: 20,
-              width: 342,
+              width: Dimensions.get("window").width - 40,
               borderRadius: 15,
               gap: 15,
               borderWidth: 1,
@@ -79,7 +86,7 @@ export default function SectionLowonganDibutuhkanSegera() {
                   PT Brigitte
                 </Typography>
               </View>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={{
                   width: 30,
                   height: 30,
@@ -88,7 +95,7 @@ export default function SectionLowonganDibutuhkanSegera() {
                 }}
               >
                 <IconBookmarks width={27} height={27} color="black-80" />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
             <View style={{ gap: 5 }}>
               <View
@@ -116,51 +123,35 @@ export default function SectionLowonganDibutuhkanSegera() {
                 </Typography>
               </View>
             </View>
-            <View style={{ width: "100%", flexDirection: "row", gap: 10 }}>
-              <Typography
-                fontSize={12}
-                style={{
-                  padding: 7,
-                  paddingHorizontal: 25,
-                  backgroundColor: Colors["primary-50"],
-                  borderRadius: 100,
-                }}
-                color="white"
-              >
-                Full Time
-              </Typography>
-              <Typography
-                fontSize={12}
-                style={{
-                  padding: 7,
-                  paddingHorizontal: 25,
-                  backgroundColor: Colors["secondary-40"],
-                  borderRadius: 100,
-                }}
-                color="white"
-              >
-                Remote
-              </Typography>
-            </View>
+            <Separator />
             <Typography
-              fontSize={14}
-              fontFamily="Poppins-LightItalic"
-              style={{}}
+              fontSize={13}
+              fontFamily="Poppins-Light"
+              style={{ textAlign: "center" }}
               color="black-80"
             >
-              Note: Update 2 Hari yang lalu
+              Dilamar tanggal : 23 Sep 2023
+            </Typography>
+            <Typography
+              fontSize={12}
+              style={{
+                padding: 7,
+                paddingHorizontal: 25,
+                paddingVertical: 12,
+                backgroundColor: Colors["secondary-40"],
+                borderRadius: 100,
+                textAlign: "center",
+              }}
+              color="white"
+            >
+              Dilihat
             </Typography>
           </Pressable>
         )}
-        style={{ marginBottom: 10 }}
+        style={{ marginTop: 20 }}
         contentContainerStyle={{
-          paddingLeft: 20,
-          paddingRight: 20,
-          columnGap: 20,
+          rowGap: 20,
         }}
-        snapToStart
-        decelerationRate={"normal"}
-        snapToInterval={352}
       />
     </View>
   );

@@ -1,37 +1,33 @@
-import React from "react";
-import View from "../view";
-import { Typography } from "../ui/typography";
-import { useRouter } from "expo-router";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { IconBookmarksFill } from "@/components/icons";
+import { IconGraduation } from "@/components/icons/IconGraduation";
+import { IconLocation } from "@/components/icons/IconLocation";
+import { IconTipJar } from "@/components/icons/IconTipJat";
+import Appbar from "@/components/ui/appBar";
+import { Typography } from "@/components/ui/typography";
+import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
-import TextLink from "../ui/textLink";
-import { FlatList, Image, Pressable, TouchableOpacity } from "react-native";
-import { IconBookmarks } from "../icons/IconBookmarks";
-import { IconGraduation } from "../icons/IconGraduation";
-import { IconTipJar } from "../icons/IconTipJat";
-import { IconLocation } from "../icons/IconLocation";
+import { useRouter } from "expo-router";
+import React from "react";
+import {
+  Dimensions,
+  FlatList,
+  Image,
+  Pressable,
+  TouchableOpacity,
+} from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-export default function SectionLowonganDibutuhkanSegera() {
+export default function index() {
   const router = useRouter();
-  const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
-
+  const insets = useSafeAreaInsets();
   return (
-    <View backgroundColor="white" style={{ paddingVertical: 20, gap: 10 }}>
-      <View
-        style={{
-          paddingHorizontal: 20,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <Typography fontSize={16} color="black-80">
-          Rekomendasi Pekerjaan
-        </Typography>
-        <TextLink fontSize={14} label="Lihat Semua" />
-      </View>
-      {/*  */}
+    <View style={{ flex: 1 }} backgroundColor="white">
+      <Appbar
+        title={"Favorite"}
+        variant="light"
+        backIconPress={() => router.back()}
+      />
       <FlatList
         data={[
           {
@@ -41,12 +37,11 @@ export default function SectionLowonganDibutuhkanSegera() {
             tes: "",
           },
         ]}
-        horizontal
         renderItem={(item) => (
           <Pressable
             style={{
               padding: 20,
-              width: 342,
+              width: Dimensions.get("window").width - 40,
               borderRadius: 15,
               gap: 15,
               borderWidth: 1,
@@ -87,7 +82,7 @@ export default function SectionLowonganDibutuhkanSegera() {
                   marginLeft: "auto",
                 }}
               >
-                <IconBookmarks width={27} height={27} color="black-80" />
+                <IconBookmarksFill width={27} height={27} color="primary-50" />
               </TouchableOpacity>
             </View>
             <View style={{ gap: 5 }}>
@@ -152,15 +147,11 @@ export default function SectionLowonganDibutuhkanSegera() {
             </Typography>
           </Pressable>
         )}
-        style={{ marginBottom: 10 }}
+        style={{ marginTop: 20 }}
         contentContainerStyle={{
-          paddingLeft: 20,
-          paddingRight: 20,
-          columnGap: 20,
+          rowGap: 20,
+          marginHorizontal: "auto",
         }}
-        snapToStart
-        decelerationRate={"normal"}
-        snapToInterval={352}
       />
     </View>
   );

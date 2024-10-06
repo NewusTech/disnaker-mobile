@@ -1,18 +1,26 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import View from "../view";
 import { Typography } from "../ui/typography";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAppTheme } from "@/context/theme-context";
-import { FlatList, Image, Pressable, TouchableOpacity } from "react-native";
+import {
+  FlatList,
+  Image,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  Pressable,
+  TouchableOpacity,
+} from "react-native";
 import { IconBookmarks } from "../icons/IconBookmarks";
 import { IconGraduation } from "../icons/IconGraduation";
 import { IconTipJar } from "../icons/IconTipJat";
 import { IconLocation } from "../icons/IconLocation";
 import Animated, {
-  useAnimatedScrollHandler,
   useAnimatedStyle,
   useSharedValue,
+  withDelay,
+  withSpring,
 } from "react-native-reanimated";
 
 export default function SectionBerdasarkanProfesi() {
@@ -20,27 +28,48 @@ export default function SectionBerdasarkanProfesi() {
   const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
 
-  const offsetX = useSharedValue<number>(0);
+  const visible = useSharedValue<boolean>(false);
 
   const flatListRef = useRef<FlatList>(null);
 
   const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: offsetX.value }],
+    transform: [
+      {
+        translateX: withDelay(
+          100,
+          withSpring(visible.value ? -200 : 0, {
+            damping: 20,
+          })
+        ),
+      },
+    ],
+  }));
+  const animatedStyle2 = useAnimatedStyle(() => ({
+    transform: [
+      {
+        translateX: withDelay(
+          100,
+          withSpring(visible.value ? -200 : 0, {
+            damping: 20,
+          })
+        ),
+      },
+    ],
   }));
 
   // Scroll handler for FlatList
-  const scrollHandler = useAnimatedScrollHandler({
-    onScroll: (event) => {
-      // offsetX.value = event.contentOffset.y;
-      console.log(event.contentOffset.x)
-    },
-    onMomentumBegin: (e) => {
-      console.log("The list is moving.");
-    },
-    onMomentumEnd: (e) => {
-      console.log("The list stopped moving.");
-    },
-  });
+  const scrollHandler = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const offsetX = Math.round(e.nativeEvent.contentOffset.x);
+    const velocityX = Math.round(e.nativeEvent.velocity?.x || 0);
+    if (offsetX > 1) {
+      visible.value = true;
+    }
+    if (offsetX <= 0) {
+      visible.value = false;
+    }
+    console.log(offsetX, "offset");
+    console.log(velocityX, "velocity");
+  };
 
   return (
     <View
@@ -65,6 +94,8 @@ export default function SectionBerdasarkanProfesi() {
             justifyContent: "center",
             gap: 15,
             paddingVertical: 20,
+            position: "absolute",
+            left: 0,
           },
           animatedStyle,
         ]}
@@ -92,21 +123,22 @@ export default function SectionBerdasarkanProfesi() {
           </Typography>
         </Pressable>
       </Animated.View>
-      <FlatList
+      <Animated.FlatList
         ref={flatListRef}
         onScroll={scrollHandler}
         data={[
           {
+            id: 1,
             tes: "",
           },
           {
+            id: 2,
             tes: "",
           },
         ]}
         horizontal
         renderItem={(item) => (
-          <View
-            backgroundColor="white"
+          <Pressable
             style={{
               padding: 20,
               width: 342,
@@ -114,7 +146,9 @@ export default function SectionBerdasarkanProfesi() {
               gap: 15,
               borderWidth: 1,
               borderColor: Colors["line-stroke-30"],
+              backgroundColor: Colors.white,
             }}
+            onPress={() => router.push(`/jobVacancy/z`)}
           >
             <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
               <Image
@@ -211,18 +245,18 @@ export default function SectionBerdasarkanProfesi() {
             >
               Note: Update 2 Hari yang lalu
             </Typography>
-          </View>
+          </Pressable>
         )}
-        style={{}}
+        style={[{ position: "relative", left: 190 }, animatedStyle2]}
         contentContainerStyle={{
-          paddingLeft: 20,
+          paddingLeft: visible.value ? 60 : 30,
           paddingRight: 20,
           columnGap: 20,
           alignItems: "center",
         }}
-        snapToStart
-        decelerationRate={"normal"}
-        snapToInterval={352}
+        // snapToStart
+        // decelerationRate={"normal"}
+        // snapToInterval={visible.value ? 352 : 0}
       />
     </View>
   );

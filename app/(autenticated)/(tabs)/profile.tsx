@@ -96,6 +96,7 @@ export default function Profile() {
               flexDirection: "column",
               justifyContent: "center",
             }}
+            onPress={()=>router.push("/(autenticated)/history")}
           >
             <Typography
               style={{ textAlign: "center" }}
@@ -126,6 +127,7 @@ export default function Profile() {
               flexDirection: "column",
               justifyContent: "center",
             }}
+            onPress={()=>router.push("/(autenticated)/favorite")}
           >
             <Typography
               style={{ textAlign: "center" }}

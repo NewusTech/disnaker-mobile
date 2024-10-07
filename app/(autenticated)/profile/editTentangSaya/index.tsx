@@ -1,4 +1,5 @@
 import Appbar from "@/components/ui/appBar";
+import { Button } from "@/components/ui/button";
 import TextInput from "@/components/ui/textInput";
 import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";
@@ -58,6 +59,16 @@ export default function index() {
           </Typography>
         </View>
       </ScrollView>
+      <View
+        style={{
+          position: "absolute",
+          width:"100%",
+          bottom: 0,
+          marginBottom: insets.bottom + 20,
+        }}
+      >
+        <Button style={{marginHorizontal:20}}>Simpan</Button>
+      </View>
     </View>
   );
 }

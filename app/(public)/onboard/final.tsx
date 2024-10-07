@@ -44,7 +44,7 @@ export default function final() {
         </Typography>
         <View style={{ marginHorizontal: 20 }}>
           <Button style={{ marginTop: 20 }} onPress={()=>router.push("/auth/register")}>Daftar</Button>
-          <Button style={{ marginTop: 10 }} variant="secondary" onPress={()=>router.push("/auth/login")}>
+          <Button style={{ marginTop: 10 }} variant="secondary" textColor="primary-50" onPress={()=>router.push("/auth/login")}>
             Masuk
           </Button>
         </View>

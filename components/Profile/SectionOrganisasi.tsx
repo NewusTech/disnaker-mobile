@@ -67,7 +67,7 @@ export default function SectionOrganisasi() {
         >
           Organisasi
         </Typography>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push("/profile/organization")}>
           <IconPlus color="white" />
         </TouchableOpacity>
       </Pressable>
@@ -85,38 +85,39 @@ export default function SectionOrganisasi() {
       >
         {/* Measure the actual content height */}
         <View onLayout={onLayout} style={{ height: "auto", padding: 15 }}>
-          {/* item 1 */}
-          <View>
-            <Typography fontSize={15} style={{}}>
-              Organizer UXiD Lampung
-            </Typography>
-            <Typography fontFamily="Poppins-Light" fontSize={15} style={{}}>
-              UXiD Lampung
-            </Typography>
-            <View style={{ flexDirection: "row" }}>
-              <Typography
-                fontFamily="Poppins-Light"
-                color="black-40"
-                fontSize={15}
-                style={{}}
-              >
-                Jan 2024 - Mar 2024
-              </Typography>
-              <IconDot color="black-80" />
-              <Typography
-                fontFamily="Poppins-Light"
-                color="black-40"
-                fontSize={15}
-                style={{}}
-              >
-                Saat ini
-              </Typography>
-            </View>
-            <RenderHTML
-              systemFonts={[...defaultSystemFonts, "Poppins-Regular"]}
-              contentWidth={Dimensions.get("window").width - 48}
-              source={{
-                html: `<ol>
+          {Array.from({ length: 2 }).map((_, index) => (
+            <View key={index}>
+              <View>
+                <Typography fontSize={15} style={{}}>
+                  Organizer UXiD Lampung
+                </Typography>
+                <Typography fontFamily="Poppins-Light" fontSize={15} style={{}}>
+                  UXiD Lampung
+                </Typography>
+                <View style={{ flexDirection: "row" }}>
+                  <Typography
+                    fontFamily="Poppins-Light"
+                    color="black-40"
+                    fontSize={15}
+                    style={{}}
+                  >
+                    Jan 2024 - Mar 2024
+                  </Typography>
+                  <IconDot color="black-80" />
+                  <Typography
+                    fontFamily="Poppins-Light"
+                    color="black-40"
+                    fontSize={15}
+                    style={{}}
+                  >
+                    Saat ini
+                  </Typography>
+                </View>
+                <RenderHTML
+                  systemFonts={[...defaultSystemFonts, "Poppins-Regular"]}
+                  contentWidth={Dimensions.get("window").width - 48}
+                  source={{
+                    html: `<ol>
             <li>
             Berhasil merancang dan mengembangkan aplikasi mobile yang bertujuan untuk membantu masyarakat Bandar Lampung dalam mendaur olang dan mengurangi polusi plastik.
             </li>
@@ -124,100 +125,37 @@ export default function SectionOrganisasi() {
            Melakukan riset mendalam terhadap aplikasi sejenis untuk memahami kekuatan dan kelemahan kompetitor, serta mengidentifikasi peluang untuk inovasi.
             </li>
             </ol>`,
-              }}
-            />
-            <Pressable
-              style={({ pressed }) => [
-                {
-                  flexDirection: "row",
-                  width: "100%",
-                  backgroundColor: pressed
-                    ? Colors["primary-60"]
-                    : Colors["primary-50"],
-                  padding: 15,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 10,
-                  borderRadius: 5,
-                  marginVertical: 10,
-                },
-              ]}
-            >
-              {({ pressed }) => (
-                <>
-                  <IconPencilLine color="white" />
-                  <Typography color={"white"}>Edit Data</Typography>
-                </>
-              )}
-            </Pressable>
-          </View>
-          <Separator style={{ marginTop: 5, marginBottom: 10 }} />
-          {/* item 2 */}
-          <View>
-            <Typography fontSize={15} style={{}}>
-              Organizer UXiD Lampung
-            </Typography>
-            <Typography fontFamily="Poppins-Light" fontSize={15} style={{}}>
-              UXiD Lampung
-            </Typography>
-            <View style={{ flexDirection: "row" }}>
-              <Typography
-                fontFamily="Poppins-Light"
-                color="black-40"
-                fontSize={15}
-                style={{}}
-              >
-                Jan 2024 - Mar 2024
-              </Typography>
-              <IconDot color="black-80" />
-              <Typography
-                fontFamily="Poppins-Light"
-                color="black-40"
-                fontSize={15}
-                style={{}}
-              >
-                Saat ini
-              </Typography>
+                  }}
+                />
+                <Pressable
+                  style={({ pressed }) => [
+                    {
+                      flexDirection: "row",
+                      width: "100%",
+                      backgroundColor: pressed
+                        ? Colors["primary-60"]
+                        : Colors["primary-50"],
+                      padding: 15,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 10,
+                      borderRadius: 5,
+                      marginVertical: 10,
+                    },
+                  ]}
+                  onPress={()=>router.push("/profile/organization/2")}
+                >
+                  {({ pressed }) => (
+                    <>
+                      <IconPencilLine color="white" />
+                      <Typography color={"white"}>Edit Data</Typography>
+                    </>
+                  )}
+                </Pressable>
+              </View>
+              <Separator style={{ marginTop: 5, marginBottom: 10 }} />
             </View>
-            <RenderHTML
-              systemFonts={[...defaultSystemFonts, "Poppins-Regular"]}
-              contentWidth={Dimensions.get("window").width - 48}
-              source={{
-                html: `<ol>
-            <li>
-            Berhasil merancang dan mengembangkan aplikasi mobile yang bertujuan untuk membantu masyarakat Bandar Lampung dalam mendaur olang dan mengurangi polusi plastik.
-            </li>
-            <li>
-           Melakukan riset mendalam terhadap aplikasi sejenis untuk memahami kekuatan dan kelemahan kompetitor, serta mengidentifikasi peluang untuk inovasi.
-            </li>
-            </ol>`,
-              }}
-            />
-            <Pressable
-              style={({ pressed }) => [
-                {
-                  flexDirection: "row",
-                  width: "100%",
-                  backgroundColor: pressed
-                    ? Colors["primary-60"]
-                    : Colors["primary-50"],
-                  padding: 15,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 10,
-                  borderRadius: 5,
-                  marginVertical: 10,
-                },
-              ]}
-            >
-              {({ pressed }) => (
-                <>
-                  <IconPencilLine color="white" />
-                  <Typography color={"white"}>Edit Data</Typography>
-                </>
-              )}
-            </Pressable>
-          </View>
+          ))}
         </View>
       </Animated.View>
     </View>

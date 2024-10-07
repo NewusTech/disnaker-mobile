@@ -6,11 +6,14 @@ import { useAppTheme } from "@/context/theme-context";
 
 import { Typography } from "../typography";
 import View from "../../view";
+import { AppColorUnion } from "@/constants/Colors";
 
 export type ButtonProps = {
   children: ReactNode;
   variant?: "primary" | "secondary";
   style?: ViewProps["style"];
+  color?: AppColorUnion;
+  textColor?: AppColorUnion;
 } & PressableProps;
 
 export function Button(props: ButtonProps) {
@@ -19,6 +22,8 @@ export function Button(props: ButtonProps) {
     variant = "primary",
     disabled = false,
     style,
+    color = "primary-50",
+    textColor = "white",
     ...rest
   } = props;
 
@@ -30,12 +35,12 @@ export function Button(props: ButtonProps) {
         <View
           style={[
             {
-              borderColor: disabled ? Colors["line-stroke-30"] : Colors["primary-50"],
+              borderColor: disabled ? Colors["line-stroke-30"] : Colors[color],
               backgroundColor:
                 variant === "primary"
                   ? disabled
                     ? Colors["line-stroke-30"]
-                    : Colors["primary-50"]
+                    : Colors[color]
                   : Colors.white,
             },
             styles.container,
@@ -48,12 +53,12 @@ export function Button(props: ButtonProps) {
                 fontFamily="OpenSans-Semibold"
                 color={
                   variant === "primary"
-                    ? "white"
+                    ? textColor
                     : disabled
-                      ? "line-stroke-30"
-                      : "primary-50"
+                    ? "line-stroke-30"
+                    : textColor
                 }
-                style={{ textAlign: "center" , marginVertical:12}}
+                style={{ textAlign: "center", marginVertical: 12 }}
               >
                 {children}
               </Typography>
@@ -66,7 +71,9 @@ export function Button(props: ButtonProps) {
               style={[
                 styles.mask,
                 {
-                  backgroundColor: `${Colors["primary-50"]}${variant === "primary" ? "80" : "0D"}`,
+                  backgroundColor: `${Colors[color]}${
+                    variant === "primary" ? "80" : "0D"
+                  }`,
                 },
               ]}
             />

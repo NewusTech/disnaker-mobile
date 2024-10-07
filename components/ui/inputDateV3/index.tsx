@@ -62,7 +62,7 @@ export function DateInputV3(props: DateInputV3Props) {
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   return (
-    <>
+    <View style={{ gap: 5}}>
       {label && (
         <Typography fontFamily="Poppins-Medium" fontSize={14}>
           {label}
@@ -159,7 +159,7 @@ export function DateInputV3(props: DateInputV3Props) {
           </View>
         </BlurView>
       </Modal>
-    </>
+    </View>
   );
 }
 

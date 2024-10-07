@@ -65,7 +65,7 @@ export default function SectionSertificate() {
         >
           Sertifikat
         </Typography>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push("/profile/certificate")}>
           <IconPlus color="white" />
         </TouchableOpacity>
       </Pressable>
@@ -76,104 +76,63 @@ export default function SectionSertificate() {
             borderColor: Colors["line-stroke-30"],
             borderBottomLeftRadius: 5,
             borderBottomRightRadius: 5,
-            overflow:"scroll"
+            overflow: "scroll",
           },
           animatedStyle,
         ]}
       >
         {/* Measure the actual content height */}
         <View onLayout={onLayout} style={{ height: "auto", padding: 15 }}>
-          {/* item 1 */}
-          <View>
-            <Typography fontSize={15} style={{}}>
-              UI/UX Designer
-            </Typography>
-            <Typography fontFamily="Poppins-Light" fontSize={15} style={{}}>
-              Newus Technology
-            </Typography>
-            <Typography
-              fontFamily="Poppins-Light"
-              color="black-40"
-              fontSize={15}
-              style={{}}
-            >
-              Jan 2024 - Mar 2024
-            </Typography>
-            <Typography color="black-40" fontSize={15} style={{}}>
-              Selama menjalani pendidikan di Universitas Teknokrat Indonesia
-              saya memiliki beberapa pengalaman mulai dari
-            </Typography>
-            <Pressable
-              style={({ pressed }) => [
-                {
-                  flexDirection: "row",
-                  width: "100%",
-                  backgroundColor: pressed
-                    ? Colors["primary-60"]
-                    : Colors["primary-50"],
-                  padding: 15,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 10,
-                  borderRadius: 5,
-                  marginVertical: 10,
-                },
-              ]}
-            >
-              {({ pressed }) => (
-                <>
-                  <IconPencilLine color="white" />
-                  <Typography color={"white"}>Edit Data</Typography>
-                </>
-              )}
-            </Pressable>
-          </View>
-          <Separator style={{ marginTop: 5, marginBottom: 10 }} />
-          {/* item 2 */}
-          <View>
-            <Typography fontSize={15} style={{}}>
-              UI/UX Designer
-            </Typography>
-            <Typography fontFamily="Poppins-Light" fontSize={15} style={{}}>
-              Newus Technology
-            </Typography>
-            <Typography
-              fontFamily="Poppins-Light"
-              color="black-40"
-              fontSize={15}
-              style={{}}
-            >
-              Jan 2024 - Mar 2024
-            </Typography>
-            <Typography color="black-40" fontSize={15} style={{}}>
-              Selama menjalani pendidikan di Universitas Teknokrat Indonesia
-              saya memiliki beberapa pengalaman mulai dari
-            </Typography>
-            <Pressable
-              style={({ pressed }) => [
-                {
-                  flexDirection: "row",
-                  width: "100%",
-                  backgroundColor: pressed
-                    ? Colors["primary-60"]
-                    : Colors["primary-50"],
-                  padding: 15,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 10,
-                  borderRadius: 5,
-                  marginVertical: 10,
-                },
-              ]}
-            >
-              {({ pressed }) => (
-                <>
-                  <IconPencilLine color="white" />
-                  <Typography color={"white"}>Edit Data</Typography>
-                </>
-              )}
-            </Pressable>
-          </View>
+          {Array.from({ length: 2 }).map((_, index) => (
+            <View key={index}>
+              <View>
+                <Typography fontSize={15} style={{}}>
+                  UI/UX Designer
+                </Typography>
+                <Typography fontFamily="Poppins-Light" fontSize={15} style={{}}>
+                  Newus Technology
+                </Typography>
+                <Typography
+                  fontFamily="Poppins-Light"
+                  color="black-40"
+                  fontSize={15}
+                  style={{}}
+                >
+                  Jan 2024 - Mar 2024
+                </Typography>
+                <Typography color="black-40" fontSize={15} style={{}}>
+                  Selama menjalani pendidikan di Universitas Teknokrat Indonesia
+                  saya memiliki beberapa pengalaman mulai dari
+                </Typography>
+                <Pressable
+                  style={({ pressed }) => [
+                    {
+                      flexDirection: "row",
+                      width: "100%",
+                      backgroundColor: pressed
+                        ? Colors["primary-60"]
+                        : Colors["primary-50"],
+                      padding: 15,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 10,
+                      borderRadius: 5,
+                      marginVertical: 10,
+                    },
+                  ]}
+                  onPress={() => router.push("/profile/certificate/1")}
+                >
+                  {({ pressed }) => (
+                    <>
+                      <IconPencilLine color="white" />
+                      <Typography color={"white"}>Edit Data</Typography>
+                    </>
+                  )}
+                </Pressable>
+              </View>
+              <Separator style={{ marginTop: 5, marginBottom: 10 }} />
+            </View>
+          ))}
         </View>
       </Animated.View>
     </View>

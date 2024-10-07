@@ -42,7 +42,7 @@ const coreMenu: {
   {
     title: "Daftar Transmigrasi",
     image: require("@/assets/images/data.png"),
-    link: "",
+    link: "/transmigrationApplication",
   },
   {
     title: "Pengaduan Online",

@@ -120,6 +120,7 @@ export default function SectionSkill() {
                 marginVertical: 10,
               },
             ]}
+            onPress={()=>router.push("profile/skills")}
           >
             {({ pressed }) => (
               <>

@@ -3,6 +3,7 @@ import { IconCaretDown } from "@/components/icons/IconCeretDown";
 import { IconPencilLine } from "@/components/icons/IconPencilLine";
 import { SelectInput } from "@/components/selectInput";
 import Appbar from "@/components/ui/appBar";
+import { Button } from "@/components/ui/button";
 import { DateInputV3 } from "@/components/ui/inputDateV3";
 import { DateInputV4 } from "@/components/ui/inputDateV4";
 import TextInput from "@/components/ui/textInput";
@@ -130,6 +131,7 @@ export default function EditProfile() {
             // onChangeText={field.onChange}
             // errorMessage={fieldState.error?.message}
           />
+          <Button>Simpan</Button>
         </View>
       </ScrollView>
     </View>

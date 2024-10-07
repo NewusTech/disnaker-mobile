@@ -48,7 +48,7 @@ export default function InitialScreen() {
       //   }
       router.replace("/(public)/onboard")
       // router.replace("/(autenticated)/(tabs)/home")
-      // router.replace("/(autenticated)/registerYellowCard")
+      // router.replace("/(autenticated)/profile/certificate/2")
     };
 
     initAuth();

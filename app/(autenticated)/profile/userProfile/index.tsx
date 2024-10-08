@@ -12,10 +12,12 @@ import Separator from "@/components/ui/separator";
 import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
+import { useGetProfile } from "@/services/user";
+import { useAuthActions, useAuthProfile } from "@/store/userStore";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import React from "react";
-import { Image, Pressable, ScrollView } from "react-native";
+import React, { useEffect } from "react";
+import { Image, Pressable, RefreshControl, ScrollView } from "react-native";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -23,6 +25,21 @@ export default function index() {
   const router = useRouter();
   const { Colors } = useAppTheme();
   const insets = useSafeAreaInsets();
+
+  const profileQuery = useGetProfile();
+
+  const { setAccessToken, setProfile } = useAuthActions();
+
+  const userProfile = useAuthProfile();
+
+  useEffect(() => {
+    if (profileQuery.data) {
+      setProfile(profileQuery.data.data);
+    } else if (profileQuery.error) {
+      setAccessToken(null);
+      router.replace("/(public)/onboard/final");
+    }
+  }, [router, setAccessToken, setProfile, profileQuery.data]);
 
   return (
     <View style={{ flex: 1 }}>
@@ -34,6 +51,13 @@ export default function index() {
       <ScrollView
         style={{ width: "100%", height: "100%" }}
         contentContainerStyle={{ padding: 15, paddingVertical: 20 }}
+        refreshControl={
+          <RefreshControl
+            refreshing={profileQuery.isRefetching}
+            onRefresh={() => profileQuery.refetch()}
+            progressViewOffset={20}
+          />
+        }
       >
         <LinearGradient
           colors={["#2F55D4", "#93278F"]}
@@ -56,7 +80,11 @@ export default function index() {
             }}
           >
             <Image
-              source={require("@/assets/images/dummy1.jpg")}
+              source={
+                userProfile?.UserProfile.image
+                  ? { uri: userProfile.UserProfile.image }
+                  : require("@/assets/images/dummy1.jpg")
+              }
               style={{ width: 60, height: 60, borderRadius: 100 }}
             />
             <View
@@ -67,7 +95,7 @@ export default function index() {
               }}
             >
               <Typography fontSize={18} style={{}} color="white">
-                Irsyad Abi Izzulhaq
+                {userProfile?.UserProfile.name}
               </Typography>
               <Typography
                 fontSize={15}
@@ -75,7 +103,7 @@ export default function index() {
                 style={{}}
                 color="white"
               >
-                irsyadabiizzulhaq@gmail.com
+                {userProfile?.email}
               </Typography>
             </View>
           </View>
@@ -101,7 +129,7 @@ export default function index() {
                 style={{}}
                 color="white"
               >
-                10-10-10
+                {userProfile?.UserProfile.birthDate || "-"}
               </Typography>
             </View>
             <View
@@ -124,7 +152,7 @@ export default function index() {
                 style={{}}
                 color="white"
               >
-                Laki-Laki
+                {userProfile?.UserProfile.gender || "-"}
               </Typography>
             </View>
             <View
@@ -147,7 +175,7 @@ export default function index() {
                 style={{}}
                 color="white"
               >
-                +62895640417123
+                {userProfile?.UserProfile.phoneNumber || "-"}
               </Typography>
             </View>
             <View
@@ -170,7 +198,7 @@ export default function index() {
                 style={{}}
                 color="white"
               >
-                S1 Informatika
+                -
               </Typography>
             </View>
             <View
@@ -193,7 +221,7 @@ export default function index() {
                 style={{}}
                 color="white"
               >
-                Tanjung Karang, Kota Bandar Lampung
+                {userProfile?.UserProfile.citizenship || "-"}
               </Typography>
             </View>
             <Pressable
@@ -210,7 +238,7 @@ export default function index() {
               onPress={() => router.push("/profile/editProfile")}
             >
               <IconPencilLine />
-              <Typography color="primary-50">Ubah Profile</Typography>
+              <Typography color="primary-50">Edit Profile</Typography>
             </Pressable>
           </View>
         </LinearGradient>
@@ -227,7 +255,7 @@ export default function index() {
         {/* sertificate */}
         <SectionSertificate />
         {/* Link Pendukung */}
-        <SectionLinkPendukung />
+        <SectionLinkPendukung linkPendukung={userProfile?.UserLinks || []} />
       </ScrollView>
     </View>
   );

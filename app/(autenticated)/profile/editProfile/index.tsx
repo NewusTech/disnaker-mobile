@@ -4,25 +4,116 @@ import { IconPencilLine } from "@/components/icons/IconPencilLine";
 import { SelectInput } from "@/components/selectInput";
 import Appbar from "@/components/ui/appBar";
 import { Button } from "@/components/ui/button";
+import { DateInput } from "@/components/ui/inputDate";
 import { DateInputV3 } from "@/components/ui/inputDateV3";
 import { DateInputV4 } from "@/components/ui/inputDateV4";
+import Loader from "@/components/ui/loader";
 import TextInput from "@/components/ui/textInput";
 import View from "@/components/view";
+import { formatDateYMD } from "@/constants/dateTime";
 import { useAppTheme } from "@/context/theme-context";
+import { useGetProfile, useUpdatePrfoile } from "@/services/user";
+import { useGetVacancyCategory } from "@/services/vacancy";
+import { profile, profileForm } from "@/validation";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
-import { Image, Pressable } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { Image, Pressable, RefreshControl } from "react-native";
 import { ScrollView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
+
+export enum employmentStatus {
+  "Sudah Bekerja" = "Sudah Bekerja",
+  "Siap Bekerja" = "Siap Bekerja",
+  "Tidak Bekerja" = "Tidak Bekerja",
+}
+export enum maritalStatus {
+  "Menikah" = "Menikah",
+  "Belum Menikah" = "Belum Menikah",
+}
+export enum gender {
+  "Laki-laki" = "Laki-laki",
+  "Perempuan" = "Perempuan",
+}
 
 export default function EditProfile() {
   const router = useRouter();
   const { Colors } = useAppTheme();
   const insets = useSafeAreaInsets();
 
-  const [tanggalLahir, setTanggalLahir] = useState<Date>(new Date());
+  const profileQuery = useGetProfile();
+  const user = profileQuery.data?.data;
+
+  const getVacancyCategory = useGetVacancyCategory();
+  const vacancyCategory = getVacancyCategory.data?.data.map((data) => {
+    return {
+      title: data.name,
+    };
+  });
+
+  const { control, handleSubmit, formState, setValue } = useForm<profileForm>({
+    defaultValues: {},
+    resolver: zodResolver(profile),
+    mode: "all",
+  });
+
+  const updateProfile = useUpdatePrfoile();
+
+  const handleLoginMutation = handleSubmit((data) => {
+    updateProfile.mutate(
+      {
+        data: {
+          ...data,
+          birthDate: formatDateYMD(new Date(data.birthDate)),
+        },
+        slug: user?.UserProfile.slug || "",
+      },
+      {
+        onSuccess: async (response) => {
+          Toast.show({
+            type: "success",
+            text1: "Update Profile berhasil!",
+            text2: response.message,
+          });
+          router.dismiss();
+        },
+        onError: (reponse) => {
+          console.error(reponse);
+          Toast.show({
+            type: "error",
+            text1: "Update Prfile gagal!",
+            text2: reponse.response?.data.message,
+          });
+        },
+      }
+    );
+  });
+
+  useEffect(() => {
+    if (user && user.UserProfile) {
+      setValue("name", user.UserProfile.name || "");
+      setValue("email", user.email || "");
+      setValue("nik", user.UserProfile.nik || "");
+      setValue(
+        "birthDate",
+        user.UserProfile.birthDate || new Date().toString()
+      );
+      setValue("department", user.UserProfile.department || "");
+      setValue("gender", user.UserProfile.gender || "");
+      setValue("address", user.UserProfile.address || "");
+      setValue("phoneNumber", user.UserProfile.phoneNumber || "");
+      setValue("birthPlace", user.UserProfile.birthPlace || "");
+      setValue("religion", user.UserProfile.religion || "");
+      setValue("profession", user.UserProfile.profession || "");
+      setValue("employmentStatus", user.UserProfile.employmentStatus || "");
+      setValue("maritalStatus", user.UserProfile.maritalStatus || "");
+    }
+  }, [user]);
+
   return (
-    <View style={{ flex: 1 }}>
+    <View backgroundColor="white" style={{ flex: 1 }}>
       <Appbar
         title={"Edit Profile"}
         variant="light"
@@ -31,6 +122,13 @@ export default function EditProfile() {
       <ScrollView
         style={{ width: "100%", height: "100%" }}
         contentContainerStyle={{ padding: 15, paddingVertical: 20 }}
+        refreshControl={
+          <RefreshControl
+            refreshing={profileQuery.isRefetching}
+            onRefresh={() => profileQuery.refetch()}
+            progressViewOffset={20}
+          />
+        }
       >
         <View
           style={{ width: 90, marginHorizontal: "auto", position: "relative" }}
@@ -55,83 +153,261 @@ export default function EditProfile() {
           </Pressable>
         </View>
         <View style={{ marginTop: 20, gap: 10 }}>
-          <TextInput
-            label="Nama Lengkap"
-            placeholder="Nama Lengkap"
-            keyboardType="default"
-            borderRadius={17}
-            color="primary-50"
-            // value={field.value}
-            // onBlur={field.onBlur}
-            // onChangeText={field.onChange}
-            // errorMessage={fieldState.error?.message}
+          <Controller
+            control={control}
+            name="name"
+            render={({ field, fieldState }) => (
+              <TextInput
+                label="Nama Lengkap"
+                placeholder="Nama Lengkap"
+                keyboardType="default"
+                borderRadius={17}
+                color="primary-50"
+                value={field.value}
+                onBlur={field.onBlur}
+                onChangeText={field.onChange}
+                errorMessage={fieldState.error?.message}
+              />
+            )}
           />
-          <TextInput
-            label="Email"
-            placeholder="Email"
-            keyboardType="email-address"
-            borderRadius={17}
-            color="primary-50"
-            // value={field.value}
-            // onBlur={field.onBlur}
-            // onChangeText={field.onChange}
-            // errorMessage={fieldState.error?.message}
+          <Controller
+            control={control}
+            name="nik"
+            render={({ field, fieldState }) => (
+              <TextInput
+                label="NIK"
+                placeholder="NIK"
+                keyboardType="numeric"
+                maxLength={16}
+                borderRadius={17}
+                color="primary-50"
+                value={field.value}
+                onBlur={field.onBlur}
+                onChangeText={field.onChange}
+                errorMessage={fieldState.error?.message}
+              />
+            )}
           />
-          <DateInputV3
-            withBorder
-            label={"Tanggal Lahir"}
-            trailingIcon={
-              <View style={{ marginLeft: "auto" }}>
-                <IconCalender width={21} height={21} />
-              </View>
-            }
-            onChange={(date) => setTanggalLahir(date || new Date())}
-            value={tanggalLahir}
+          <Controller
+            control={control}
+            name="email"
+            render={({ field, fieldState }) => (
+              <TextInput
+                label="Email"
+                placeholder="Email"
+                keyboardType="email-address"
+                borderRadius={17}
+                color="primary-50"
+                value={field.value}
+                onBlur={field.onBlur}
+                onChangeText={field.onChange}
+                errorMessage={fieldState.error?.message}
+              />
+            )}
           />
-          <SelectInput
-            label="Jenis Klamin"
-            data={[{ title: "laki-laki" }, { title: "perempuan" }]}
-            onSelect={() => console.log()}
-            value={"laki-laki"}
-            trailingIcon={<IconCaretDown />}
-            padding={12}
-            borderRadius={15}
+          <Controller
+            control={control}
+            name="birthDate"
+            render={({ field, fieldState }) => (
+              <DateInput
+                withBorder
+                label={"Tanggal Lahir"}
+                trailingIcon={
+                  <View style={{ marginLeft: "auto" }}>
+                    <IconCalender width={21} height={21} color="black-80" />
+                  </View>
+                }
+                onChange={(date) => field.onChange(date || new Date())}
+                value={new Date(field.value)}
+              />
+            )}
           />
-          <TextInput
-            label="Nomor Wa"
-            placeholder="Nomor Wa"
-            keyboardType="number-pad"
-            borderRadius={17}
-            color="primary-50"
-            // value={field.value}
-            // onBlur={field.onBlur}
-            // onChangeText={field.onChange}
-            // errorMessage={fieldState.error?.message}
+          <Controller
+            control={control}
+            name="birthPlace"
+            render={({ field, fieldState }) => (
+              <TextInput
+                label="Tempat Lahir"
+                placeholder="Masukan tempat lahir"
+                keyboardType="default"
+                borderRadius={17}
+                color="primary-50"
+                value={field.value}
+                onBlur={field.onBlur}
+                onChangeText={field.onChange}
+                errorMessage={fieldState.error?.message}
+              />
+            )}
           />
-          <SelectInput
-            label="Pendidikan Terakhir"
-            data={[{ title: "Sarjana" }, { title: "Pasca Sarjana" }]}
-            onSelect={() => console.log()}
-            value={"Sarjana"}
-            trailingIcon={<IconCaretDown />}
-            padding={12}
-            borderRadius={15}
+          <Controller
+            control={control}
+            name="gender"
+            render={({ field, fieldState }) => (
+              <SelectInput
+                label="Jenis Klamin"
+                data={Object.keys(gender).map((value) => {
+                  return {
+                    title: value,
+                  };
+                })}
+                placeholder="Pilih Jenis Kelamin"
+                onSelect={(dataItem: any, index: any) =>
+                  field.onChange(dataItem.title)
+                }
+                value={field.value}
+                trailingIcon={<IconCaretDown color="black-80" />}
+                padding={12}
+                borderRadius={15}
+              />
+            )}
           />
-          <TextInput
-            label="Lokasi Terkini"
-            placeholder="lokasi"
-            keyboardType="default"
-            borderRadius={17}
-            color="primary-50"
-            numberOfLines={5}
-            textAlignVertical="top"
-            multiline={true}
-            // value={field.value}
-            // onBlur={field.onBlur}
-            // onChangeText={field.onChange}
-            // errorMessage={fieldState.error?.message}
+          <Controller
+            control={control}
+            name="phoneNumber"
+            render={({ field, fieldState }) => (
+              <TextInput
+                label="Nomor Wa"
+                placeholder="Nomor Wa"
+                keyboardType="number-pad"
+                maxLength={13}
+                borderRadius={17}
+                color="primary-50"
+                value={field.value}
+                onBlur={field.onBlur}
+                onChangeText={field.onChange}
+                errorMessage={fieldState.error?.message}
+              />
+            )}
           />
-          <Button>Simpan</Button>
+          <Controller
+            control={control}
+            name="department"
+            render={({ field, fieldState }) => (
+              <SelectInput
+                label="Bidang Pekerjaan"
+                data={vacancyCategory || []}
+                placeholder="Pilih Jenis Agama"
+                onSelect={(dataItem: any, index: any) =>
+                  field.onChange(dataItem.title)
+                }
+                value={field.value}
+                trailingIcon={<IconCaretDown color="black-80" />}
+                padding={12}
+                borderRadius={15}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="address"
+            render={({ field, fieldState }) => (
+              <TextInput
+                label="Lokasi Terkini"
+                placeholder="Masukan alamat"
+                keyboardType="default"
+                borderRadius={17}
+                color="primary-50"
+                numberOfLines={5}
+                textAlignVertical="top"
+                multiline={true}
+                value={field.value}
+                onBlur={field.onBlur}
+                onChangeText={field.onChange}
+                errorMessage={fieldState.error?.message}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="religion"
+            render={({ field, fieldState }) => (
+              <SelectInput
+                label="Agama"
+                data={[
+                  { title: "Islam" },
+                  { title: "Kristen" },
+                  { title: "Budha" },
+                  { title: "konghucu" },
+                ]}
+                placeholder="Pilih Jenis Agama"
+                onSelect={(dataItem: any, index: any) =>
+                  field.onChange(dataItem.title)
+                }
+                value={field.value}
+                trailingIcon={<IconCaretDown color="black-80" />}
+                padding={12}
+                borderRadius={15}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="profession"
+            render={({ field, fieldState }) => (
+              <TextInput
+                label="profesi"
+                placeholder="Masukan profesi"
+                keyboardType="default"
+                borderRadius={17}
+                color="primary-50"
+                value={field.value}
+                onBlur={field.onBlur}
+                onChangeText={field.onChange}
+                errorMessage={fieldState.error?.message}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="employmentStatus"
+            render={({ field, fieldState }) => (
+              <SelectInput
+                label="Status Bekerja"
+                data={Object.keys(employmentStatus).map((value) => {
+                  return {
+                    title: value,
+                  };
+                })}
+                placeholder="Pilih Status Pekerjaan"
+                onSelect={(dataItem: any, index: any) =>
+                  field.onChange(dataItem.title)
+                }
+                value={field.value}
+                trailingIcon={<IconCaretDown color="black-80" />}
+                padding={12}
+                borderRadius={15}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="maritalStatus"
+            render={({ field, fieldState }) => (
+              <SelectInput
+                label="Status Pernikahan"
+                data={Object.keys(maritalStatus).map((value) => {
+                  return {
+                    title: value,
+                  };
+                })}
+                placeholder="Pilih Status Pekerjaan"
+                onSelect={(dataItem: any, index: any) =>
+                  field.onChange(dataItem.title)
+                }
+                value={field.value}
+                trailingIcon={<IconCaretDown color="black-80" />}
+                padding={12}
+                borderRadius={15}
+              />
+            )}
+          />
+          <Button
+            style={{ marginTop: 10 }}
+            disabled={!formState.isValid || updateProfile.isPending}
+            onPress={handleLoginMutation}
+          >
+            {updateProfile.isPending ? <Loader color="white" /> : "Simpan"}
+          </Button>
         </View>
       </ScrollView>
     </View>

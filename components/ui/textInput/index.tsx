@@ -3,14 +3,14 @@ import {
   StyleSheet,
   TextInput as RNTextInput,
   TextInputProps as RNTextInputProps,
-  TouchableWithoutFeedback,
+  TouchableOpacity,
 } from "react-native";
 
 import { useAppTheme } from "@/context/theme-context";
 
 import View from "../../view";
 import { Typography } from "../typography";
-import { IconEye } from "../../icons";
+import { IconEye, IconEyeSlice } from "../../icons";
 import { AppColorUnion } from "@/constants/Colors";
 
 export type TextInputProps = {
@@ -36,6 +36,7 @@ export default function TextInput(props: TextInputProps) {
   } = props;
 
   const [hidePassword, setHidePassword] = useState(secureTextEntry);
+  const [focused, setFocused] = useState<boolean>(false);
 
   const { Colors } = useAppTheme();
 
@@ -50,28 +51,40 @@ export default function TextInput(props: TextInputProps) {
         backgroundColor={editable ? "transparent" : "line-stroke-30"}
         style={[
           styles.inputWrapper,
-          { borderColor: Colors[color], borderRadius },
+          {
+            borderColor:
+              errorMessage.trim() !== ""
+                ? Colors["error-60"]
+                : focused
+                ? Colors[color]
+                : Colors["line-stroke-30"],
+            borderRadius,
+          },
         ]}
       >
         <View style={{ flex: 1 }}>
           <RNTextInput
-            placeholderTextColor={Colors["black-50"]}
+            placeholderTextColor={Colors["line-stroke-30"]}
             editable={editable}
-            style={[{ color: Colors["black-50"], textAlignVertical }, style]}
+            style={[{ color: Colors["black-80"], textAlignVertical }, style]}
             secureTextEntry={secureTextEntry && hidePassword}
             {...rest}
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
           />
         </View>
 
         {trailingIcon ||
           (secureTextEntry && (
-            <TouchableWithoutFeedback
-              onPress={() => setHidePassword(!hidePassword)}
-            >
+            <TouchableOpacity onPress={() => setHidePassword(!hidePassword)}>
               <View>
-                <IconEye color="line-stroke-30" />
+                {hidePassword ? (
+                  <IconEye color="primary-50" />
+                ) : (
+                  <IconEyeSlice color="primary-50" />
+                )}
               </View>
-            </TouchableWithoutFeedback>
+            </TouchableOpacity>
           ))}
       </View>
 

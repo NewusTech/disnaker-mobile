@@ -15,3 +15,4 @@ export * from "./IconUserProfile";
 export * from "./IconNotification";
 export * from "./IconBookmarkFill";
 export * from "./IconUpload";
+export * from "./IconEyeSlice";

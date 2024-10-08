@@ -8,9 +8,11 @@ import { SearchBox } from "@/components/ui/searchBox";
 import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
+import { useGetProfile } from "@/services/user";
+import { useAuthActions, useAuthProfile } from "@/store/userStore";
 import { useRouter } from "expo-router";
 import React from "react";
-import { Image, ScrollView, TouchableOpacity } from "react-native";
+import { Image, Pressable, ScrollView, TouchableOpacity } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const coreMenu: {
@@ -56,7 +58,7 @@ const coreMenu: {
   {
     title: "Semua",
     image: require("@/assets/images/semua.png"),
-    link: "",
+    link: "/jobVacancy/all",
   },
 ];
 
@@ -64,6 +66,9 @@ export default function JobVacancy() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
+
+  const userProfile = useAuthProfile();
+
   return (
     <View backgroundColor="white">
       <ScrollView contentContainerStyle={{}}>
@@ -71,7 +76,7 @@ export default function JobVacancy() {
           backgroundColor="primary-50"
           style={{ padding: 20, paddingTop: 60, paddingBottom: 25, gap: 20 }}
         >
-          <View
+          <Pressable
             style={{
               flexDirection: "row",
               width: "100%",
@@ -79,18 +84,23 @@ export default function JobVacancy() {
               justifyContent: "flex-start",
               gap: 10,
             }}
+            onPress={() => router.push("/profile")}
           >
             <Image
-              source={require("@/assets/images/dummy1.jpg")}
+              source={
+                userProfile?.UserProfile.image
+                  ? { uri: userProfile.UserProfile.image }
+                  : require("@/assets/images/dummy1.jpg")
+              }
               style={{ width: 50, height: 50, borderRadius: 100 }}
             />
             <Typography fontSize={18} style={{}} color="white">
-              Hi, Irsyad Abi Izzulhaq
+              Hi, {userProfile?.UserProfile.name}
             </Typography>
-            <TouchableOpacity style={{marginLeft:"auto"}}>
-              <IconNotification color="white"/>
+            <TouchableOpacity style={{ marginLeft: "auto" }}>
+              <IconNotification color="white" />
             </TouchableOpacity>
-          </View>
+          </Pressable>
           <SearchBox placeholder="Search" />
         </View>
         <View
@@ -115,6 +125,7 @@ export default function JobVacancy() {
                 justifyContent: "center",
                 alignItems: "center",
               }}
+              onPress={() => (item.link !== "" ? router.push(item.link) : null)}
             >
               <Image source={item.image} style={{ width: 48, height: 48 }} />
               <Typography
@@ -133,7 +144,7 @@ export default function JobVacancy() {
           {/* Event */}
           <SectionEvent />
           {/* berdasarkan profesi */}
-          <SectionBerdasarkanProfesi/>
+          <SectionBerdasarkanProfesi />
           {/* pendidikan */}
           <SectionLowonganPendidikan />
           {/* Dibutuhkan Segera */}

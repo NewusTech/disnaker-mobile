@@ -14,6 +14,7 @@ import { appFonts } from "@/components/ui/typography";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "@/lib/transtack-query";
 import { AppThemeProvider } from "@/context/theme-context";
+import Toast from "react-native-toast-message";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -68,6 +69,7 @@ function RootLayoutNav() {
               animation: "ios",
             }}
           />
+           <Toast />
         </AppThemeProvider>
       </ThemeProvider>
     </QueryClientProvider>

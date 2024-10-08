@@ -5,6 +5,7 @@ import SelectDropdown from "react-native-select-dropdown";
 import { useAppTheme } from "@/context/theme-context";
 import View from "../view";
 import { Typography } from "../ui/typography";
+import { AppColorUnion } from "@/constants/Colors";
 
 export type DataItem = {
   title: string | number;
@@ -25,6 +26,7 @@ export type SelectInputProps = {
   suffix?: string;
   label?: string;
   disabled?: boolean;
+  color?: AppColorUnion;
 };
 export function SelectInput(props: SelectInputProps) {
   const {
@@ -42,6 +44,7 @@ export function SelectInput(props: SelectInputProps) {
     suffix = "",
     label,
     disabled = false,
+    color = "line-stroke-30",
   } = props;
 
   const { Colors } = useAppTheme();
@@ -59,25 +62,24 @@ export function SelectInput(props: SelectInputProps) {
             </Typography>
           )}
           <View
-            // backgroundColor={selected ? "outlineborder" : "paper"}
+            // backgroundColor={selected ? "line-stroke-30" : "white"}
             style={[
               styles.container,
               {
                 borderWidth: withBorder ? 1 : 0,
-                borderColor: Colors["primary-50"],
+                borderColor: isOpened ? Colors["primary-50"] : Colors[color],
                 padding: withBorder ? padding : 0,
                 paddingHorizontal,
                 borderRadius,
                 gap,
                 backgroundColor: disabled
-                  ? Colors["primary-50"]
+                  ? Colors["line-stroke-30"]
                   : "transparent",
               },
             ]}
           >
             {leadingIcon}
             <Typography
-              fontFamily="OpenSans-Regular"
               fontSize={14}
               color={value ? "black" : "black-50"}
               style={styles.textInput}
@@ -95,14 +97,14 @@ export function SelectInput(props: SelectInputProps) {
             style={[
               styles.dropdownItemStyle,
               {
-                // ...(isSelected && { backgroundColor: "#D2D9DF" }),
+                ...(isSelected && { backgroundColor: Colors["primary-50"] }),
               },
             ]}
           >
             {item.image && (
               <Image style={{ width: 18, height: 18 }} source={item.image} />
             )}
-            <Typography>
+            <Typography color={isSelected ? "white" : "black-80"}>
               {item.title} {suffix}
             </Typography>
           </View>
@@ -128,7 +130,7 @@ const styles = StyleSheet.create({
   },
   dropdownItemStyle: {
     padding: 8,
-    borderRadius: 15,
+    borderRadius: 0,
     flexDirection: "row",
     gap: 10,
     alignItems: "center",

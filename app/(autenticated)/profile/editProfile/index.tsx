@@ -10,17 +10,33 @@ import { DateInputV4 } from "@/components/ui/inputDateV4";
 import Loader from "@/components/ui/loader";
 import TextInput from "@/components/ui/textInput";
 import View from "@/components/view";
+import { formatDateYMD } from "@/constants/dateTime";
 import { useAppTheme } from "@/context/theme-context";
 import { useGetProfile, useUpdatePrfoile } from "@/services/user";
+import { useGetVacancyCategory } from "@/services/vacancy";
 import { profile, profileForm } from "@/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Image, Pressable } from "react-native";
+import { Image, Pressable, RefreshControl } from "react-native";
 import { ScrollView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
+
+export enum employmentStatus {
+  "Sudah Bekerja" = "Sudah Bekerja",
+  "Siap Bekerja" = "Siap Bekerja",
+  "Tidak Bekerja" = "Tidak Bekerja",
+}
+export enum maritalStatus {
+  "Menikah" = "Menikah",
+  "Belum Menikah" = "Belum Menikah",
+}
+export enum gender {
+  "Laki-laki" = "Laki-laki",
+  "Perempuan" = "Perempuan",
+}
 
 export default function EditProfile() {
   const router = useRouter();
@@ -30,22 +46,15 @@ export default function EditProfile() {
   const profileQuery = useGetProfile();
   const user = profileQuery.data?.data;
 
-  const { control, handleSubmit, formState } = useForm<profileForm>({
-    defaultValues: {
-      name: user?.UserProfile.name,
-      email: user?.email,
-      nik: user?.UserProfile.nik || "",
-      birthDate: user?.UserProfile.birthDate || new Date().toString(),
-      department: user?.UserProfile.department || "",
-      gender: user?.UserProfile.gender || "",
-      address: user?.UserProfile.address || "",
-      phoneNumber: user?.UserProfile.phoneNumber || "",
-      birthPlace: user?.UserProfile.birthPlace || "",
-      religion: user?.UserProfile.religion || "",
-      profession: user?.UserProfile.profession || "",
-      employmentStatus: user?.UserProfile.employmentStatus || "",
-      maritalStatus: user?.UserProfile.maritalStatus || "",
-    },
+  const getVacancyCategory = useGetVacancyCategory();
+  const vacancyCategory = getVacancyCategory.data?.data.map((data) => {
+    return {
+      title: data.name,
+    };
+  });
+
+  const { control, handleSubmit, formState, setValue } = useForm<profileForm>({
+    defaultValues: {},
     resolver: zodResolver(profile),
     mode: "all",
   });
@@ -53,30 +62,58 @@ export default function EditProfile() {
   const updateProfile = useUpdatePrfoile();
 
   const handleLoginMutation = handleSubmit((data) => {
-    console.log(data,"Data Update Profile")
     updateProfile.mutate(
-      { data, slug: user?.UserProfile.slug || "" },
+      {
+        data: {
+          ...data,
+          birthDate: formatDateYMD(new Date(data.birthDate)),
+        },
+        slug: user?.UserProfile.slug || "",
+      },
       {
         onSuccess: async (response) => {
           Toast.show({
             type: "success",
             text1: "Update Profile berhasil!",
-            text2: "Berhasil membuat profile",
+            text2: response.message,
           });
+          router.dismiss();
         },
-        onError: () => {
+        onError: (reponse) => {
+          console.error(reponse);
           Toast.show({
             type: "error",
             text1: "Update Prfile gagal!",
-            text2: "Gagal",
+            text2: reponse.response?.data.message,
           });
         },
       }
     );
   });
 
+  useEffect(() => {
+    if (user && user.UserProfile) {
+      setValue("name", user.UserProfile.name || "");
+      setValue("email", user.email || "");
+      setValue("nik", user.UserProfile.nik || "");
+      setValue(
+        "birthDate",
+        user.UserProfile.birthDate || new Date().toString()
+      );
+      setValue("department", user.UserProfile.department || "");
+      setValue("gender", user.UserProfile.gender || "");
+      setValue("address", user.UserProfile.address || "");
+      setValue("phoneNumber", user.UserProfile.phoneNumber || "");
+      setValue("birthPlace", user.UserProfile.birthPlace || "");
+      setValue("religion", user.UserProfile.religion || "");
+      setValue("profession", user.UserProfile.profession || "");
+      setValue("employmentStatus", user.UserProfile.employmentStatus || "");
+      setValue("maritalStatus", user.UserProfile.maritalStatus || "");
+    }
+  }, [user]);
+
   return (
-    <View style={{ flex: 1 }}>
+    <View backgroundColor="white" style={{ flex: 1 }}>
       <Appbar
         title={"Edit Profile"}
         variant="light"
@@ -85,6 +122,13 @@ export default function EditProfile() {
       <ScrollView
         style={{ width: "100%", height: "100%" }}
         contentContainerStyle={{ padding: 15, paddingVertical: 20 }}
+        refreshControl={
+          <RefreshControl
+            refreshing={profileQuery.isRefetching}
+            onRefresh={() => profileQuery.refetch()}
+            progressViewOffset={20}
+          />
+        }
       >
         <View
           style={{ width: 90, marginHorizontal: "auto", position: "relative" }}
@@ -170,7 +214,7 @@ export default function EditProfile() {
                 label={"Tanggal Lahir"}
                 trailingIcon={
                   <View style={{ marginLeft: "auto" }}>
-                    <IconCalender width={21} height={21} />
+                    <IconCalender width={21} height={21} color="black-80" />
                   </View>
                 }
                 onChange={(date) => field.onChange(date || new Date())}
@@ -201,13 +245,17 @@ export default function EditProfile() {
             render={({ field, fieldState }) => (
               <SelectInput
                 label="Jenis Klamin"
-                data={[{ title: "Laki-laki" }, { title: "Perempuan" }]}
+                data={Object.keys(gender).map((value) => {
+                  return {
+                    title: value,
+                  };
+                })}
                 placeholder="Pilih Jenis Kelamin"
                 onSelect={(dataItem: any, index: any) =>
                   field.onChange(dataItem.title)
                 }
                 value={field.value}
-                trailingIcon={<IconCaretDown />}
+                trailingIcon={<IconCaretDown color="black-80" />}
                 padding={12}
                 borderRadius={15}
               />
@@ -235,16 +283,17 @@ export default function EditProfile() {
             control={control}
             name="department"
             render={({ field, fieldState }) => (
-              <TextInput
-                label="Departemen"
-                placeholder="Komputer"
-                keyboardType="default"
-                borderRadius={17}
-                color="primary-50"
+              <SelectInput
+                label="Bidang Pekerjaan"
+                data={vacancyCategory || []}
+                placeholder="Pilih Jenis Agama"
+                onSelect={(dataItem: any, index: any) =>
+                  field.onChange(dataItem.title)
+                }
                 value={field.value}
-                onBlur={field.onBlur}
-                onChangeText={field.onChange}
-                errorMessage={fieldState.error?.message}
+                trailingIcon={<IconCaretDown color="black-80" />}
+                padding={12}
+                borderRadius={15}
               />
             )}
           />
@@ -285,7 +334,7 @@ export default function EditProfile() {
                   field.onChange(dataItem.title)
                 }
                 value={field.value}
-                trailingIcon={<IconCaretDown />}
+                trailingIcon={<IconCaretDown color="black-80" />}
                 padding={12}
                 borderRadius={15}
               />
@@ -314,13 +363,17 @@ export default function EditProfile() {
             render={({ field, fieldState }) => (
               <SelectInput
                 label="Status Bekerja"
-                data={[{ title: "Sudah Bekerja" }, { title: "Belum Bekerja" }]}
+                data={Object.keys(employmentStatus).map((value) => {
+                  return {
+                    title: value,
+                  };
+                })}
                 placeholder="Pilih Status Pekerjaan"
                 onSelect={(dataItem: any, index: any) =>
                   field.onChange(dataItem.title)
                 }
                 value={field.value}
-                trailingIcon={<IconCaretDown />}
+                trailingIcon={<IconCaretDown color="black-80" />}
                 padding={12}
                 borderRadius={15}
               />
@@ -332,13 +385,17 @@ export default function EditProfile() {
             render={({ field, fieldState }) => (
               <SelectInput
                 label="Status Pernikahan"
-                data={[{ title: "Menikah" }, { title: "Belum Menikah" }]}
+                data={Object.keys(maritalStatus).map((value) => {
+                  return {
+                    title: value,
+                  };
+                })}
                 placeholder="Pilih Status Pekerjaan"
                 onSelect={(dataItem: any, index: any) =>
                   field.onChange(dataItem.title)
                 }
                 value={field.value}
-                trailingIcon={<IconCaretDown />}
+                trailingIcon={<IconCaretDown color="black-80" />}
                 padding={12}
                 borderRadius={15}
               />

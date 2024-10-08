@@ -17,7 +17,7 @@ import { useAuthActions, useAuthProfile } from "@/store/userStore";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React, { useEffect } from "react";
-import { Image, Pressable, ScrollView } from "react-native";
+import { Image, Pressable, RefreshControl, ScrollView } from "react-native";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -51,6 +51,13 @@ export default function index() {
       <ScrollView
         style={{ width: "100%", height: "100%" }}
         contentContainerStyle={{ padding: 15, paddingVertical: 20 }}
+        refreshControl={
+          <RefreshControl
+            refreshing={profileQuery.isRefetching}
+            onRefresh={() => profileQuery.refetch()}
+            progressViewOffset={20}
+          />
+        }
       >
         <LinearGradient
           colors={["#2F55D4", "#93278F"]}
@@ -248,7 +255,7 @@ export default function index() {
         {/* sertificate */}
         <SectionSertificate />
         {/* Link Pendukung */}
-        <SectionLinkPendukung />
+        <SectionLinkPendukung linkPendukung={userProfile?.UserLinks || []} />
       </ScrollView>
     </View>
   );

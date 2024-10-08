@@ -26,7 +26,9 @@ export const profile = z.object({
   birthDate: z.string({ message: "Harus diisi" }),
   birthPlace: z.string({ message: "Harus diisi" }),
   gender: z.string({ message: "Harus diisi" }),
-  phoneNumber: z.string({ message: "Harus diisi" }).max(13,{message:"maximal 13 karakter"}),
+  phoneNumber: z
+    .string({ message: "Harus diisi" })
+    .max(13, { message: "maximal 13 karakter" }),
   department: z.string({ message: "Harus diisi" }),
   address: z.string({ message: "Harus diisi" }),
   religion: z.string({ message: "Harus diisi" }),
@@ -36,3 +38,10 @@ export const profile = z.object({
 });
 
 export type profileForm = z.infer<typeof profile>;
+
+export const userLink = z.object({
+  link: z.string({ message: "Harus diisi" }),
+  linkType: z.string({ message: "Harus diisi" }),
+});
+
+export type userLinkForm = z.infer<typeof userLink>;

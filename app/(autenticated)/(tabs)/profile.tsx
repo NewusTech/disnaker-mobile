@@ -127,7 +127,7 @@ export default function Profile() {
               fontSize={25}
               fontFamily="Poppins-Medium"
             >
-              04
+              {userProfile?.applicationCount}
             </Typography>
             <Typography
               fontSize={19}
@@ -158,7 +158,7 @@ export default function Profile() {
               fontSize={25}
               fontFamily="Poppins-Medium"
             >
-              24
+              {userProfile?.favoriteCount}
             </Typography>
             <Typography
               fontSize={19}

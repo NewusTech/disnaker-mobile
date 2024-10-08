@@ -20,8 +20,14 @@ import { IconPlus } from "../icons/IconPlus";
 import { IconDot } from "../icons/IconDot";
 import Separator from "../ui/separator";
 import TextLink from "../ui/textLink";
+import { userLinkResponseSuccess } from "@/api";
+import { dataLinkPendukung } from "@/constants";
 
-export default function SectionLinkPendukung() {
+export default function SectionLinkPendukung({
+  linkPendukung,
+}: {
+  linkPendukung: userLinkResponseSuccess["data"];
+}) {
   const router = useRouter();
   const { Colors } = useAppTheme();
 
@@ -88,57 +94,67 @@ export default function SectionLinkPendukung() {
       >
         {/* Measure the actual content height */}
         <View onLayout={onLayout} style={{ height: "auto", padding: 15 }}>
-          <View>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 10,
-                marginBottom: 5,
-              }}
-            >
-              <Image
-                source={require("@/assets/images/instagram.png")}
-                style={{ height: 24, width: 24 }}
-              />
-              <Typography fontSize={15} style={{}}>
-                UI/UX Designer
-              </Typography>
+          {linkPendukung?.map((link, index) => (
+            <View key={index}>
+              <View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 10,
+                    marginBottom: 5,
+                  }}
+                >
+                  <Image
+                    source={
+                      dataLinkPendukung.find((f) => f.title === link.linkType)
+                        ?.image || require("@/assets/images/www.png")
+                    }
+                    style={{ height: 24, width: 24 }}
+                  />
+                  <Typography fontSize={15} style={{}}>
+                    {link.linkType}
+                  </Typography>
+                </View>
+                <TextLink label={link.link} fontSize={15} style={{}} />
+                <Pressable
+                  style={({ pressed }) => [
+                    {
+                      flexDirection: "row",
+                      width: "100%",
+                      backgroundColor: pressed
+                        ? Colors["primary-60"]
+                        : Colors["primary-50"],
+                      padding: 15,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 10,
+                      borderRadius: 5,
+                      marginVertical: 10,
+                    },
+                  ]}
+                  onPress={() =>
+                    router.push(
+                      `/(autenticated)/profile/supportingLinks/${link.id}`
+                    )
+                  }
+                >
+                  {({ pressed }) => (
+                    <>
+                      <IconPencilLine color="white" />
+                      <Typography color={"white"}>Edit Data</Typography>
+                    </>
+                  )}
+                </Pressable>
+              </View>
+              <Separator style={{ marginTop: 5, marginBottom: 10 }} />
             </View>
-            <TextLink
-              label="https://irsyadabi.framer.website/"
-              fontSize={15}
-              style={{}}
-            />
-            <Pressable
-              style={({ pressed }) => [
-                {
-                  flexDirection: "row",
-                  width: "100%",
-                  backgroundColor: pressed
-                    ? Colors["primary-60"]
-                    : Colors["primary-50"],
-                  padding: 15,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 10,
-                  borderRadius: 5,
-                  marginVertical: 10,
-                },
-              ]}
-              onPress={() =>
-                router.push("/(autenticated)/profile/supportingLinks/1")
-              }
-            >
-              {({ pressed }) => (
-                <>
-                  <IconPencilLine color="white" />
-                  <Typography color={"white"}>Edit Data</Typography>
-                </>
-              )}
-            </Pressable>
-          </View>
-          <Separator style={{ marginTop: 5, marginBottom: 10 }} />
+          ))}
+          {linkPendukung.length === 0 && (
+            <Typography fontFamily="Poppins-Light" color="black-30">
+              Link Pendukung Kosong
+            </Typography>
+          )}
         </View>
       </Animated.View>
     </View>

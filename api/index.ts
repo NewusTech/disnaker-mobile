@@ -5,10 +5,12 @@ import {
   PostLoginPayload,
   PostRegisterPayload,
   profileForm,
+  userLinkForm,
 } from "@/validation";
 import axios, {
   AxiosError,
   AxiosResponse,
+  HttpStatusCode,
   InternalAxiosRequestConfig,
 } from "axios";
 
@@ -55,6 +57,10 @@ export type PostLoginResponseSuccess = {
     token: string;
     type: "bearer";
   };
+};
+export type PostResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
 };
 
 export type ResponseError = {
@@ -123,14 +129,7 @@ export type userProfileResponseSuccess = {
     UserOrganizations: [];
     Skills: [];
     UserCertificates: [];
-    UserLinks: {
-      id: number;
-      user_id: number;
-      link: string;
-      linkType: string;
-      createdAt: string;
-      updatedAt: string;
-    }[];
+    UserLinks: userLinkResponseSuccess["data"];
     UserExperiences: [];
     UserEducationHistories: [];
     favoriteCount: number;
@@ -181,7 +180,7 @@ export const getVacancy = async () => {
 };
 
 export const putEditProfile = async (payload: profileForm, slug: string) => {
-  const response = await apiClient<PostLoginResponseSuccess>({
+  const response = await apiClient<PostResponseSuccess>({
     method: "PUT",
     url: "/user/profile/update/" + slug,
     data: payload,
@@ -189,3 +188,49 @@ export const putEditProfile = async (payload: profileForm, slug: string) => {
   return response.data;
 };
 
+export type userLinkResponseSuccess = {
+  status: 200;
+  message: "Success Get User Profiles";
+  data: {
+    id: number;
+    user_id: number;
+    link: string;
+    linkType: string;
+    createdAt: string;
+    updatedAt: string;
+  }[];
+};
+
+export const getUserLink = async () => {
+  const response = await apiClient<userLinkResponseSuccess>({
+    method: "GET",
+    url: "/user/link/get",
+  });
+  return response.data;
+};
+
+export const postUserLink = async (payload: userLinkForm) => {
+  const response = await apiClient<PostResponseSuccess>({
+    method: "POST",
+    url: "/user/link/create",
+    data: payload,
+  });
+  return response.data;
+};
+
+export type vacancyCategoryResponseSuccess = {
+  status: 200;
+  message: "Success Get User Profiles";
+  data: {
+    id: number;
+    name: string;
+  }[];
+};
+
+export const getVacancyCategory = async () => {
+  const response = await apiClient<vacancyCategoryResponseSuccess>({
+    method: "GET",
+    url: "/vacancy/category/get/",
+  });
+  return response.data;
+};

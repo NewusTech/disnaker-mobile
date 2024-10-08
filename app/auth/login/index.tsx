@@ -102,7 +102,7 @@ export default function Login() {
         />
         <Controller
           control={control}
-          name="email"
+          name="password"
           render={({ field, fieldState }) => (
             <TextInput
               label="Password"

@@ -3,7 +3,7 @@ import { Modal, Pressable, StyleSheet } from "react-native";
 import { BlurView } from "expo-blur";
 import { Calendar, CalendarProps } from "react-native-calendars";
 
-import { AppColor } from "@/constants/Colors";
+import { AppColor, AppColorUnion } from "@/constants/Colors";
 import { useAppTheme } from "@/context/theme-context";
 import { TextInputV2, TextInputV2Props } from "../textInputV2";
 import { Typography } from "../typography";
@@ -19,12 +19,13 @@ export type DateInputProps = {
   label?: string;
   disabledDates?: string[];
   minDate?: Date | string;
+  color?: AppColorUnion;
 } & Pick<
   TextInputV2Props,
   "placeholder" | "trailingIcon" | "leadingIcon" | "withBorder"
 > &
   CalendarProps;
-export type dateInnputV3DayProp = {
+export type dateInnputDayProp = {
   dateString: string;
   day: number;
   month: number;
@@ -43,6 +44,7 @@ export function DateInput(props: DateInputProps) {
     label,
     disabledDates,
     minDate,
+    color = "line-stroke-30",
   } = props;
 
   const { Colors } = useAppTheme();
@@ -74,7 +76,7 @@ export function DateInput(props: DateInputProps) {
           styles.container,
           {
             borderWidth: withBorder ? 1 : 0,
-            borderColor: Colors["primary-50"],
+            borderColor: Colors[color],
             padding: withBorder ? 12 : 0,
           },
         ]}

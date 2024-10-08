@@ -36,6 +36,7 @@ export default function TextInput(props: TextInputProps) {
   } = props;
 
   const [hidePassword, setHidePassword] = useState(secureTextEntry);
+  const [focused, setFocused] = useState<boolean>(false);
 
   const { Colors } = useAppTheme();
 
@@ -50,16 +51,26 @@ export default function TextInput(props: TextInputProps) {
         backgroundColor={editable ? "transparent" : "line-stroke-30"}
         style={[
           styles.inputWrapper,
-          { borderColor: Colors[color], borderRadius },
+          {
+            borderColor:
+              errorMessage.trim() !== ""
+                ? Colors["error-60"]
+                : focused
+                ? Colors[color]
+                : Colors["line-stroke-30"],
+            borderRadius,
+          },
         ]}
       >
         <View style={{ flex: 1 }}>
           <RNTextInput
-            placeholderTextColor={Colors["black-50"]}
+            placeholderTextColor={Colors["line-stroke-30"]}
             editable={editable}
-            style={[{ color: Colors["black-50"], textAlignVertical }, style]}
+            style={[{ color: Colors["black-80"], textAlignVertical }, style]}
             secureTextEntry={secureTextEntry && hidePassword}
             {...rest}
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
           />
         </View>
 

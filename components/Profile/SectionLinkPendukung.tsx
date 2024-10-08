@@ -68,7 +68,9 @@ export default function SectionLinkPendukung() {
         >
           Link Pendukung
         </Typography>
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => router.push("/(autenticated)/profile/supportingLinks")}
+        >
           <IconPlus color="white" />
         </TouchableOpacity>
       </Pressable>
@@ -86,7 +88,6 @@ export default function SectionLinkPendukung() {
       >
         {/* Measure the actual content height */}
         <View onLayout={onLayout} style={{ height: "auto", padding: 15 }}>
-          {/* item 1 */}
           <View>
             <View
               style={{
@@ -125,6 +126,9 @@ export default function SectionLinkPendukung() {
                   marginVertical: 10,
                 },
               ]}
+              onPress={() =>
+                router.push("/(autenticated)/profile/supportingLinks/1")
+              }
             >
               {({ pressed }) => (
                 <>
@@ -135,7 +139,6 @@ export default function SectionLinkPendukung() {
             </Pressable>
           </View>
           <Separator style={{ marginTop: 5, marginBottom: 10 }} />
-          {/* item 2 */}
         </View>
       </Animated.View>
     </View>

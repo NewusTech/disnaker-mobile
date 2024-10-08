@@ -1,4 +1,4 @@
-import { PostLoginResponseSuccess } from "@/api/index.d";
+import { PostLoginResponseSuccess } from "@/api/types";
 
 export type StorageData = {
   accesstoken: string;

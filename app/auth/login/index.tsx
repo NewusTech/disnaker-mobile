@@ -3,12 +3,66 @@ import TextInput from "@/components/ui/textInput";
 import TextLink from "@/components/ui/textLink";
 import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";
-import { useRouter } from "expo-router";
+import { DEVELOPMENT_MODE } from "@/constants";
+import { useAuthActions } from "@/store/userStore";
+import { useNavigation, useRouter } from "expo-router";
+import { Controller, useForm } from "react-hook-form";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useAuthLogin } from "@/services/user";
+import { setItem } from "@/lib/async-storage";
+import Toast from "react-native-toast-message";
+import Loader from "@/components/ui/loader";
+import { PostLoginPayload, postLoginPayloadSchema } from "@/validation";
 
 export default function Login() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const navigation = useNavigation<any>();
+
+  // store
+  const { setAccessToken } = useAuthActions();
+
+  const loginMutation = useAuthLogin();
+
+  const { control, handleSubmit, formState } = useForm<PostLoginPayload>({
+    defaultValues: {
+      email: DEVELOPMENT_MODE ? "test9@gmail.com" : "",
+      password: DEVELOPMENT_MODE ? "123456" : "",
+    },
+    resolver: zodResolver(postLoginPayloadSchema),
+    mode: "all",
+  });
+
+  const handleLoginMutation = handleSubmit((data) => {
+    loginMutation.mutate(data, {
+      onSuccess: async (response) => {
+        setAccessToken(response.data.token);
+
+        await setItem("accesstoken", response.data.token);
+        await setItem("profile", response.data);
+
+        Toast.show({
+          type: "success",
+          text1: "Login berhasil!",
+          text2: "Selamat anda berhasil login",
+        });
+
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "(autenticated)" }],
+        });
+      },
+      onError: () => {
+        Toast.show({
+          type: "error",
+          text1: "Login gagal!",
+          text2: "email atau password tidak sesuai",
+        });
+      },
+    });
+  });
+
   return (
     <View
       backgroundColor="primary-50"
@@ -30,26 +84,39 @@ export default function Login() {
           paddingTop: 30,
         }}
       >
-        <TextInput
-          label="Email"
-          placeholder="Contoh@gmail.com"
-          keyboardType="email-address"
-          borderRadius={17}
-          // value={field.value}
-          // onBlur={field.onBlur}
-          // onChangeText={field.onChange}
-          // errorMessage={fieldState.error?.message}
+        <Controller
+          control={control}
+          name="email"
+          render={({ field, fieldState }) => (
+            <TextInput
+              label="Email"
+              placeholder="Contoh@gmail.com"
+              keyboardType="email-address"
+              borderRadius={17}
+              value={field.value}
+              onBlur={field.onBlur}
+              onChangeText={field.onChange}
+              errorMessage={fieldState.error?.message}
+            />
+          )}
         />
-        <TextInput
-          label="Password"
-          placeholder="Kata Sandi"
-          secureTextEntry
-          borderRadius={17}
-          // value={field.value}
-          // onBlur={field.onBlur}
-          // onChangeText={field.onChange}
-          // errorMessage={fieldState.error?.message}
+        <Controller
+          control={control}
+          name="email"
+          render={({ field, fieldState }) => (
+            <TextInput
+              label="Password"
+              placeholder="Kata Sandi"
+              secureTextEntry
+              borderRadius={17}
+              value={field.value}
+              onBlur={field.onBlur}
+              onChangeText={field.onChange}
+              errorMessage={fieldState.error?.message}
+            />
+          )}
         />
+
         <View style={{ alignItems: "flex-end" }}>
           <TextLink
             label="Lupa Password?"
@@ -57,7 +124,13 @@ export default function Login() {
             onPress={() => router.replace("/auth/login")}
           />
         </View>
-        <Button style={{ marginTop: 10 }} onPress={()=> router.push("/home")}>Login</Button>
+        <Button
+          style={{ marginTop: 10 }}
+          disabled={!formState.isValid || loginMutation.isPending}
+          onPress={handleLoginMutation}
+        >
+          {loginMutation.isPending ? <Loader color="white" /> : "Login"}
+        </Button>
         <View
           style={{
             flexDirection: "row",

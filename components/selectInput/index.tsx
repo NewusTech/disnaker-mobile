@@ -1,14 +1,14 @@
 import { ReactNode } from "react";
-import { StyleSheet } from "react-native";
+import { Image, StyleSheet } from "react-native";
 import SelectDropdown from "react-native-select-dropdown";
 
 import { useAppTheme } from "@/context/theme-context";
 import View from "../view";
 import { Typography } from "../ui/typography";
 
-
 export type DataItem = {
   title: string | number;
+  image?: string;
 };
 export type SelectInputProps = {
   leadingIcon?: ReactNode;
@@ -99,6 +99,9 @@ export function SelectInput(props: SelectInputProps) {
               },
             ]}
           >
+            {item.image && (
+              <Image style={{ width: 18, height: 18 }} source={item.image} />
+            )}
             <Typography>
               {item.title} {suffix}
             </Typography>
@@ -126,5 +129,8 @@ const styles = StyleSheet.create({
   dropdownItemStyle: {
     padding: 8,
     borderRadius: 15,
+    flexDirection: "row",
+    gap: 10,
+    alignItems: "center",
   },
 });

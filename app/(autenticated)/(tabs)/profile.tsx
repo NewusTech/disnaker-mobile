@@ -14,17 +14,36 @@ import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Dimensions, Image, Pressable, TouchableOpacity } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { IconLogout } from "@/components/icons/IconLogout";
+import { handleLogoutSession } from "@/services/auth.service";
+import { useAuthActions, useAuthProfile } from "@/store/userStore";
+import { useGetProfile } from "@/services/user";
 
 export default function Profile() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
 
+  const profileQuery = useGetProfile();
+
+  const { setAccessToken, setProfile } = useAuthActions();
+
+  const userProfile = useAuthProfile();
+
   const [modalUploadCv, setModalUploadCv] = useState<boolean>(false);
   const [tabUploadCV, setTabUploadCV] = useState<"cv" | "portofolio">("cv");
+
+  useEffect(() => {
+    if (profileQuery.data) {
+      setProfile(profileQuery.data.data);
+    } else if (profileQuery.error) {
+      setAccessToken(null);
+      router.replace("/(public)/onboard/final");
+    }
+  }, [router, setAccessToken, setProfile, profileQuery.data]);
 
   return (
     <View style={{ flex: 1 }} backgroundColor="white">
@@ -40,7 +59,11 @@ export default function Profile() {
         }}
       >
         <Image
-          source={require("@/assets/images/dummy1.jpg")}
+          source={
+            userProfile?.UserProfile.image
+              ? { uri: userProfile.UserProfile.image }
+              : require("@/assets/images/dummy1.jpg")
+          }
           style={{ width: 75, height: 75, borderRadius: 100 }}
         />
         <View style={{ marginTop: 20, marginBottom: 20 }}>
@@ -49,7 +72,7 @@ export default function Profile() {
             style={{ textAlign: "center" }}
             color="white"
           >
-            Irsyad Abi Izzulhaq
+            {userProfile?.UserProfile.name}
           </Typography>
           <Typography
             fontSize={16}
@@ -57,7 +80,7 @@ export default function Profile() {
             style={{ textAlign: "center" }}
             color="white"
           >
-            irsyadabiizzulhaq@gmail.com
+            {userProfile?.email || "emty@mail.com"}
           </Typography>
         </View>
         <Pressable
@@ -71,7 +94,7 @@ export default function Profile() {
             gap: 10,
             borderRadius: 100,
           }}
-          onPress={()=>router.push("/(autenticated)/profile/editProfile")}
+          onPress={() => router.push("/(autenticated)/profile/userProfile")}
         >
           <IconPencilLine />
           <Typography color="primary-50">Ubah Profile</Typography>
@@ -96,7 +119,7 @@ export default function Profile() {
               flexDirection: "column",
               justifyContent: "center",
             }}
-            onPress={()=>router.push("/(autenticated)/history")}
+            onPress={() => router.push("/(autenticated)/history")}
           >
             <Typography
               style={{ textAlign: "center" }}
@@ -127,7 +150,7 @@ export default function Profile() {
               flexDirection: "column",
               justifyContent: "center",
             }}
-            onPress={()=>router.push("/(autenticated)/favorite")}
+            onPress={() => router.push("/(autenticated)/favorite")}
           >
             <Typography
               style={{ textAlign: "center" }}
@@ -201,7 +224,7 @@ export default function Profile() {
             padding: 10,
             borderColor: Colors["line-stroke-30"],
           }}
-          onPress={()=>router.push("/profile")}
+          onPress={() => router.push("/(autenticated)/profile/account")}
         >
           <IconUserProfile />
           <Typography
@@ -214,6 +237,26 @@ export default function Profile() {
           <View style={{ marginLeft: "auto" }}>
             <IconCaretRight />
           </View>
+        </Pressable>
+        <Pressable
+          style={{
+            borderBottomWidth: 1,
+            flexDirection: "row",
+            gap: 10,
+            backgroundColor: Colors.white,
+            padding: 10,
+            borderColor: Colors["line-stroke-30"],
+          }}
+          onPress={() => handleLogoutSession()}
+        >
+          <IconLogout />
+          <Typography
+            color="black-80"
+            fontSize={18}
+            fontFamily="Poppins-Medium"
+          >
+            Logout
+          </Typography>
         </Pressable>
       </View>
       {/* Modal Upload CV */}
@@ -280,14 +323,10 @@ export default function Profile() {
               </Typography>
             </TouchableOpacity>
           </View>
-          {
-            tabUploadCV === "cv" && (
-              <UploadFile label="Upload CV" />
-            )}
-          {
-            tabUploadCV === "portofolio" && (
-              <UploadFile label="Upload Portofolio" />
-            )}
+          {tabUploadCV === "cv" && <UploadFile label="Upload CV" />}
+          {tabUploadCV === "portofolio" && (
+            <UploadFile label="Upload Portofolio" />
+          )}
           <Button>Simpan</Button>
         </View>
       </ModalSwipe>

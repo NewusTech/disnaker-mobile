@@ -52,3 +52,15 @@ export const userAbout = z.object({
 });
 
 export type userAboutForm = z.infer<typeof userAbout>;
+
+export const userEducation = z.object({
+  educationLevel_id: z.string({ message: "Harus diisi" }),
+  instanceName: z.string({ message: "Harus diisi" }),
+  department: z.string({ message: "Harus diisi" }),
+  gpa: z.string({ message: "Harus diisi" }),
+  joinDate: z.date(),
+  graduationDate: z.date(),
+  desc: z.string({ message: "Harus diisi" }),
+});
+
+export type userEducationForm = z.infer<typeof userEducation>;

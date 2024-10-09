@@ -245,7 +245,9 @@ export default function index() {
         {/* Tentang Saya */}
         <SectionTentang about={userProfile?.UserProfile.about || ""} />
         {/* Pendidikan */}
-        <SectionPendidikan />
+        <SectionPendidikan
+          education={userProfile?.UserEducationHistories || []}
+        />
         {/* Organisasi */}
         <SectionOrganisasi />
         {/* Pengalaman Kerja */}

@@ -4,10 +4,10 @@ import { useAppTheme } from "@/context/theme-context";
 
 import { Typography } from "../ui/typography";
 import React, { useState } from "react";
-import { IconPlus } from "../icons/IconPlus";
 import View from "../view";
 import * as DocumentPicker from "expo-document-picker";
 import Pdf from "react-native-pdf";
+import { IconPdf } from "../icons";
 
 export type InputFileProps = {
   label?: string;
@@ -68,7 +68,7 @@ export default function UploadFile(props: InputFileProps) {
             height: 300,
           }}
         >
-          {!file && <IconPlus color={"primary-50"} width={34} height={34} />}
+          <IconPdf color={"primary-50"} width={34} height={34} />
           <Typography
             fontFamily="Poppins-Bold"
             color={"primary-50"}

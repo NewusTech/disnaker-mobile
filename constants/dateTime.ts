@@ -12,3 +12,63 @@ export function formatDateYMD(date: Date) {
 
   return `${year}-${month}-${day}`;
 }
+
+export const formatDate = (
+  date?: number | Date | undefined,
+  options: Intl.DateTimeFormatOptions | undefined = {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }
+): string => {
+  return new Intl.DateTimeFormat("id-ID", options).format(date);
+};
+
+export function calculateDateDifference(
+  startDate: Date,
+  endDate: Date,
+  options: {
+    showYears?: boolean;
+    showMonths?: boolean;
+    showDays?: boolean;
+  } = {}
+): string {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  // Hitung total perbedaan dalam tahun, bulan, dan hari
+  let years = end.getFullYear() - start.getFullYear();
+  let months = end.getMonth() - start.getMonth();
+  let days = end.getDate() - start.getDate();
+
+  // Jika selisih bulan atau hari negatif, sesuaikan hasilnya
+  if (days < 0) {
+    months--;
+    const previousMonth = new Date(end.getFullYear(), end.getMonth(), 0);
+    days += previousMonth.getDate(); // Tambahkan jumlah hari dari bulan sebelumnya
+  }
+
+  if (months < 0) {
+    years--;
+    months += 12; // Tambahkan 12 bulan jika bulan negatif
+  }
+
+  // Format keluaran
+  const result: string[] = [];
+
+  if (options.showYears !== false && years > 0) {
+    result.push(`${years} tahun`);
+  }
+
+  if (options.showMonths !== false && months > 0) {
+    result.push(`${months} bulan`);
+  }
+
+  if (options.showDays !== false && days > 0) {
+    result.push(`${days} hari`);
+  }
+
+  // Jika tidak ada hasil, tampilkan "0 hari"
+  return result.length > 0 ? result.join(" ") : "0 hari";
+}

@@ -61,7 +61,9 @@ export default function EditProfile() {
 
   const { control, handleSubmit, formState, setValue, watch } =
     useForm<profileForm>({
-      defaultValues: {},
+      defaultValues: {
+        birthDate:new Date()
+      },
       resolver: zodResolver(profile),
       mode: "all",
     });
@@ -78,12 +80,19 @@ export default function EditProfile() {
     });
     formData.append("birthDate", formatDateYMD(data.birthDate));
     if (fileKTP) {
-      formData.append("ktp", fileKTP as any);
+      const unixTimestamp = Math.floor(new Date().getDate() / 1000);
+      formData.append("ktp", {
+        ...fileKTP,
+        name: `${user?.UserProfile.slug}-${unixTimestamp}-ktp`,
+      } as any);
     }
     if (fileKK) {
-      formData.append("kk", fileKK as any);
+      const unixTimestamp = Math.floor(new Date().getDate() / 1000);
+      formData.append("kk", {
+        ...fileKK,
+        name: `${user?.UserProfile.slug}-${unixTimestamp}-kk`,
+      } as any);
     }
-    console.log(formData);
     updateProfile.mutate(
       {
         data: formData,
@@ -117,7 +126,7 @@ export default function EditProfile() {
       setValue("nik", user.UserProfile.nik || "");
       setValue(
         "birthDate",
-        new Date(user.UserProfile.birthDate || "12/12/1212")
+        new Date(user.UserProfile.birthDate || "12-12-1999")
       );
       setValue("department", user.UserProfile.department || "");
       setValue("gender", user.UserProfile.gender || "");

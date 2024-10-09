@@ -8,7 +8,7 @@ import { useAppTheme } from "@/context/theme-context";
 import { useGetProfile, useUpdateAbout } from "@/services/user";
 import { userAbout, userAboutForm } from "@/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { ScrollView } from "react-native";

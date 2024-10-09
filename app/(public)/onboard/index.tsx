@@ -10,7 +10,7 @@ import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
 import { useRouter } from "expo-router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Image, StyleSheet, TouchableOpacity } from "react-native";
+import { Image, Pressable, StyleSheet, TouchableOpacity } from "react-native";
 import PagerView from "react-native-pager-view";
 import Animated, {
   Easing,
@@ -105,11 +105,9 @@ export default function Index() {
           initialPage={0}
           onPageSelected={(e) => setActivePage(e.nativeEvent.position)}
         >
-          {useMemo(
-            () =>
-              dummy.map((data) => <Image key={data.id} source={data.image} />),
-            [dummy]
-          )}
+          {dummy.map((data) => (
+            <Image key={data.id} source={data.image} />
+          ))}
         </PagerView>
       </View>
       <View style={{ marginTop: 20, display: "flex", gap: 5 }}>

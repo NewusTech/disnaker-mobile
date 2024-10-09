@@ -23,7 +23,7 @@ export const profile = z.object({
     .string({ message: "Harus diisi" })
     .min(16, { message: "NIK terdiri dari 16 karakter" }),
   email: z.string({ message: "Harus diisi" }),
-  birthDate: z.string({ message: "Harus diisi" }),
+  birthDate: z.date(),
   birthPlace: z.string({ message: "Harus diisi" }),
   gender: z.string({ message: "Harus diisi" }),
   phoneNumber: z
@@ -35,6 +35,7 @@ export const profile = z.object({
   profession: z.string({ message: "Harus diisi" }),
   employmentStatus: z.string({ message: "Harus diisi" }),
   maritalStatus: z.string({ message: "Harus diisi" }),
+  citizenship: z.string({ message: "Harus diisi" }),
 });
 
 export type profileForm = z.infer<typeof profile>;
@@ -45,3 +46,9 @@ export const userLink = z.object({
 });
 
 export type userLinkForm = z.infer<typeof userLink>;
+
+export const userAbout = z.object({
+  about: z.string({ message: "Harus diisi" }),
+});
+
+export type userAboutForm = z.infer<typeof userAbout>;

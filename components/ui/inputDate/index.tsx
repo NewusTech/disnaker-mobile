@@ -20,6 +20,7 @@ export type DateInputProps = {
   disabledDates?: string[];
   minDate?: Date | string;
   color?: AppColorUnion;
+  errorMessage?: string;
 } & Pick<
   TextInputV2Props,
   "placeholder" | "trailingIcon" | "leadingIcon" | "withBorder"
@@ -45,6 +46,7 @@ export function DateInput(props: DateInputProps) {
     disabledDates,
     minDate,
     color = "line-stroke-30",
+    errorMessage = "",
   } = props;
 
   const { Colors } = useAppTheme();
@@ -101,6 +103,11 @@ export function DateInput(props: DateInputProps) {
           withBorder={false}
         />
       </View>
+      {!!errorMessage && (
+        <Typography fontFamily="Poppins-Light" fontSize={10} color="error-50">
+          {errorMessage}
+        </Typography>
+      )}
       <Modal
         animationType="slide"
         transparent={false}

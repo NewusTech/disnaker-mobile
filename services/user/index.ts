@@ -6,6 +6,7 @@ import {
   postLogin,
   postRegister,
   postUserLink,
+  putAbout,
   putEditProfile,
   ResponseError,
 } from "@/api";
@@ -13,6 +14,7 @@ import {
   PostLoginPayload,
   PostRegisterPayload,
   profileForm,
+  userAboutForm,
   userLinkForm,
 } from "@/validation";
 import { useAccessToken } from "@/store/userStore";
@@ -44,7 +46,7 @@ export const useGetProfile = () => {
 
 export const useUpdatePrfoile = () => {
   return useMutation({
-    mutationFn: (payload: { data: profileForm; slug: string }) =>
+    mutationFn: (payload: { data: FormData; slug: string }) =>
       putEditProfile(payload.data, payload.slug),
     onError: (error: AxiosError<ResponseError>) => error,
   });
@@ -53,6 +55,14 @@ export const useUpdatePrfoile = () => {
 export const usePostLiks = () => {
   return useMutation({
     mutationFn: (payload: userLinkForm) => postUserLink(payload),
+    onError: (error: AxiosError<ResponseError>) => error,
+  });
+};
+
+export const useUpdateAbout = () => {
+  return useMutation({
+    mutationFn: (payload: { data: userAboutForm; slug: string }) =>
+      putAbout(payload.data, payload.slug),
     onError: (error: AxiosError<ResponseError>) => error,
   });
 };

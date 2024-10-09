@@ -14,7 +14,7 @@ export default function AuthenticatedLayout() {
 
   useEffect(() => {
     if (!accessToken) {
-      router.replace("/(public)/onboard/final");
+      router.replace("/(public)/onboard");
     }
   }, [accessToken, router]);
 
@@ -23,7 +23,7 @@ export default function AuthenticatedLayout() {
       setProfile(profileQuery.data.data);
     } else if (profileQuery.error) {
       setAccessToken(null);
-      router.replace("/(public)/onboard/final");
+      router.replace("/(public)/onboard");
     }
   }, [router, setAccessToken, setProfile, profileQuery.data]);
 

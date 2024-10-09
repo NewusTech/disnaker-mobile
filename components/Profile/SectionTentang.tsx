@@ -11,7 +11,7 @@ import { useAppTheme } from "@/context/theme-context";
 import { Typography } from "../ui/typography";
 import { IconPencilLine } from "../icons/IconPencilLine";
 
-export default function SectionTentang() {
+export default function SectionTentang({about}:{about:string}) {
   const router = useRouter();
   const { Colors } = useAppTheme();
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -74,10 +74,7 @@ export default function SectionTentang() {
         <View onLayout={onLayout} style={{ height: "auto" }}>
           <View style={{ padding: 10 }}>
             <Typography fontSize={15}>
-              Saya Irsyad Abi Izzulhaq lulusan Jurusan Informatika dengan IPK
-              3,55 dari Universitas Teknokrat Indonesia. Hardskill yang saya
-              kuasai antara lain UI/UX Design, Desain Grafis, Microsoft Word,
-              Microsoft Excel dan Microsoft Power Point...
+             {about}
             </Typography>
             <Pressable
               style={({ pressed }) => [

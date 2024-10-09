@@ -5,6 +5,7 @@ import {
   PostLoginPayload,
   PostRegisterPayload,
   profileForm,
+  userAboutForm,
   userLinkForm,
 } from "@/validation";
 import axios, {
@@ -125,6 +126,8 @@ export type userProfileResponseSuccess = {
       createdAt: string;
       updatedAt: string;
       location: string;
+      kk: string | null;
+      ktp: string | null;
     };
     UserOrganizations: [];
     Skills: [];
@@ -179,13 +182,41 @@ export const getVacancy = async () => {
   return response.data;
 };
 
-export const putEditProfile = async (payload: profileForm, slug: string) => {
-  const response = await apiClient<PostResponseSuccess>({
-    method: "PUT",
-    url: "/user/profile/update/" + slug,
-    data: payload,
-  });
-  return response.data;
+export const putEditProfile = async (payload: FormData, slug: string) => {
+  // const response = await apiClient<PostResponseSuccess>({
+  //   method: "PUT",
+  //   url: "/user/profile/update/" + slug,
+  //   data: payload,
+  // });
+  // return response.data;
+  const accessToken = getAccessToken();
+  try {
+    const response = await fetch(`${API_URL}/user/profile/update/${slug}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: payload,
+    });
+
+    // Periksa apakah respons sukses (status 2xx)
+    if (!response.ok) {
+      // Jika tidak sukses, ambil pesan error
+      const errorData = await response.json();
+      // Buat error baru dengan pesan dari respons
+      throw new Error(errorData.message || "Gagal memproses update profile.");
+    }
+    // Respons sukses, kembalikan data JSON
+    const result = await response.json();
+    return result;
+  } catch (error: any) {
+    // Tangani error di sini
+    console.error(
+      `Error saat memproses update profile: ${error.message} - ${error.data}`
+    );
+    // Kamu bisa mengembalikan error atau menampilkannya ke UI
+    throw error;
+  }
 };
 
 export type userLinkResponseSuccess = {
@@ -231,6 +262,15 @@ export const getVacancyCategory = async () => {
   const response = await apiClient<vacancyCategoryResponseSuccess>({
     method: "GET",
     url: "/vacancy/category/get/",
+  });
+  return response.data;
+};
+
+export const putAbout = async (payload: userAboutForm, slug: string) => {
+  const response = await apiClient<PostResponseSuccess>({
+    method: "PUT",
+    url: "/user/about/update/" + slug,
+    data: payload,
   });
   return response.data;
 };

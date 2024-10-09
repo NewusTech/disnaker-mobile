@@ -5,10 +5,9 @@ import { SelectInput } from "@/components/selectInput";
 import Appbar from "@/components/ui/appBar";
 import { Button } from "@/components/ui/button";
 import { DateInput } from "@/components/ui/inputDate";
-import { DateInputV3 } from "@/components/ui/inputDateV3";
-import { DateInputV4 } from "@/components/ui/inputDateV4";
 import Loader from "@/components/ui/loader";
 import TextInput from "@/components/ui/textInput";
+import UploadFile from "@/components/uploadFile";
 import View from "@/components/view";
 import { formatDateYMD } from "@/constants/dateTime";
 import { useAppTheme } from "@/context/theme-context";
@@ -16,6 +15,7 @@ import { useGetProfile, useUpdatePrfoile } from "@/services/user";
 import { useGetVacancyCategory } from "@/services/vacancy";
 import { profile, profileForm } from "@/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { DocumentPickerAsset } from "expo-document-picker";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -23,6 +23,7 @@ import { Image, Pressable, RefreshControl } from "react-native";
 import { ScrollView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
+import { any } from "zod";
 
 export enum employmentStatus {
   "Sudah Bekerja" = "Sudah Bekerja",
@@ -53,21 +54,48 @@ export default function EditProfile() {
     };
   });
 
-  const { control, handleSubmit, formState, setValue } = useForm<profileForm>({
-    defaultValues: {},
-    resolver: zodResolver(profile),
-    mode: "all",
-  });
+  // console.log(user?.UserProfile, "user profile");
+
+  const [fileKTP, setFileKTP] = useState<DocumentPickerAsset>();
+  const [fileKK, setFileKK] = useState<DocumentPickerAsset>();
+
+  const { control, handleSubmit, formState, setValue, watch } =
+    useForm<profileForm>({
+      defaultValues: {
+        birthDate:new Date()
+      },
+      resolver: zodResolver(profile),
+      mode: "all",
+    });
 
   const updateProfile = useUpdatePrfoile();
 
   const handleLoginMutation = handleSubmit((data) => {
+    const formData = new FormData();
+    // Memasukkan data ke dalam FormData
+    Object.keys(data).forEach((key) => {
+      if (key !== "birthDate") {
+        formData.append(key, data[key as keyof typeof any]);
+      }
+    });
+    formData.append("birthDate", formatDateYMD(data.birthDate));
+    if (fileKTP) {
+      const unixTimestamp = Math.floor(new Date().getDate() / 1000);
+      formData.append("ktp", {
+        ...fileKTP,
+        name: `${user?.UserProfile.slug}-${unixTimestamp}-ktp`,
+      } as any);
+    }
+    if (fileKK) {
+      const unixTimestamp = Math.floor(new Date().getDate() / 1000);
+      formData.append("kk", {
+        ...fileKK,
+        name: `${user?.UserProfile.slug}-${unixTimestamp}-kk`,
+      } as any);
+    }
     updateProfile.mutate(
       {
-        data: {
-          ...data,
-          birthDate: formatDateYMD(new Date(data.birthDate)),
-        },
+        data: formData,
         slug: user?.UserProfile.slug || "",
       },
       {
@@ -98,7 +126,7 @@ export default function EditProfile() {
       setValue("nik", user.UserProfile.nik || "");
       setValue(
         "birthDate",
-        user.UserProfile.birthDate || new Date().toString()
+        new Date(user.UserProfile.birthDate || "12-12-1999")
       );
       setValue("department", user.UserProfile.department || "");
       setValue("gender", user.UserProfile.gender || "");
@@ -109,8 +137,13 @@ export default function EditProfile() {
       setValue("profession", user.UserProfile.profession || "");
       setValue("employmentStatus", user.UserProfile.employmentStatus || "");
       setValue("maritalStatus", user.UserProfile.maritalStatus || "");
+      setValue("citizenship", user.UserProfile.citizenship || "");
     }
   }, [user]);
+
+  useEffect(() => {
+    setValue("name", watch("name"), { shouldValidate: true });
+  }, [fileKK, fileKTP]);
 
   return (
     <View backgroundColor="white" style={{ flex: 1 }}>
@@ -217,8 +250,12 @@ export default function EditProfile() {
                     <IconCalender width={21} height={21} color="black-80" />
                   </View>
                 }
-                onChange={(date) => field.onChange(date || new Date())}
+                onChange={(date) => {
+                  console.log(date, "Tanggal Lahir");
+                  field.onChange(new Date(date?.toString() || ""));
+                }}
                 value={new Date(field.value)}
+                errorMessage={fieldState.error?.message}
               />
             )}
           />
@@ -286,7 +323,7 @@ export default function EditProfile() {
               <SelectInput
                 label="Bidang Pekerjaan"
                 data={vacancyCategory || []}
-                placeholder="Pilih Jenis Agama"
+                placeholder="Pilih Bidang Agama"
                 onSelect={(dataItem: any, index: any) =>
                   field.onChange(dataItem.title)
                 }
@@ -401,6 +438,40 @@ export default function EditProfile() {
               />
             )}
           />
+          <Controller
+            control={control}
+            name="citizenship"
+            render={({ field, fieldState }) => (
+              <SelectInput
+                label="Status Warga Negara"
+                data={[{ title: "WNI" }, { title: "WNA" }]}
+                placeholder="Pilih Warganegara"
+                onSelect={(dataItem: any, index: any) =>
+                  field.onChange(dataItem.title)
+                }
+                value={field.value}
+                trailingIcon={<IconCaretDown color="black-80" />}
+                padding={12}
+                borderRadius={15}
+              />
+            )}
+          />
+          <View style={{ marginTop: 10 }} key={user?.UserProfile.ktp}>
+            <UploadFile
+              label={`KTP${fileKTP ? "-" + fileKTP?.name : ""}`}
+              file={fileKTP}
+              setFile={setFileKTP}
+              fileUrl={user?.UserProfile.ktp}
+            />
+          </View>
+          <View style={{ marginTop: 10 }} key={user?.UserProfile.kk}>
+            <UploadFile
+              label={`KK${fileKK ? "-" + fileKK?.name : ""}`}
+              file={fileKK}
+              setFile={setFileKK}
+              fileUrl={user?.UserProfile.kk}
+            />
+          </View>
           <Button
             style={{ marginTop: 10 }}
             disabled={!formState.isValid || updateProfile.isPending}

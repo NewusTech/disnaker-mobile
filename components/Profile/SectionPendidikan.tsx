@@ -13,8 +13,14 @@ import { IconPencilLine } from "../icons/IconPencilLine";
 import { IconPlus } from "../icons/IconPlus";
 import { IconDot } from "../icons/IconDot";
 import Separator from "../ui/separator";
+import { educationHistoryResponseSuccess } from "@/api";
+import { calculateDateDifference, formatDate } from "@/constants/dateTime";
 
-export default function SectionPendidikan() {
+export default function SectionPendidikan({
+  education,
+}: {
+  education: educationHistoryResponseSuccess["data"];
+}) {
   const router = useRouter();
   const { Colors } = useAppTheme();
 
@@ -79,14 +85,14 @@ export default function SectionPendidikan() {
       >
         {/* Measure the actual content height */}
         <View onLayout={onLayout} style={{ height: "auto", padding: 15 }}>
-          {Array.from({ length: 2 }).map((_, index) => (
+          {education.map((data, index) => (
             <View key={index}>
               <View>
                 <Typography fontSize={15} style={{}}>
-                  Universitas Teknokrat Indonesia
+                  {data.instanceName}
                 </Typography>
                 <Typography fontFamily="Poppins-Light" fontSize={15} style={{}}>
-                  Fakultas Teknik Ilmu Komputer - Sarjana S1
+                  {data.department}
                 </Typography>
                 <View style={{ flexDirection: "row" }}>
                   <Typography
@@ -95,7 +101,15 @@ export default function SectionPendidikan() {
                     fontSize={15}
                     style={{}}
                   >
-                    Jul 2018 - Apr 2023
+                    {formatDate(new Date(data.joinDate), {
+                      month: "short",
+                      year: "numeric",
+                    })}{" "}
+                    -{" "}
+                    {formatDate(new Date(data.graduationDate), {
+                      month: "short",
+                      year: "numeric",
+                    })}
                   </Typography>
                   <IconDot color="black-80" />
                   <Typography
@@ -104,15 +118,20 @@ export default function SectionPendidikan() {
                     fontSize={15}
                     style={{}}
                   >
-                    3 Thn 7 Bulan
+                    {calculateDateDifference(
+                      new Date(data.joinDate),
+                      new Date(data.graduationDate),
+                      {
+                        showDays: false,
+                      }
+                    )}
                   </Typography>
                 </View>
                 <Typography fontSize={16} style={{}}>
-                  IPK 3,98
+                  IPK {data.gpa}
                 </Typography>
                 <Typography fontFamily="Poppins-Light" fontSize={15} style={{}}>
-                  Selama menjalani pendidikan di Universitas Teknokrat Indonesia
-                  saya memiliki beberapa pengalaman mulai dari
+                  {data.desc}
                 </Typography>
                 <Pressable
                   style={({ pressed }) => [
@@ -130,7 +149,7 @@ export default function SectionPendidikan() {
                       marginVertical: 10,
                     },
                   ]}
-                  onPress={() => router.push("/profile/pendidikan/z")}
+                  onPress={() => router.push(`/profile/pendidikan/${data.id}`)}
                 >
                   {({ pressed }) => (
                     <>

@@ -5,6 +5,7 @@ import {
   PostLoginPayload,
   PostRegisterPayload,
   profileForm,
+  userAboutForm,
   userLinkForm,
 } from "@/validation";
 import axios, {
@@ -125,6 +126,8 @@ export type userProfileResponseSuccess = {
       createdAt: string;
       updatedAt: string;
       location: string;
+      kk: string | null;
+      ktp: string | null;
     };
     UserOrganizations: [];
     Skills: [];
@@ -179,13 +182,35 @@ export const getVacancy = async () => {
   return response.data;
 };
 
-export const putEditProfile = async (payload: profileForm, slug: string) => {
-  const response = await apiClient<PostResponseSuccess>({
-    method: "PUT",
-    url: "/user/profile/update/" + slug,
-    data: payload,
-  });
-  return response.data;
+export const putEditProfile = async (payload: FormData, slug: string) => {
+  const accessToken = getAccessToken();
+  try {
+    const response = await fetch(`${API_URL}/user/profile/update/${slug}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: payload,
+    });
+
+    // Periksa apakah respons sukses (status 2xx)
+    if (!response.ok) {
+      // Jika tidak sukses, ambil pesan error
+      const errorData = await response.json();
+      // Buat error baru dengan pesan dari respons
+      throw new Error(errorData.message || "Gagal memproses update profile.");
+    }
+    // Respons sukses, kembalikan data JSON
+    const result = await response.json();
+    return result;
+  } catch (error: any) {
+    // Tangani error di sini
+    console.error(
+      `Error saat memproses update profile: ${error.message} - ${error.data}`
+    );
+    // Kamu bisa mengembalikan error atau menampilkannya ke UI
+    throw error;
+  }
 };
 
 export type userLinkResponseSuccess = {
@@ -233,4 +258,132 @@ export const getVacancyCategory = async () => {
     url: "/vacancy/category/get/",
   });
   return response.data;
+};
+
+export const putAbout = async (payload: userAboutForm, slug: string) => {
+  const response = await apiClient<PostResponseSuccess>({
+    method: "PUT",
+    url: "/user/about/update/" + slug,
+    data: payload,
+  });
+  return response.data;
+};
+
+export type educationHistoryResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: educationHistoryByIdResponseSuccess["data"][];
+};
+
+export const getEducationHistory = async () => {
+  const response = await apiClient<educationHistoryResponseSuccess>({
+    method: "GET",
+    url: "/user/education/get/",
+  });
+  return response.data;
+};
+
+export type educationLevelResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    level: string;
+  }[];
+};
+
+export const getEducationLevel = async () => {
+  const response = await apiClient<educationLevelResponseSuccess>({
+    method: "GET",
+    url: "/education-level/get/",
+  });
+  return response.data;
+};
+
+export type educationHistoryByIdResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    user_id: number;
+    educationLevel_id: number;
+    instanceName: string;
+    department: string;
+    gpa: string;
+    joinDate: string;
+    graduationDate: string;
+    desc: string;
+    ijazah: string;
+    transkrip: string;
+    createdAt: string;
+    updatedAt: string;
+  };
+};
+export const getEducationHistoryById = async (id: string) => {
+  const response = await apiClient<educationHistoryByIdResponseSuccess>({
+    method: "GET",
+    url: "/user/education/get/" + id,
+  });
+  return response.data;
+};
+
+export const postEducationHistory = async (payload: FormData) => {
+  const accessToken = getAccessToken();
+  try {
+    const response = await fetch(`${API_URL}/user/education/create`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: payload,
+    });
+
+    // Periksa apakah respons sukses (status 2xx)
+    if (!response.ok) {
+      // Jika tidak sukses, ambil pesan error
+      const errorData = await response.json();
+      // Buat error baru dengan pesan dari respons
+      throw new Error(errorData.message || "Gagal Menambah Education History.");
+    }
+    // Respons sukses, kembalikan data JSON
+    const result = await response.json();
+    return result;
+  } catch (error: any) {
+    // Tangani error di sini
+    console.error(
+      `Error saat menambah data : ${error.message} - ${error.data}`
+    );
+    // Kamu bisa mengembalikan error atau menampilkannya ke UI
+    throw error;
+  }
+};
+export const putEducationHistory = async (payload: FormData, id: number) => {
+  const accessToken = getAccessToken();
+  try {
+    const response = await fetch(`${API_URL}/user/education/update/${id}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: payload,
+    });
+
+    // Periksa apakah respons sukses (status 2xx)
+    if (!response.ok) {
+      // Jika tidak sukses, ambil pesan error
+      const errorData = await response.json();
+      // Buat error baru dengan pesan dari respons
+      throw new Error(errorData.message || "Gagal Menambah Education History.");
+    }
+    // Respons sukses, kembalikan data JSON
+    const result = await response.json();
+    return result;
+  } catch (error: any) {
+    // Tangani error di sini
+    console.error(
+      `Error saat menambah data : ${error.message} - ${error.data}`
+    );
+    // Kamu bisa mengembalikan error atau menampilkannya ke UI
+    throw error;
+  }
 };

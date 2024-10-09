@@ -9,7 +9,7 @@ import { TextInputV2, TextInputV2Props } from "../textInputV2";
 import { Typography } from "../typography";
 import React from "react";
 import View from "@/components/view";
-import { formatDateDMY } from "@/constants/dateTime";
+import { formatDate, formatDateDMY } from "@/constants/dateTime";
 import { IconCross } from "@/components/icons/IconCsross";
 import DateTimePicker from "react-native-ui-datepicker";
 
@@ -20,6 +20,8 @@ export type DateInputProps = {
   disabledDates?: string[];
   minDate?: Date | string;
   color?: AppColorUnion;
+  errorMessage?: string;
+  disabled?: boolean;
 } & Pick<
   TextInputV2Props,
   "placeholder" | "trailingIcon" | "leadingIcon" | "withBorder"
@@ -45,6 +47,8 @@ export function DateInput(props: DateInputProps) {
     disabledDates,
     minDate,
     color = "line-stroke-30",
+    errorMessage = "",
+    disabled = false,
   } = props;
 
   const { Colors } = useAppTheme();
@@ -72,6 +76,7 @@ export function DateInput(props: DateInputProps) {
         </Typography>
       )}
       <View
+        backgroundColor={disabled ? "black-10" : "transparent"}
         style={[
           styles.container,
           {
@@ -94,13 +99,24 @@ export function DateInput(props: DateInputProps) {
         <TextInputV2
           trailingIcon={trailingIcon}
           leadingIcon={leadingIcon}
-          value={formatDateDMY(new Date(value))}
+          value={formatDate(new Date(value), {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+          })}
           placeholder={placeholder}
-          onTouchablePress={() => setShowDatePicker(!showDatePicker)}
+          onTouchablePress={() =>
+            !disabled && setShowDatePicker(!showDatePicker)
+          }
           asTouchable
           withBorder={false}
         />
       </View>
+      {!!errorMessage && (
+        <Typography fontFamily="Poppins-Light" fontSize={10} color="error-50">
+          {errorMessage}
+        </Typography>
+      )}
       <Modal
         animationType="slide"
         transparent={false}

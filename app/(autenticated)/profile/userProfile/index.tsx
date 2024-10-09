@@ -221,7 +221,7 @@ export default function index() {
                 style={{}}
                 color="white"
               >
-                {userProfile?.UserProfile.citizenship || "-"}
+                {userProfile?.UserProfile.address || "-"}
               </Typography>
             </View>
             <Pressable
@@ -243,9 +243,11 @@ export default function index() {
           </View>
         </LinearGradient>
         {/* Tentang Saya */}
-        <SectionTentang />
+        <SectionTentang about={userProfile?.UserProfile.about || ""} />
         {/* Pendidikan */}
-        <SectionPendidikan />
+        <SectionPendidikan
+          education={userProfile?.UserEducationHistories || []}
+        />
         {/* Organisasi */}
         <SectionOrganisasi />
         {/* Pengalaman Kerja */}

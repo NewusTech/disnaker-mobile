@@ -10,11 +10,13 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { IconPencilLine } from "../icons/IconPencilLine";
-import { IconPlus } from "../icons/IconPlus";
-import { IconDot } from "../icons/IconDot";
-import Separator from "../ui/separator";
+import { SkillsResponseSuccess } from "@/api";
 
-export default function SectionSkill() {
+export default function SectionSkill({
+  skills,
+}: {
+  skills: SkillsResponseSuccess["data"];
+}) {
   const router = useRouter();
   const { Colors } = useAppTheme();
 
@@ -87,7 +89,7 @@ export default function SectionSkill() {
               height: (5 / 2) * 40,
             }}
           >
-            {Array.from({ length: 5 }).map((_, index) => (
+            {skills.map((item, index) => (
               <Typography
                 key={index}
                 style={{
@@ -100,7 +102,7 @@ export default function SectionSkill() {
                   width: "auto",
                 }}
               >
-                UI Desain
+                {item.name}
               </Typography>
             ))}
           </View>
@@ -120,7 +122,7 @@ export default function SectionSkill() {
                 marginVertical: 10,
               },
             ]}
-            onPress={()=>router.push("profile/skills")}
+            onPress={() => router.push("profile/skills")}
           >
             {({ pressed }) => (
               <>

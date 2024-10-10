@@ -4,9 +4,11 @@ import { getAccessToken } from "@/store/userStore";
 import {
   PostLoginPayload,
   PostRegisterPayload,
-  profileForm,
   userAboutForm,
+  userExperience,
+  userExperienceForm,
   userLinkForm,
+  userOrganizationForm,
 } from "@/validation";
 import axios, {
   AxiosError,
@@ -129,8 +131,8 @@ export type userProfileResponseSuccess = {
       kk: string | null;
       ktp: string | null;
     };
-    UserOrganizations: [];
-    Skills: [];
+    UserOrganizations: organizationHistoryIdResponseSuccess["data"];
+    Skills: SkillsResponseSuccess["data"];
     UserCertificates: [];
     UserLinks: userLinkResponseSuccess["data"];
     UserExperiences: [];
@@ -386,4 +388,179 @@ export const putEducationHistory = async (payload: FormData, id: number) => {
     // Kamu bisa mengembalikan error atau menampilkannya ke UI
     throw error;
   }
+};
+
+export const deleteEducationHistory = async (id: string) => {
+  const response = await apiClient<PostResponseSuccess>({
+    method: "DELETE",
+    url: "/user/education/delete/" + id,
+  });
+  return response.data;
+};
+
+export type organizationHistoryByIdResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    user_id: number;
+    name: string;
+    organizationName: string;
+    joinDate: string;
+    leaveDate: string | null;
+    desc: string;
+    isCurrently: string;
+    createdAt: string;
+    updatedAt: string;
+  };
+};
+export const getOrganizationHistoryById = async (id: string) => {
+  const response = await apiClient<organizationHistoryByIdResponseSuccess>({
+    method: "GET",
+    url: "/user/organization/get/" + id,
+  });
+  return response.data;
+};
+
+export type organizationHistoryIdResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: organizationHistoryByIdResponseSuccess["data"][];
+};
+
+export const getOrganizationHistory = async () => {
+  const response = await apiClient<organizationHistoryIdResponseSuccess>({
+    method: "GET",
+    url: "/user/organization/get?limit=100",
+  });
+  return response.data;
+};
+
+export const postOrganizationHistory = async (
+  payload: userOrganizationForm
+) => {
+  const response = await apiClient<PostResponseSuccess>({
+    method: "POST",
+    url: "/user/organization/create",
+    data: payload,
+  });
+  return response.data;
+};
+
+export const putOrganizationHistory = async (
+  payload: userOrganizationForm,
+  id: string
+) => {
+  const response = await apiClient<PostResponseSuccess>({
+    method: "PUT",
+    url: "/user/organization/update/" + id,
+    data: payload,
+  });
+  return response.data;
+};
+
+export const deleteOrganizationHistory = async (id: string) => {
+  const response = await apiClient<PostResponseSuccess>({
+    method: "DELETE",
+    url: "/user/organization/delete/" + id,
+  });
+  return response.data;
+};
+
+export type ExperienceHistoryByIdResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    user_id: number;
+    title: string;
+    possition: string;
+    companyName: string;
+    contractType: string;
+    joinDate: string;
+    leaveDate: string | null;
+    desc: string;
+    isCurrently: string;
+    createdAt: string;
+    updatedAt: string;
+  };
+};
+export const getExperienceHistoryById = async (id: string) => {
+  const response = await apiClient<ExperienceHistoryByIdResponseSuccess>({
+    method: "GET",
+    url: "/user/experience/get/" + id,
+  });
+  return response.data;
+};
+export type ExperienceHistoryResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: ExperienceHistoryByIdResponseSuccess["data"][];
+};
+export const getExperienceHistory = async () => {
+  const response = await apiClient<ExperienceHistoryResponseSuccess>({
+    method: "GET",
+    url: "/user/experience/get",
+  });
+  return response.data;
+};
+export const postExperienceHistory = async (payload: userExperienceForm) => {
+  const response = await apiClient<PostResponseSuccess>({
+    method: "POST",
+    url: "/user/experience/create",
+    data: payload,
+  });
+  return response.data;
+};
+
+export const putExperienceHistory = async (
+  payload: userExperienceForm,
+  id: string
+) => {
+  const response = await apiClient<PostResponseSuccess>({
+    method: "PUT",
+    url: "/user/experience/update/" + id,
+    data: payload,
+  });
+  return response.data;
+};
+
+export const deleteExperienceHistory = async (id: string) => {
+  const response = await apiClient<PostResponseSuccess>({
+    method: "DELETE",
+    url: "/user/experience/delete/" + id,
+  });
+  return response.data;
+};
+
+export type SkillsResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    name: string;
+    createdAt: string;
+    updatedAt: string;
+    UserSkill: {
+      user_id: number;
+      skill_id: number;
+      createdAt: string;
+      updatedAt: string;
+    };
+  }[];
+};
+export const getSkills = async () => {
+  const response = await apiClient<SkillsResponseSuccess>({
+    method: "GET",
+    url: "/user/skill/get",
+  });
+  return response.data;
+};
+export const postUserSkills = async (payload: { skills: number[] }) => {
+  const response = await apiClient<PostResponseSuccess>({
+    method: "POST",
+    url: "/user/skill/create",
+    data: payload,
+  });
+  return response.data;
 };

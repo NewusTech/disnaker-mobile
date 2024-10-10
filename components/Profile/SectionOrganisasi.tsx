@@ -19,8 +19,14 @@ import { IconPlus } from "../icons/IconPlus";
 import { IconDot } from "../icons/IconDot";
 import Separator from "../ui/separator";
 import RenderHTML, { defaultSystemFonts } from "react-native-render-html";
+import { organizationHistoryIdResponseSuccess } from "@/api";
+import { calculateDateDifference, formatDate } from "@/constants/dateTime";
 
-export default function SectionOrganisasi() {
+export default function SectionOrganisasi({
+  organization,
+}: {
+  organization: organizationHistoryIdResponseSuccess["data"];
+}) {
   const router = useRouter();
   const { Colors } = useAppTheme();
 
@@ -43,6 +49,21 @@ export default function SectionOrganisasi() {
   const onLayout = (event: LayoutChangeEvent) => {
     const { height } = event.nativeEvent.layout;
     contentHeight.value = height;
+  };
+
+  // Menyesuaikan styling elemen HTML seperti <li> dan <p>
+  const tagsStyles = {
+    ol: {
+      paddingLeft: 20, // Menyesuaikan padding dari <ol>
+    },
+    li: {
+      flexDirection: "row", // Membuat elemen <li> horizontal (satu baris)
+      alignItems: "center", // Memastikan semua item ter-align di tengah
+    },
+    p: {
+      margin: 0, // Menghapus margin dari <p> agar tidak turun ke baris baru
+      padding: 0, // Menghapus padding dari <p>
+    },
   };
 
   return (
@@ -85,14 +106,14 @@ export default function SectionOrganisasi() {
       >
         {/* Measure the actual content height */}
         <View onLayout={onLayout} style={{ height: "auto", padding: 15 }}>
-          {Array.from({ length: 2 }).map((_, index) => (
+          {organization.map((item, index) => (
             <View key={index}>
               <View>
                 <Typography fontSize={15} style={{}}>
-                  Organizer UXiD Lampung
+                  {item.organizationName}
                 </Typography>
                 <Typography fontFamily="Poppins-Light" fontSize={15} style={{}}>
-                  UXiD Lampung
+                  {item.name}
                 </Typography>
                 <View style={{ flexDirection: "row" }}>
                   <Typography
@@ -101,7 +122,22 @@ export default function SectionOrganisasi() {
                     fontSize={15}
                     style={{}}
                   >
-                    Jan 2024 - Mar 2024
+                    {formatDate(new Date(item.joinDate), {
+                      month: "short",
+                      year: "numeric",
+                    })}{" "}
+                    -{" "}
+                    {formatDate(
+                      new Date(
+                        item.isCurrently === "true"
+                          ? new Date()
+                          : item.leaveDate || new Date()
+                      ),
+                      {
+                        month: "short",
+                        year: "numeric",
+                      }
+                    )}
                   </Typography>
                   <IconDot color="black-80" />
                   <Typography
@@ -110,22 +146,24 @@ export default function SectionOrganisasi() {
                     fontSize={15}
                     style={{}}
                   >
-                    Saat ini
+                    {item.isCurrently === "true"
+                      ? "Saat ini"
+                      : calculateDateDifference(
+                          new Date(item.joinDate),
+                          new Date(item.leaveDate || 0),
+                          {
+                            showDays: false,
+                          }
+                        )}
                   </Typography>
                 </View>
                 <RenderHTML
                   systemFonts={[...defaultSystemFonts, "Poppins-Regular"]}
                   contentWidth={Dimensions.get("window").width - 48}
                   source={{
-                    html: `<ol>
-            <li>
-            Berhasil merancang dan mengembangkan aplikasi mobile yang bertujuan untuk membantu masyarakat Bandar Lampung dalam mendaur olang dan mengurangi polusi plastik.
-            </li>
-            <li>
-           Melakukan riset mendalam terhadap aplikasi sejenis untuk memahami kekuatan dan kelemahan kompetitor, serta mengidentifikasi peluang untuk inovasi.
-            </li>
-            </ol>`,
+                    html: item.desc,
                   }}
+                  tagsStyles={tagsStyles as any} // Menerapkan styling khusus pada elemen HTML
                 />
                 <Pressable
                   style={({ pressed }) => [
@@ -143,7 +181,9 @@ export default function SectionOrganisasi() {
                       marginVertical: 10,
                     },
                   ]}
-                  onPress={()=>router.push("/profile/organization/2")}
+                  onPress={() =>
+                    router.push(`/profile/organization/${item.id}`)
+                  }
                 >
                   {({ pressed }) => (
                     <>

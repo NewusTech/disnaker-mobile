@@ -61,6 +61,32 @@ export const userEducation = z.object({
   joinDate: z.date(),
   graduationDate: z.date(),
   desc: z.string({ message: "Harus diisi" }),
+  isCurrently: z.boolean(),
 });
 
 export type userEducationForm = z.infer<typeof userEducation>;
+
+export const userOrganization = z.object({
+  position: z.string({ message: "Harus diisi" }),
+  organizationName: z.string({ message: "Harus diisi" }),
+  joinDate: z.date(),
+  leaveDate: z.date(),
+  isCurrently: z.boolean(),
+  desc: z.string({ message: "Harus diisi" }).optional(),
+});
+
+export type userOrganizationForm = z.infer<typeof userOrganization>;
+
+export const userExperience = z.object({
+  title: z.string({ message: "Harus diisi" }),
+  possition: z.string({ message: "Harus diisi" }),
+  companyName: z.string({ message: "Harus diisi" }),
+  contractType: z.string({ message: "Harus diisi" }),
+  joinDate: z.date(),
+  leaveDate: z.date(),
+  isCurrently: z.boolean(),
+  desc: z.string({ message: "Harus diisi" }).optional(),
+});
+
+export type userExperienceForm = z.infer<typeof userExperience>;
+

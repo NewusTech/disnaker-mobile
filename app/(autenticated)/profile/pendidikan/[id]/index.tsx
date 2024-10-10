@@ -13,6 +13,7 @@ import View from "@/components/view";
 import { formatDateYMD } from "@/constants/dateTime";
 import { useAppTheme } from "@/context/theme-context";
 import {
+  useDeleteEducationHistory,
   useGetEducationById,
   useGetEducationLevel,
   useUpdateEducationHistory,
@@ -47,8 +48,6 @@ export default function index() {
     };
   });
 
-  const [masihBersekolah, setMasihBersekolah] = useState<boolean>(false);
-
   const [fileIjazah, setFileIjazah] = useState<DocumentPickerAsset>();
   const [fileTranskrip, setFileTranskrip] = useState<DocumentPickerAsset>();
 
@@ -70,6 +69,7 @@ export default function index() {
     });
 
   const updateEducationHistory = useUpdateEducationHistory();
+  const deleteEducationHistory = useDeleteEducationHistory();
 
   const handleLoginMutation = handleSubmit((data) => {
     const formData = new FormData();
@@ -119,6 +119,8 @@ export default function index() {
       );
   });
 
+  const handleDeleteEducation = () => {};
+
   useEffect(() => {
     if (educationHistory) {
       setValue("joinDate", new Date(educationHistory?.joinDate));
@@ -134,6 +136,7 @@ export default function index() {
     }
   }, [educationHistory]);
 
+  const masihBersekolah = watch("isCurrently");
   useEffect(() => {
     if (masihBersekolah) setValue("graduationDate", new Date());
   }, [masihBersekolah]);
@@ -266,18 +269,28 @@ export default function index() {
               />
             )}
           />
-          <TouchableWithoutFeedback
-            onPress={() => setMasihBersekolah((prev) => !prev)}
-          >
-            <View
-              style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
-            >
-              <Checkbox selected={masihBersekolah} />
-              <Typography fontFamily="Poppins-Regular" fontSize={12}>
-                Saya masih bersekolah disini
-              </Typography>
-            </View>
-          </TouchableWithoutFeedback>
+          <Controller
+            control={control}
+            name="isCurrently"
+            render={({ field, fieldState }) => (
+              <TouchableWithoutFeedback
+                onPress={() => field.onChange(!field.value)}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    gap: 10,
+                    alignItems: "center",
+                  }}
+                >
+                  <Checkbox selected={field.value} />
+                  <Typography fontFamily="Poppins-Regular" fontSize={12}>
+                    Saya masih bersekolah disini
+                  </Typography>
+                </View>
+              </TouchableWithoutFeedback>
+            )}
+          />
           <Controller
             control={control}
             name="graduationDate"

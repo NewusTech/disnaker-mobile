@@ -1,28 +1,92 @@
 import { Checkbox } from "@/components/checkBox";
 import { IconCalender } from "@/components/icons/IconCalender";
-import { IconCaretDown } from "@/components/icons/IconCeretDown";
-import { SelectInput } from "@/components/selectInput";
 import Appbar from "@/components/ui/appBar";
 import { Button } from "@/components/ui/button";
-import { DateInputV3 } from "@/components/ui/inputDateV3";
+import { DateInput } from "@/components/ui/inputDate";
+import Loader from "@/components/ui/loader";
 import TextInput from "@/components/ui/textInput";
 import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
+import { useCreateOrganizationHistory } from "@/services/user";
+import { userOrganization, userOrganizationForm } from "@/validation";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
-import { ScrollView, TouchableWithoutFeedback } from "react-native";
+import React, { useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
+import { RichText, Toolbar, useEditorBridge } from "@10play/tentap-editor";
+import { formatDateYMD } from "@/constants/dateTime";
 
 export default function index() {
   const router = useRouter();
   const { Colors } = useAppTheme();
   const insets = useSafeAreaInsets();
 
-  const [masihBersekolah, setMasihBersekolah] = useState<boolean>(false);
+  const editor = useEditorBridge({
+    autofocus: false,
+    avoidIosKeyboard: true,
+    initialContent: "Start editing!",
+  });
+
+  const { control, handleSubmit, formState, setValue, watch } =
+    useForm<userOrganizationForm>({
+      defaultValues: {
+        joinDate: new Date(),
+        leaveDate: new Date(),
+        isCurrently: false,
+      },
+      resolver: zodResolver(userOrganization),
+      mode: "all",
+    });
+
+  const createOrganizationHistory = useCreateOrganizationHistory();
+
+  const handleLoginMutation = handleSubmit(async (data) => {
+    const htmlValue = await editor.getHTML();
+    createOrganizationHistory.mutate(
+      {
+        ...data,
+        isCurrently: data.isCurrently ? "true" : ("false" as any),
+        desc: htmlValue,
+        joinDate: formatDateYMD(data.joinDate) as any,
+        leaveDate: formatDateYMD(data.leaveDate) as any,
+      },
+      {
+        onSuccess: async (response) => {
+          Toast.show({
+            type: "success",
+            text1: "Add Organisasi History Berhasil!",
+            text2: response.message,
+          });
+          router.dismiss();
+        },
+        onError: (reponse) => {
+          console.error(reponse);
+          Toast.show({
+            type: "error",
+            text1: "Add Organisasi History Gagal!",
+            text2: reponse.response?.data.message,
+          });
+        },
+      }
+    );
+  });
+
+  const masihBerorganisasi = watch("isCurrently");
+  useEffect(() => {
+    if (masihBerorganisasi) setValue("leaveDate", new Date());
+  }, [masihBerorganisasi]);
 
   return (
-    <View style={{ flex: 1 }}>
+    <View backgroundColor="white" style={{ flex: 1 }}>
       <Appbar
         title={"Tambah Organisasi"}
         variant="light"
@@ -46,88 +110,149 @@ export default function index() {
           Note : Inputkan nama Organisasi kamu dengan benar
         </Typography>
         <View style={{ marginTop: 20, gap: 20 }}>
-          <TextInput
-            label="Nama Organisasi"
-            placeholder="Masukan Organisasi"
-            keyboardType="default"
-            borderRadius={17}
-            color="primary-50"
-            // value={field.value}
-            // onBlur={field.onBlur}
-            // onChangeText={field.onChange}
-            // errorMessage={fieldState.error?.message}
+          <Controller
+            control={control}
+            name="organizationName"
+            render={({ field, fieldState }) => (
+              <TextInput
+                label="Nama Organisasi"
+                placeholder="Masukan Organisasi"
+                keyboardType="default"
+                borderRadius={17}
+                color="primary-50"
+                value={field.value}
+                onBlur={field.onBlur}
+                onChangeText={field.onChange}
+                errorMessage={fieldState.error?.message}
+              />
+            )}
           />
-          <TextInput
-            label="Posisi"
-            placeholder="Masukan Posisi"
-            keyboardType="default"
-            borderRadius={17}
-            color="primary-50"
-            // value={field.value}
-            // onBlur={field.onBlur}
-            // onChangeText={field.onChange}
-            // errorMessage={fieldState.error?.message}
+          <Controller
+            control={control}
+            name="position"
+            render={({ field, fieldState }) => (
+              <TextInput
+                label="Posisi"
+                placeholder="Masukan Posisi"
+                keyboardType="default"
+                borderRadius={17}
+                color="primary-50"
+                value={field.value}
+                onBlur={field.onBlur}
+                onChangeText={field.onChange}
+                errorMessage={fieldState.error?.message}
+              />
+            )}
           />
-          <DateInputV3
-            withBorder
-            label={"Masuk Organisasi"}
-            trailingIcon={
-              <View style={{ marginLeft: "auto" }}>
-                <IconCalender width={21} height={21} />
-              </View>
-            }
-            onChange={(date) => console.log(date)}
-            value={new Date()}
+          <Controller
+            control={control}
+            name="joinDate"
+            render={({ field, fieldState }) => (
+              <DateInput
+                withBorder
+                label={"Tanggal Masuk Organisasi"}
+                trailingIcon={
+                  <View style={{ marginLeft: "auto" }}>
+                    <IconCalender width={21} height={21} color="black-80" />
+                  </View>
+                }
+                onChange={(date) => {
+                  field.onChange(new Date(date?.toString() || ""));
+                }}
+                value={new Date(field.value)}
+                errorMessage={fieldState.error?.message}
+              />
+            )}
           />
-          <TouchableWithoutFeedback
-            onPress={() => setMasihBersekolah((prev) => !prev)}
-          >
-            <View
-              style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
-            >
-              <Checkbox selected={masihBersekolah} />
-              <Typography fontFamily="Poppins-Regular" fontSize={12}>
-                Saya masih bersekolah disini
-              </Typography>
-            </View>
-          </TouchableWithoutFeedback>
-          <DateInputV3
-            withBorder
-            label={"Selesai Organisasi"}
-            trailingIcon={
-              <View style={{ marginLeft: "auto" }}>
-                <IconCalender width={21} height={21} />
-              </View>
-            }
-            onChange={(date) => console.log(date)}
-            value={new Date()}
+          <Controller
+            control={control}
+            name="isCurrently"
+            render={({ field, fieldState }) => (
+              <TouchableWithoutFeedback
+                onPress={() => field.onChange(!field.value)}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    gap: 10,
+                    alignItems: "center",
+                  }}
+                >
+                  <Checkbox selected={field.value} />
+                  <Typography fontFamily="Poppins-Regular" fontSize={12}>
+                    Saya masih Berorganisasi disini
+                  </Typography>
+                </View>
+              </TouchableWithoutFeedback>
+            )}
           />
-          <View style={{ marginTop: 0, gap: 5 }}>
+          <Controller
+            control={control}
+            name="leaveDate"
+            render={({ field, fieldState }) => (
+              <DateInput
+                withBorder
+                label={"Tanggal Selesai Organisasi"}
+                trailingIcon={
+                  <View style={{ marginLeft: "auto" }}>
+                    <IconCalender width={21} height={21} color="black-80" />
+                  </View>
+                }
+                onChange={(date) => {
+                  field.onChange(new Date(date?.toString() || ""));
+                }}
+                value={new Date(field.value)}
+                errorMessage={fieldState.error?.message}
+                disabled={masihBerorganisasi}
+              />
+            )}
+          />
+          <View style={{ marginTop: 10, gap: 5 }}>
             <Typography fontSize={16}>
-              Deskripsi
+              Deskripsi{" "}
               <Typography fontFamily="Poppins-Light" fontSize={14}>
                 (Optional)
               </Typography>
             </Typography>
-            <TextInput
-              placeholder="Masukan Deskripsi selama di sekolah"
-              keyboardType="default"
-              borderRadius={17}
-              color="primary-50"
-              numberOfLines={10}
-              textAlignVertical="top"
-              multiline={true}
-              value={""}
-              // onBlur={field.onBlur}
-              // onChangeText={field.onChange}
-              // errorMessage={fieldState.error?.message}
-            />
-            <Typography color="black-30" style={{ textAlign: "right" }}>
-              236/1000
-            </Typography>
+            <View
+              backgroundColor="white"
+              style={{
+                flex: 1,
+                height: 300,
+                borderWidth: 1,
+                borderColor: Colors["line-stroke-30"],
+                marginTop: 5,
+                padding: 10,
+                paddingTop: 0,
+                borderRadius: 15,
+                overflow: "hidden",
+              }}
+            >
+              <RichText editor={editor} />
+              <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                style={{
+                  position: "absolute",
+                  width: "100%",
+                  bottom: 0,
+                }}
+              >
+                <Toolbar editor={editor} />
+              </KeyboardAvoidingView>
+            </View>
           </View>
         </View>
-        <Button style={{ marginTop: 20 }}>Simpan</Button>
+        <Button
+          style={{ marginTop: 20 }}
+          disabled={!formState.isValid || createOrganizationHistory.isPending}
+          onPress={handleLoginMutation}
+        >
+          {createOrganizationHistory.isPending ? (
+            <Loader color="white" />
+          ) : (
+            "Simpan"
+          )}
+        </Button>
       </ScrollView>
     </View>
   );

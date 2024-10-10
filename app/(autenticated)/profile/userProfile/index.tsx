@@ -7,7 +7,6 @@ import SectionSertificate from "@/components/Profile/SectionSertificate";
 import SectionSkill from "@/components/Profile/SectionSkill";
 import SectionTentang from "@/components/Profile/SectionTentang";
 import Appbar from "@/components/ui/appBar";
-import { Button } from "@/components/ui/button";
 import Separator from "@/components/ui/separator";
 import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";
@@ -18,7 +17,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React, { useEffect } from "react";
 import { Image, Pressable, RefreshControl, ScrollView } from "react-native";
-import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function index() {
@@ -32,6 +30,13 @@ export default function index() {
 
   const userProfile = useAuthProfile();
 
+  const shrotEdu = userProfile?.UserEducationHistories?.sort(
+    (a: any, b: any) => b.educationLevel_id - a.educationLevel_id
+  );
+  // const lastEdu = shrotEdu ? shrotEdu[0] :""
+
+  console.log(shrotEdu);
+
   useEffect(() => {
     if (profileQuery.data) {
       setProfile(profileQuery.data.data);
@@ -42,7 +47,7 @@ export default function index() {
   }, [router, setAccessToken, setProfile, profileQuery.data]);
 
   return (
-    <View style={{ flex: 1 }}>
+    <View backgroundColor="white" style={{ flex: 1 }}>
       <Appbar
         title={"Profile Saya"}
         variant="light"
@@ -198,7 +203,7 @@ export default function index() {
                 style={{}}
                 color="white"
               >
-                -
+                {}
               </Typography>
             </View>
             <View
@@ -249,11 +254,13 @@ export default function index() {
           education={userProfile?.UserEducationHistories || []}
         />
         {/* Organisasi */}
-        <SectionOrganisasi />
+        <SectionOrganisasi
+          organization={userProfile?.UserOrganizations || []}
+        />
         {/* Pengalaman Kerja */}
-        <SectionKerja />
+        <SectionKerja experience={userProfile?.UserExperiences || []} />
         {/* Skill */}
-        <SectionSkill />
+        <SectionSkill skills={userProfile?.Skills || []} />
         {/* sertificate */}
         <SectionSertificate />
         {/* Link Pendukung */}

@@ -4,15 +4,19 @@ import { IconCross } from "@/components/icons/IconCsross";
 import { IconPlus } from "@/components/icons/IconPlus";
 import Appbar from "@/components/ui/appBar";
 import { Button } from "@/components/ui/button";
+import Loader from "@/components/ui/loader";
 import ModalSwipe from "@/components/ui/modalSwipe";
 import TextInput from "@/components/ui/textInput";
 import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
+import { useCreateUserSkill, useGetSkills } from "@/services/user";
+import { useAuthProfile } from "@/store/userStore";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Pressable, ScrollView, TouchableOpacity } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 
 type skillProps = {
   id: number;
@@ -24,37 +28,34 @@ export default function index() {
   const { Colors } = useAppTheme();
   const insets = useSafeAreaInsets();
 
-  const [modalSkill, setModalSkill] = useState<boolean>(false);
-  const [skill, setSkill] = useState<skillProps[]>([]);
+  const user = useAuthProfile();
 
-  const skillDummy: skillProps[] = [
-    {
-      id: 1,
-      name: "Figma",
-    },
-    {
-      id: 2,
-      name: "Ui Desain",
-    },
-    {
-      id: 3,
-      name: "Wordpress",
-    },
-    {
-      id: 4,
-      name: "Ms Office",
-    },
-    {
-      id: 5,
-      name: "Adobe XD",
-    },
-  ];
+  const [modalSkill, setModalSkill] = useState<boolean>(false);
+  const [skill, setSkill] = useState<skillProps[]>(
+    () =>
+      user?.Skills.map((d) => {
+        return {
+          name: d.name,
+          id: d.id,
+        };
+      }) || []
+  );
+
+  const [search, setSearch] = useState("");
+
+  const getSkills = useGetSkills();
+  const dataSkills = getSkills.data?.data?.map((data) => {
+    return {
+      name: data.name,
+      id: data.id,
+    };
+  }) as skillProps[];
 
   const handleAddSkill = (selectedSkill: skillProps, selected: boolean) => {
     if (!selected) {
       setSkill([
         ...skill,
-        ...skillDummy.filter((f) => f.id === selectedSkill.id),
+        ...dataSkills?.filter((f) => f.id === selectedSkill.id),
       ]);
     } else {
       setSkill(skill.filter((f) => f.id !== selectedSkill.id));
@@ -63,6 +64,37 @@ export default function index() {
 
   const handleDeleteSkill = (id: number) => {
     setSkill(skill.filter((f) => f.id !== id));
+  };
+
+  const createUserSkill = useCreateUserSkill();
+
+  const handleCreate = () => {
+    const data = skill.map((s) => {
+      return s.id;
+    });
+    createUserSkill.mutate(
+      {
+        skills: data,
+      },
+      {
+        onSuccess: async (response) => {
+          Toast.show({
+            type: "success",
+            text1: "Add Skills Berhasil!",
+            text2: response.message,
+          });
+          router.dismiss();
+        },
+        onError: (reponse) => {
+          console.error(reponse);
+          Toast.show({
+            type: "error",
+            text1: "Add Skills Gagal!",
+            text2: reponse.response?.data.message,
+          });
+        },
+      }
+    );
   };
 
   return (
@@ -107,7 +139,7 @@ export default function index() {
               minHeight: 40,
             }}
           >
-            {skill.map((data_, index) => (
+            {skill?.map((data_, index) => (
               <View
                 key={index}
                 style={{
@@ -121,7 +153,7 @@ export default function index() {
                   gap: 5,
                 }}
               >
-                <Typography style={{ textAlign: "center" }}>
+                <Typography style={{ textAlign: "center" }} fontSize={12}>
                   {data_.name}
                 </Typography>
                 <TouchableOpacity
@@ -162,7 +194,13 @@ export default function index() {
           marginBottom: insets.bottom + 20,
         }}
       >
-        <Button style={{ marginHorizontal: 20 }}>Simpan</Button>
+        <Button
+          style={{ marginTop: 20, marginHorizontal: 20 }}
+          disabled={createUserSkill.isPending}
+          onPress={handleCreate}
+        >
+          {createUserSkill.isPending ? <Loader color="white" /> : "Simpan"}
+        </Button>
       </View>
       <ModalSwipe modalVisible={modalSkill} setModalVisible={setModalSkill}>
         <View
@@ -179,29 +217,32 @@ export default function index() {
             borderRadius={17}
             color="primary-50"
             trailingIcon={<IconMagnifyingGlass />}
-            // value={field.value}
-            // onBlur={field.onBlur}
-            // onChangeText={field.onChange}
-            // errorMessage={fieldState.error?.message}
+            value={search}
+            onChangeText={(e) => setSearch(e)}
           />
-          {skillDummy.map((data, index) => {
-            const selected = skill.some((s) => s.id === data.id);
-            return (
-              <Pressable
-                key={index}
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-                onPress={() => {
-                  handleAddSkill(data, selected);
-                }}
-              >
-                <Typography>{data.name}</Typography>
-                <Checkbox selected={selected} />
-              </Pressable>
-            );
-          })}
+          {dataSkills
+            ?.filter((f) => {
+              if (search === "") return true; // Tampilkan semua jika search kosong
+              return f.name.toLowerCase().includes(search.toLowerCase()); // Pencarian case-insensitive dan menggunakan substring matching
+            })
+            .map((data, index) => {
+              const selected = skill.some((s) => s.id === data.id);
+              return (
+                <Pressable
+                  key={index}
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                  onPress={() => {
+                    handleAddSkill(data, selected);
+                  }}
+                >
+                  <Typography>{data.name}</Typography>
+                  <Checkbox selected={selected} />
+                </Pressable>
+              );
+            })}
         </View>
       </ModalSwipe>
     </View>

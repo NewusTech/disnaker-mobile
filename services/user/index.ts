@@ -2,24 +2,37 @@ import { AxiosError } from "axios";
 
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
+  deleteEducationHistory,
+  deleteExperienceHistory,
+  deleteOrganizationHistory,
   getEducationHistoryById,
   getEducationLevel,
+  getExperienceHistoryById,
+  getOrganizationHistory,
+  getOrganizationHistoryById,
+  getSkills,
   getUserProfile,
   postEducationHistory,
+  postExperienceHistory,
   postLogin,
+  postOrganizationHistory,
   postRegister,
   postUserLink,
+  postUserSkills,
   putAbout,
   putEditProfile,
   putEducationHistory,
+  putExperienceHistory,
+  putOrganizationHistory,
   ResponseError,
 } from "@/api";
 import {
   PostLoginPayload,
   PostRegisterPayload,
-  profileForm,
   userAboutForm,
+  userExperienceForm,
   userLinkForm,
+  userOrganizationForm,
 } from "@/validation";
 import { useAccessToken } from "@/store/userStore";
 
@@ -104,6 +117,108 @@ export const useUpdateEducationHistory = () => {
   return useMutation({
     mutationFn: (payload: { data: FormData; id: number }) =>
       putEducationHistory(payload.data, payload.id),
+    onError: (error: AxiosError<ResponseError>) => error,
+  });
+};
+
+export const useDeleteEducationHistory = () => {
+  return useMutation({
+    mutationFn: (payload: string) => deleteEducationHistory(payload),
+    onError: (error: AxiosError<ResponseError>) => error,
+  });
+};
+
+export const useGetOrganizationById = (id: string) => {
+  const accessToken = useAccessToken();
+
+  return useQuery({
+    queryKey: ["useGetOrganizationById", accessToken],
+    // TODO replace with actual get Profile API
+    queryFn: () => getOrganizationHistoryById(id),
+    enabled: !!accessToken,
+  });
+};
+
+export const useGetOrganization = () => {
+  const accessToken = useAccessToken();
+
+  return useQuery({
+    queryKey: ["useGetOrganizationById", accessToken],
+    // TODO replace with actual get Profile API
+    queryFn: () => getOrganizationHistory(),
+    enabled: !!accessToken,
+  });
+};
+
+export const useCreateOrganizationHistory = () => {
+  return useMutation({
+    mutationFn: (payload: userOrganizationForm) =>
+      postOrganizationHistory(payload),
+    onError: (error: AxiosError<ResponseError>) => error,
+  });
+};
+
+export const useUpdateOrganizationHistory = () => {
+  return useMutation({
+    mutationFn: (payload: { data: userOrganizationForm; id: string }) =>
+      putOrganizationHistory(payload.data, payload.id),
+    onError: (error: AxiosError<ResponseError>) => error,
+  });
+};
+
+export const useDeleteOrganizationHistory = () => {
+  return useMutation({
+    mutationFn: (payload: string) => deleteOrganizationHistory(payload),
+    onError: (error: AxiosError<ResponseError>) => error,
+  });
+};
+
+export const useGetExperienceById = (id: string) => {
+  const accessToken = useAccessToken();
+
+  return useQuery({
+    queryKey: ["useGetExperienceById", accessToken],
+    // TODO replace with actual get Profile API
+    queryFn: () => getExperienceHistoryById(id),
+    enabled: !!accessToken,
+  });
+};
+
+export const useCreateExperienceHistory = () => {
+  return useMutation({
+    mutationFn: (payload: userExperienceForm) => postExperienceHistory(payload),
+    onError: (error: AxiosError<ResponseError>) => error,
+  });
+};
+
+export const useUpdateExperienceHistory = () => {
+  return useMutation({
+    mutationFn: (payload: { data: userExperienceForm; id: string }) =>
+      putExperienceHistory(payload.data, payload.id),
+    onError: (error: AxiosError<ResponseError>) => error,
+  });
+};
+
+export const useDeleteExperienceHistory = () => {
+  return useMutation({
+    mutationFn: (payload: string) => deleteExperienceHistory(payload),
+    onError: (error: AxiosError<ResponseError>) => error,
+  });
+};
+
+export const useGetSkills = () => {
+  const accessToken = useAccessToken();
+
+  return useQuery({
+    queryKey: ["useGetSkills", accessToken],
+    // TODO replace with actual get Profile API
+    queryFn: () => getSkills(),
+    enabled: !!accessToken,
+  });
+};
+export const useCreateUserSkill = () => {
+  return useMutation({
+    mutationFn: (payload: { skills: number[] }) => postUserSkills(payload),
     onError: (error: AxiosError<ResponseError>) => error,
   });
 };

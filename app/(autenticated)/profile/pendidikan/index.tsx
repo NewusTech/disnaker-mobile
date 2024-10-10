@@ -5,7 +5,6 @@ import { SelectInput } from "@/components/selectInput";
 import Appbar from "@/components/ui/appBar";
 import { Button } from "@/components/ui/button";
 import { DateInput } from "@/components/ui/inputDate";
-import { DateInputV3 } from "@/components/ui/inputDateV3";
 import Loader from "@/components/ui/loader";
 import TextInput from "@/components/ui/textInput";
 import { Typography } from "@/components/ui/typography";
@@ -34,8 +33,6 @@ export default function index() {
   const { Colors } = useAppTheme();
   const insets = useSafeAreaInsets();
 
-  const [masihBersekolah, setMasihBersekolah] = useState<boolean>(false);
-
   const [fileIjazah, setFileIjazah] = useState<DocumentPickerAsset>();
   const [fileTranskrip, setFileTranskrip] = useState<DocumentPickerAsset>();
 
@@ -46,6 +43,7 @@ export default function index() {
       defaultValues: {
         joinDate: new Date(),
         graduationDate: new Date(),
+        isCurrently: false,
       },
       resolver: zodResolver(userEducation),
       mode: "all",
@@ -105,6 +103,7 @@ export default function index() {
     });
   });
 
+  const masihBersekolah = watch("isCurrently");
   useEffect(() => {
     if (masihBersekolah) setValue("graduationDate", new Date());
   }, [masihBersekolah]);
@@ -230,18 +229,28 @@ export default function index() {
               />
             )}
           />
-          <TouchableWithoutFeedback
-            onPress={() => setMasihBersekolah((prev) => !prev)}
-          >
-            <View
-              style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
-            >
-              <Checkbox selected={masihBersekolah} />
-              <Typography fontFamily="Poppins-Regular" fontSize={12}>
-                Saya masih bersekolah disini
-              </Typography>
-            </View>
-          </TouchableWithoutFeedback>
+          <Controller
+            control={control}
+            name="isCurrently"
+            render={({ field, fieldState }) => (
+              <TouchableWithoutFeedback
+                onPress={() => field.onChange(!field.value)}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    gap: 10,
+                    alignItems: "center",
+                  }}
+                >
+                  <Checkbox selected={field.value} />
+                  <Typography fontFamily="Poppins-Regular" fontSize={12}>
+                    Saya masih bersekolah disini
+                  </Typography>
+                </View>
+              </TouchableWithoutFeedback>
+            )}
+          />
           <Controller
             control={control}
             name="graduationDate"

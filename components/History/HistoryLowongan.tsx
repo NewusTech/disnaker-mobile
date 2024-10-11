@@ -9,7 +9,7 @@ import { useAppTheme } from "@/context/theme-context";
 import { Typography } from "../ui/typography";
 import { IconBookmarks } from "../icons/IconBookmarks";
 import { IconGraduation } from "../icons/IconGraduation";
-import { IconTipJar } from "../icons/IconTipJat";
+import { IconTipJar } from "../icons/IconTipJar";
 import { IconLocation } from "../icons/IconLocation";
 import Separator from "../ui/separator";
 import { Pressable } from "react-native";

@@ -1,4 +1,8 @@
-import { getVacancy, getVacancyCategory } from "@/api";
+import {
+  getVacancy,
+  getVacancyBySlug,
+  getVacancyCategory,
+} from "@/api";
 import { useAccessToken } from "@/store/userStore";
 import { useQuery } from "@tanstack/react-query";
 
@@ -20,6 +24,17 @@ export const useGetVacancyCategory = () => {
     queryKey: ["useGetVacancyCategory", accessToken],
     // TODO replace with actual get Profile API
     queryFn: () => getVacancyCategory(),
+    enabled: !!accessToken,
+  });
+};
+
+export const useGetVacancyBySlug = (slug: string) => {
+  const accessToken = useAccessToken();
+
+  return useQuery({
+    queryKey: ["useGetVacancyBySlug", accessToken],
+    // TODO replace with actual get Profile API
+    queryFn: () => getVacancyBySlug(slug),
     enabled: !!accessToken,
   });
 };

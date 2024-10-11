@@ -1,7 +1,7 @@
 import { IconBookmarks } from "@/components/icons/IconBookmarks";
 import { IconGraduation } from "@/components/icons/IconGraduation";
 import { IconLocation } from "@/components/icons/IconLocation";
-import { IconTipJar } from "@/components/icons/IconTipJat";
+import { IconTipJar } from "@/components/icons/IconTipJar";
 import Appbar from "@/components/ui/appBar";
 import { SearchBox } from "@/components/ui/searchBox";
 import { Typography } from "@/components/ui/typography";
@@ -10,8 +10,17 @@ import { useAppTheme } from "@/context/theme-context";
 import { useGetVacancy } from "@/services/vacancy";
 import { useRouter } from "expo-router";
 import React from "react";
-import { Image, Pressable, ScrollView, TouchableOpacity } from "react-native";
+import {
+  Dimensions,
+  Image,
+  Pressable,
+  RefreshControl,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { formatCurrency } from "@/constants";
+import { calculateDateDifference } from "@/constants/dateTime";
 
 export default function index() {
   const router = useRouter();
@@ -19,6 +28,10 @@ export default function index() {
   const insets = useSafeAreaInsets();
 
   const vacancy = useGetVacancy();
+
+  const updateVacancyDate = (date: string) => {
+    return calculateDateDifference(new Date(date || 0), new Date());
+  };
 
   return (
     <View backgroundColor="white" style={{ flex: 1 }}>
@@ -29,6 +42,13 @@ export default function index() {
       />
       <ScrollView
         contentContainerStyle={{ paddingHorizontal: 20, paddingVertical: 20 }}
+        refreshControl={
+          <RefreshControl
+            refreshing={vacancy.isRefetching}
+            onRefresh={() => vacancy.refetch()}
+            progressViewOffset={20}
+          />
+        }
       >
         <SearchBox placeholder="Cari Lowongan" />
         <View style={{ marginTop: 20, gap: 20 }}>
@@ -40,22 +60,33 @@ export default function index() {
                 borderColor: Colors["line-stroke-30"],
                 borderWidth: 1,
                 padding: 20,
-                width: 342,
+                width: Dimensions.get("window").width - 40,
                 borderRadius: 15,
                 gap: 15,
               }}
               onPress={() => router.push(`/jobVacancy/${data.slug}`)}
             >
-              <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Image
-                  source={{ uri: data.Company.imageLogo }}
-                  style={{ width: 50, height: 50, borderRadius: 100 }}
+                  source={{
+                    uri:
+                      data.Company.imageLogo.trim() !== ""
+                        ? data.Company.imageLogo
+                        : "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg",
+                  }}
+                  style={{
+                    width: 50,
+                    height: 50,
+                    borderRadius: 100,
+                    backgroundColor: Colors["black-10"],
+                  }}
                 />
                 <View
                   style={{
                     justifyContent: "center",
                     alignItems: "flex-start",
                     marginLeft: 15,
+                    width: "70%",
                   }}
                 >
                   <Typography fontSize={17} style={{}} color="black-80">
@@ -91,7 +122,13 @@ export default function index() {
                 >
                   <IconGraduation width={20} height={20} color="black-80" />
                   <Typography fontSize={13} style={{}} color="black-80">
-                    SMA/SMK/S1
+                    {data.EducationLevels
+                      ? data?.EducationLevels.sort((a, b) => a.id - b.id)
+                          .map((el) => {
+                            return el.level;
+                          })
+                          .join("/")
+                      : "-"}
                   </Typography>
                 </View>
                 <View
@@ -103,7 +140,7 @@ export default function index() {
                 >
                   <IconTipJar width={20} height={20} color="black-80" />
                   <Typography fontSize={13} style={{}} color="black-80">
-                    Rp. 3.000.000 - Rp. 4.500.000
+                    {formatCurrency(Number.parseInt(data.salary || "0"))}
                   </Typography>
                 </View>
                 <View
@@ -115,7 +152,7 @@ export default function index() {
                 >
                   <IconLocation width={20} height={20} color="black-80" />
                   <Typography fontSize={13} style={{}} color="black-80">
-                    Tanggamus, Lampung
+                    {data.location || "-"}
                   </Typography>
                 </View>
               </View>
@@ -130,7 +167,7 @@ export default function index() {
                   }}
                   color="white"
                 >
-                  Full Time
+                  {data.jobType}
                 </Typography>
                 <Typography
                   fontSize={12}
@@ -142,7 +179,7 @@ export default function index() {
                   }}
                   color="white"
                 >
-                  {data.jobType}
+                  {data.workLocation}
                 </Typography>
               </View>
               <Typography
@@ -151,7 +188,10 @@ export default function index() {
                 style={{}}
                 color="black-80"
               >
-                Note: Update 2 Hari yang lalu
+                Note : Update{" "}
+                {updateVacancyDate(data.updatedAt) === "0 hari"
+                  ? "hari ini"
+                  : updateVacancyDate(data.updatedAt) + " yang lalu"}
               </Typography>
             </Pressable>
           ))}

@@ -8,7 +8,7 @@ import TextLink from "../ui/textLink";
 import { FlatList, Image, Pressable, TouchableOpacity } from "react-native";
 import { IconBookmarks } from "../icons/IconBookmarks";
 import { IconGraduation } from "../icons/IconGraduation";
-import { IconTipJar } from "../icons/IconTipJat";
+import { IconTipJar } from "../icons/IconTipJar";
 import { IconLocation } from "../icons/IconLocation";
 
 export default function SectionRekomendasi() {

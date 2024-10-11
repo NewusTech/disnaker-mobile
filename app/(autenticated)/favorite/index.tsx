@@ -1,7 +1,7 @@
 import { IconBookmarksFill } from "@/components/icons";
 import { IconGraduation } from "@/components/icons/IconGraduation";
 import { IconLocation } from "@/components/icons/IconLocation";
-import { IconTipJar } from "@/components/icons/IconTipJat";
+import { IconTipJar } from "@/components/icons/IconTipJar";
 import Appbar from "@/components/ui/appBar";
 import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";

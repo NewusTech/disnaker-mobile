@@ -21,12 +21,24 @@ import ModalSwipe from "@/components/ui/modalSwipe";
 import { LinearGradient } from "expo-linear-gradient";
 import { IconPencilLine } from "@/components/icons/IconPencilLine";
 import TextInput from "@/components/ui/textInput";
+import { useGetVacancyBySlug } from "@/services/vacancy";
+import { formatDate } from "@/constants/dateTime";
+import { formatCurrency } from "@/constants";
+import { IconTipJar } from "@/components/icons/IconTipJar";
+import {
+  IconClock,
+  IconGender,
+  IconGenderNetural,
+  IconHourglass,
+} from "@/components/icons";
+import { IconLocation } from "@/components/icons/IconLocation";
+import { IconCalender } from "@/components/icons/IconCalender";
 
 export default function DetailVacancy() {
   const router = useRouter();
   const { Colors } = useAppTheme();
   const insets = useSafeAreaInsets();
-  const params = useLocalSearchParams<{ id: string }>();
+  const params = useLocalSearchParams<{ slug: string }>();
 
   const [tabDetail, setTabDetail] = useState<
     "Detail Pekerjaan" | "Detail Perusahaan"
@@ -34,8 +46,13 @@ export default function DetailVacancy() {
 
   const [modalLamar, setModalLamar] = useState<boolean>(false);
 
+  const getVacancyBySLug = useGetVacancyBySlug(params.slug);
+  const detail = getVacancyBySLug.data?.data;
+
+  if (!detail) return router.back();
+
   return (
-    <View style={{ flex: 1, paddingBottom: 0 }}>
+    <View style={{ flex: 1, paddingBottom: 0 }} backgroundColor="white">
       <ScrollView
         style={{ flex: 1, paddingTop: insets.top }}
         contentContainerStyle={{ paddingBottom: 60 }}
@@ -49,23 +66,28 @@ export default function DetailVacancy() {
           }}
         >
           <ImageBackground
-            source={require("@/assets/images/bg1.png")}
-            style={{ height: 150, width: "100%" }}
+            source={{ uri: detail?.Company.imageBanner }}
+            style={{
+              height: 150,
+              width: "100%",
+              backgroundColor: Colors["black-20"],
+            }}
           />
           <Image
-            source={require("@/assets/images/dummy1.jpg")}
+            source={{ uri: detail?.Company.imageLogo }}
             style={{
               width: 85,
               height: 85,
               borderRadius: 100,
               position: "absolute",
               bottom: 0,
+              backgroundColor: Colors["black-10"],
             }}
           />
         </View>
         <View style={{ marginTop: 10 }}>
           <Typography fontSize={18} style={{ textAlign: "center" }}>
-            Back End Developer
+            {detail?.title}
           </Typography>
           <Typography
             fontSize={16}
@@ -73,14 +95,19 @@ export default function DetailVacancy() {
             color="black-30"
             fontFamily="Poppins-Light"
           >
-            PT Brigitte
+            {detail?.Company.name}
           </Typography>
           <Typography
             fontSize={14}
             style={{ textAlign: "center" }}
             fontFamily="Poppins-LightItalic"
           >
-            Deadline 20 Oktober 2025
+            Deadline{" "}
+            {formatDate(new Date(detail?.applicationDeadline || 0), {
+              day: "2-digit",
+              month: "long",
+              hour: "numeric",
+            })}
           </Typography>
           <View
             style={{
@@ -94,27 +121,33 @@ export default function DetailVacancy() {
           >
             <Typography
               fontSize={14}
+              fontFamily="Poppins-Light"
               style={{
-                padding: 7,
-                paddingHorizontal: 25,
+                padding: 5,
+                paddingHorizontal: 15,
                 backgroundColor: Colors["primary-50"],
                 borderRadius: 100,
+                textAlignVertical: "center",
               }}
               color="white"
             >
-              Full Time
+              {detail?.jobType}
             </Typography>
             <Typography
               fontSize={14}
+              fontFamily="Poppins-Light"
               style={{
-                padding: 7,
-                paddingHorizontal: 25,
-                backgroundColor: Colors["secondary-40"],
+                padding: 4,
+                paddingHorizontal: 15,
+                backgroundColor: Colors["white"],
+                borderWidth: 1,
+                borderColor: Colors["primary-50"],
                 borderRadius: 100,
+                textAlignVertical: "center",
               }}
-              color="white"
+              color="primary-50"
             >
-              Remote
+              {detail?.workLocation}
             </Typography>
           </View>
         </View>
@@ -143,20 +176,26 @@ export default function DetailVacancy() {
                 </Typography>
               </View>
               <Typography fontSize={14} style={{}} color="black-80">
-                SMA/SMK/S1
+                {detail.EducationLevels
+                  ? detail?.EducationLevels.sort((a, b) => a.id - b.id)
+                      .map((el) => {
+                        return el.level;
+                      })
+                      .join("/")
+                  : "-"}
               </Typography>
             </View>
             <View style={{ width: "50%" }}>
               <View
                 style={{ flexDirection: "row", gap: 5, alignItems: "flex-end" }}
               >
-                <IconGraduation width={20} height={20} color="black-80" />
+                <IconGender width={20} height={20} color="black-80" />
                 <Typography fontSize={13} style={{}} color="black-80">
                   Jenis Kelamin
                 </Typography>
               </View>
               <Typography fontSize={14} style={{}} color="black-80">
-                Semua Jenis Kelamin
+                {detail?.gender}
               </Typography>
             </View>
           </View>
@@ -167,56 +206,86 @@ export default function DetailVacancy() {
               <View
                 style={{ flexDirection: "row", gap: 5, alignItems: "flex-end" }}
               >
-                <IconGraduation width={20} height={20} color="black-80" />
+                <IconTipJar width={20} height={20} color="black-80" />
                 <Typography fontSize={13} style={{}} color="black-80">
                   Gaji
                 </Typography>
               </View>
               <Typography fontSize={14} style={{}} color="black-80">
-                Rp. 3.000.000
+                {formatCurrency(Number.parseInt(detail?.salary || "0"))}
               </Typography>
             </View>
             <View style={{ width: "50%" }}>
               <View
                 style={{ flexDirection: "row", gap: 5, alignItems: "flex-end" }}
               >
-                <IconGraduation width={20} height={20} color="black-80" />
+                <IconHourglass width={20} height={20} color="black-80" />
                 <Typography fontSize={13} style={{}} color="black-80">
                   Pengalaman
                 </Typography>
               </View>
               <Typography fontSize={14} style={{}} color="black-80">
-                Minimal 1 Tahun
+                Minimal {detail?.minExperience} Tahun
               </Typography>
             </View>
           </View>
           <Separator />
-          {/* row 2 */}
+          {/* row 3 */}
           <View style={{ flexDirection: "row" }}>
             <View style={{ width: "50%" }}>
               <View
                 style={{ flexDirection: "row", gap: 5, alignItems: "flex-end" }}
               >
-                <IconGraduation width={20} height={20} color="black-80" />
+                <IconLocation width={20} height={20} color="black-80" />
                 <Typography fontSize={13} style={{}} color="black-80">
-                  Gaji
+                  Penempatan
                 </Typography>
               </View>
               <Typography fontSize={14} style={{}} color="black-80">
-                Rp. 3.000.000
+                {detail?.location || "-"}
               </Typography>
             </View>
             <View style={{ width: "50%" }}>
               <View
                 style={{ flexDirection: "row", gap: 5, alignItems: "flex-end" }}
               >
-                <IconGraduation width={20} height={20} color="black-80" />
+                <IconGenderNetural width={20} height={20} color="black-80" />
                 <Typography fontSize={13} style={{}} color="black-80">
                   Usia
                 </Typography>
               </View>
               <Typography fontSize={14} style={{}} color="black-80">
-                Maksimal 50 Tahun
+                Maksimal {detail?.maxAge} Tahun
+              </Typography>
+            </View>
+          </View>
+          <Separator />
+          {/* row 4 */}
+          <View style={{ flexDirection: "row" }}>
+            <View style={{ width: "50%" }}>
+              <View
+                style={{ flexDirection: "row", gap: 5, alignItems: "flex-end" }}
+              >
+                <IconCalender width={20} height={20} color="black-80" />
+                <Typography fontSize={13} style={{}} color="black-80">
+                  Hari Kerja
+                </Typography>
+              </View>
+              <Typography fontSize={14} style={{}} color="black-80">
+                {detail?.workingDay}
+              </Typography>
+            </View>
+            <View style={{ width: "50%" }}>
+              <View
+                style={{ flexDirection: "row", gap: 5, alignItems: "flex-end" }}
+              >
+                <IconClock width={20} height={20} color="black-80" />
+                <Typography fontSize={13} style={{}} color="black-80">
+                  Jam Kerja
+                </Typography>
+              </View>
+              <Typography fontSize={14} style={{}} color="black-80">
+                {detail?.workingHour}
               </Typography>
             </View>
           </View>
@@ -287,31 +356,44 @@ export default function DetailVacancy() {
             style={{
               marginHorizontal: 20,
               marginTop: 20,
-              paddingBottom: 10,
+              paddingBottom: 20,
             }}
           >
             <RenderHTML
               systemFonts={[...defaultSystemFonts, "Poppins-Regular"]}
               contentWidth={Dimensions.get("screen").width - 48}
               source={{
-                html: `<strong>Deskripsi Pekerjaan</strong>
-                        <p>Bertanggung jawab untuk membangun dan mengelola server, basis data, dan API aplikasi Disnaker. Fokus pada memastikan performa yang optimal, keamanan data pengguna.</p>
-                        <br/>
-                        <strong>Tanggung Jawab</strong>
-                        <ul>
-                        <li>Pengalaman minimal 2 tahun dalam pengembangan back end menggunakan Node.js, Python, atau Java.</li>
-                        <li>Pengalaman minimal 2 tahun dalam pengembangan back end menggunakan Node.js, Python, atau Java.</li>
-                        <li>Pengalaman minimal 2 tahun dalam pengembangan back end menggunakan Node.js, Python, atau Java.</li>
-                        </ul>
-                        <br/>
-                        <strong>Persyaratan</strong>
-                        <ul>
-                        <li>Pengalaman minimal 2 tahun dalam pengembangan back end menggunakan Node.js, Python, atau Java.</li>
-                        <li>Pengalaman minimal 2 tahun dalam pengembangan back end menggunakan Node.js, Python, atau Java.</li>
-                        <li>Pengalaman minimal 2 tahun dalam pengembangan back end menggunakan Node.js, Python, atau Java.</li>
-                        </ul>`,
+                html: detail?.desc || "-",
               }}
             />
+            <Typography fontSize={18} style={{ marginTop: 20 }}>
+              Skil
+            </Typography>
+            <View
+              style={{
+                flexWrap: "wrap",
+                gap: 5,
+                width: "100%",
+                height: (5 / 1) * 20,
+              }}
+            >
+              {detail?.VacancySkills.map((item, index) => (
+                <Typography
+                  key={index}
+                  style={{
+                    paddingHorizontal: 8,
+                    paddingVertical: 8,
+                    borderWidth: 1,
+                    borderRadius: 7,
+                    borderColor: Colors["line-stroke-30"],
+                    textAlignVertical: "center",
+                    width: "auto",
+                  }}
+                >
+                  {item.Skill.name}
+                </Typography>
+              ))}
+            </View>
           </View>
         )}
         {tabDetail === "Detail Perusahaan" && (
@@ -331,8 +413,13 @@ export default function DetailVacancy() {
               }}
             >
               <Image
-                source={require("@/assets/images/dummy1.jpg")}
-                style={{ width: 60, height: 60, borderRadius: 100 }}
+                source={{ uri: detail?.Company.imageLogo }}
+                style={{
+                  width: 60,
+                  height: 60,
+                  borderRadius: 100,
+                  backgroundColor: Colors["black-10"],
+                }}
               />
               <View
                 style={{
@@ -342,7 +429,7 @@ export default function DetailVacancy() {
                 }}
               >
                 <Typography fontSize={18} style={{}} color="black-80">
-                  Irsyad Abi Izzulhaq
+                  {detail?.Company.name}
                 </Typography>
                 <Typography
                   fontSize={15}
@@ -350,7 +437,7 @@ export default function DetailVacancy() {
                   style={{}}
                   color="black-50"
                 >
-                  irsyadabiizzulhaq@gmail.com
+                  It Consultan (belum)
                 </Typography>
               </View>
             </View>
@@ -364,9 +451,7 @@ export default function DetailVacancy() {
                 style={{}}
                 color="black-50"
               >
-                PT Brigitte adalah konsultan IT yag menawarkan solusi teknologi,
-                pengembangan perangkat lunak, dan integrasi sistem untuk
-                meningkatkan efisiensi bisnis.
+                {detail?.Company.desc}
               </Typography>
             </View>
             {/*  */}
@@ -391,29 +476,11 @@ export default function DetailVacancy() {
                 >
                   <IconGraduation width={20} height={20} color="black-80" />
                   <Typography fontSize={13} style={{}} color="black-80">
-                    Pendidikan
-                  </Typography>
-                </View>
-                <Typography fontSize={14} style={{}} color="black-80">
-                  SMA/SMK/S1
-                </Typography>
-              </View>
-              <Separator />
-              <View style={{}}>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    gap: 5,
-                    alignItems: "flex-end",
-                  }}
-                >
-                  <IconGraduation width={20} height={20} color="black-80" />
-                  <Typography fontSize={13} style={{}} color="black-80">
                     Alamat Kantor
                   </Typography>
                 </View>
                 <Typography fontSize={14} style={{}} color="black-80">
-                  Jl Kebersihan Gg . Lisna no 77 Sukadana Ham
+                  {detail?.Company.address}
                 </Typography>
               </View>
               <Separator />
@@ -431,7 +498,7 @@ export default function DetailVacancy() {
                   </Typography>
                 </View>
                 <Typography fontSize={14} style={{}} color="black-80">
-                  100 - 500 Karyawan
+                  {detail?.Company.numberEmployee} Karyawan
                 </Typography>
               </View>
               <Separator />
@@ -449,7 +516,7 @@ export default function DetailVacancy() {
                   </Typography>
                 </View>
                 <Typography fontSize={14} style={{}} color="black-80">
-                  (irsyadabi.framer.website)
+                  {detail?.Company.website}
                 </Typography>
               </View>
               <Separator />
@@ -467,10 +534,9 @@ export default function DetailVacancy() {
                   </Typography>
                 </View>
                 <Typography fontSize={14} style={{}} color="black-80">
-                  https://www.instagram.com/irsyadabii
+                  {detail?.Company.instagram}
                 </Typography>
               </View>
-              <Separator />
             </View>
           </View>
         )}

@@ -1,3 +1,5 @@
+import SectionBerita from "@/components/home/SectionBerita";
+import SectionPelatihan from "@/components/home/SectionPelatihan";
 import { IconKemenker } from "@/components/icons";
 import PromoItem from "@/components/promoItem";
 import { Typography } from "@/components/ui/typography";
@@ -24,11 +26,13 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const coreMenu: {
+type coreMenu = {
   title: string;
   image: any;
   link: any;
-}[] = [
+};
+
+const coreMenu1: coreMenu[] = [
   {
     title: "Lowongan Pekerjaan",
     image: require("@/assets/images/checklist.png"),
@@ -51,21 +55,26 @@ const coreMenu: {
   },
 ];
 
-const PromoItemList = [
+const coreMenu2: coreMenu[] = [
   {
-    image: require("@/assets/images/image_1.png"),
+    title: "Pelatihan",
+    image: require("@/assets/images/teacher.png"),
+    link: "/jobVacancy",
   },
   {
-    image: require("@/assets/images/image_1.png"),
+    title: "Konsultasi",
+    image: require("@/assets/images/call.png"),
+    link: "/registerYellowCard",
   },
   {
-    image: require("@/assets/images/image_1.png"),
+    title: "Sertifikasi",
+    image: require("@/assets/images/stamp.png"),
+    link: "/transmigrationApplication",
   },
   {
-    image: require("@/assets/images/image_1.png"),
-  },
-  {
-    image: require("@/assets/images/image_1.png"),
+    title: "Informasi",
+    image: require("@/assets/images/information.png"),
+    link: "",
   },
 ];
 
@@ -82,9 +91,9 @@ export default function Home() {
   const [activePage, setActivePage] = useState<number>(0);
   const logo = useSharedValue<number>(0);
 
-  React.useEffect(() => {
-    logo.value = withDelay(500, withTiming(1, { duration, easing }));
-  }, []);
+  // React.useEffect(() => {
+  //   logo.value = withDelay(500, withTiming(1, { duration, easing }));
+  // }, []);
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ rotate: `${logo.value * 360}deg` }],
@@ -96,7 +105,7 @@ export default function Home() {
   };
 
   return (
-    <ScrollView style={{ paddingBottom: 90 }}>
+    <ScrollView style={{ paddingBottom: 90, backgroundColor: Colors.white }}>
       <View
         backgroundColor="primary-50"
         style={{
@@ -111,7 +120,10 @@ export default function Home() {
       >
         <TouchableWithoutFeedback onPress={reapetAnim}>
           <Animated.View style={[animatedStyle]}>
-            <IconKemenker size={32} color="white" />
+            <Image
+              source={require("@/assets/images/logo_tanggamus.png")}
+              style={{ width: 54, height: 74 }}
+            />
           </Animated.View>
         </TouchableWithoutFeedback>
         <Typography
@@ -123,14 +135,13 @@ export default function Home() {
           Selamat datang di Aplikasi Disnaker Tanggamus
         </Typography>
       </View>
-      <Animated.FlatList
+      {/* <Animated.FlatList
         numColumns={2}
         showsHorizontalScrollIndicator={false}
         scrollEnabled={false}
         data={coreMenu}
         renderItem={({ item }) => (
           <Animated.View style={{ margin: 10 }}>
-            {/* Add margin to create gaps */}
             <Pressable
               style={({ pressed }) => [
                 {
@@ -174,77 +185,83 @@ export default function Home() {
         )}
         style={{ width: "100%", marginTop: 10 }}
         contentContainerStyle={{ alignItems: "center" }}
-      />
-      {/* <Animated.FlatList
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        data={PromoItemList}
-        renderItem={({ item }) => (
-          <PromoItem imgUrl={item.image} width={346} borderRadius={20} />
-        )}
-        style={{ width: "100%", marginBottom: 10, marginTop: 20 }}
-        snapToStart
-        decelerationRate={"normal"}
-        snapToInterval={356}
-        contentContainerStyle={{ gap: 10, paddingHorizontal: 20 }}
       /> */}
+
       <View
         style={{
+          display: "flex",
+          flexDirection: "row",
           width: "100%",
           height: "auto",
-          paddingHorizontal: 10,
+          gap: 10,
+          padding: 10,
+          rowGap: 30,
+          alignItems: "center",
+          justifyContent: "center",
+          marginTop: 20,
         }}
       >
-        <PagerView
-          ref={bannerRef}
-          style={{
-            width: "100%",
-            height: 160,
-            paddingVertical: 10,
-            marginLeft: 10,
-            marginTop: 10,
-            // backgroundColor: "red",
-          }}
-          initialPage={0}
-          onPageSelected={(e) => setActivePage(e.nativeEvent.position)}
-        >
-          {PromoItemList.map((data, index) => (
-            <PromoItem
-              key={index}
-              imgUrl={data.image}
-              width={350}
-              borderRadius={20}
-            />
-          ))}
-        </PagerView>
+        {coreMenu1.map((item, index) => (
+          <TouchableOpacity
+            key={index}
+            style={{
+              width: 87,
+              flexDirection: "column",
+              gap: 5,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            onPress={() => (item.link !== "" ? router.push(item.link) : null)}
+          >
+            <Image source={item.image} style={{ width: 48, height: 48 }} />
+            <Typography
+              fontSize={13}
+              style={{ textAlign: "center" }}
+              color="black"
+            >
+              {item.title}
+            </Typography>
+          </TouchableOpacity>
+        ))}
       </View>
       <View
         style={{
+          display: "flex",
           flexDirection: "row",
-          justifyContent: "center",
+          width: "100%",
+          height: "auto",
+          gap: 10,
+          padding: 10,
+          rowGap: 30,
           alignItems: "center",
-          gap: 5,
-          marginBottom: 20,
+          justifyContent: "center",
         }}
       >
-        {PromoItemList.map((_, index) => {
-          return (
-            <Pressable
-              key={index}
-              style={{
-                width: 10,
-                height: 10,
-                borderRadius: 100,
-                backgroundColor:
-                  activePage === index
-                    ? Colors["primary-50"]
-                    : Colors["primary-30"],
-              }}
-              onPress={() => bannerRef.current?.setPage(index)}
-            />
-          );
-        })}
+        {coreMenu2.map((item, index) => (
+          <TouchableOpacity
+            key={index}
+            style={{
+              width: 87,
+              flexDirection: "column",
+              gap: 5,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            onPress={() => (item.link !== "" ? router.push(item.link) : null)}
+          >
+            <Image source={item.image} style={{ width: 48, height: 48 }} />
+            <Typography
+              fontSize={13}
+              style={{ textAlign: "center" }}
+              color="black"
+            >
+              {item.title}
+            </Typography>
+          </TouchableOpacity>
+        ))}
       </View>
+      <SectionBerita />
+      <SectionPelatihan />
     </ScrollView>
   );
 }

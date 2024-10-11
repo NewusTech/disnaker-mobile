@@ -17,8 +17,14 @@ import Animated, {
 import { IconPencilLine } from "../icons/IconPencilLine";
 import { IconPlus } from "../icons/IconPlus";
 import Separator from "../ui/separator";
+import { SertificateResponseSuccess } from "@/api";
+import { formatDate } from "@/constants/dateTime";
 
-export default function SectionSertificate() {
+export default function SectionSertificate({
+  sertificate,
+}: {
+  sertificate: SertificateResponseSuccess["data"];
+}) {
   const router = useRouter();
   const { Colors } = useAppTheme();
 
@@ -83,14 +89,14 @@ export default function SectionSertificate() {
       >
         {/* Measure the actual content height */}
         <View onLayout={onLayout} style={{ height: "auto", padding: 15 }}>
-          {Array.from({ length: 2 }).map((_, index) => (
+          {sertificate.map((item, index) => (
             <View key={index}>
               <View>
                 <Typography fontSize={15} style={{}}>
-                  UI/UX Designer
+                  {item.name}
                 </Typography>
                 <Typography fontFamily="Poppins-Light" fontSize={15} style={{}}>
-                  Newus Technology
+                  {item.organization}
                 </Typography>
                 <Typography
                   fontFamily="Poppins-Light"
@@ -98,11 +104,13 @@ export default function SectionSertificate() {
                   fontSize={15}
                   style={{}}
                 >
-                  Jan 2024 - Mar 2024
+                  { item.isNonExpire === "true" ? "Tidak Kadaluarsa" : formatDate(new Date(item.expiredDate), {
+                    month: "short",
+                    year: "numeric",
+                  })}
                 </Typography>
                 <Typography color="black-40" fontSize={15} style={{}}>
-                  Selama menjalani pendidikan di Universitas Teknokrat Indonesia
-                  saya memiliki beberapa pengalaman mulai dari
+                  {item.desc}
                 </Typography>
                 <Pressable
                   style={({ pressed }) => [
@@ -120,7 +128,7 @@ export default function SectionSertificate() {
                       marginVertical: 10,
                     },
                   ]}
-                  onPress={() => router.push("/profile/certificate/1")}
+                  onPress={() => router.push(`/profile/certificate/${item.id}`)}
                 >
                   {({ pressed }) => (
                     <>

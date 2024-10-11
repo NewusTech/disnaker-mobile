@@ -1,3 +1,4 @@
+import { educationHistoryResponseSuccess } from "@/api";
 import { IconPencilLine } from "@/components/icons/IconPencilLine";
 import SectionKerja from "@/components/Profile/SectionKerja";
 import SectionLinkPendukung from "@/components/Profile/SectionLinkPendukung";
@@ -32,10 +33,7 @@ export default function index() {
 
   const shrotEdu = userProfile?.UserEducationHistories?.sort(
     (a: any, b: any) => b.educationLevel_id - a.educationLevel_id
-  );
-  // const lastEdu = shrotEdu ? shrotEdu[0] :""
-
-  console.log(shrotEdu);
+  ) as educationHistoryResponseSuccess["data"];
 
   useEffect(() => {
     if (profileQuery.data) {
@@ -203,7 +201,7 @@ export default function index() {
                 style={{}}
                 color="white"
               >
-                {}
+                {shrotEdu && shrotEdu[0].instanceName}
               </Typography>
             </View>
             <View
@@ -262,7 +260,7 @@ export default function index() {
         {/* Skill */}
         <SectionSkill skills={userProfile?.Skills || []} />
         {/* sertificate */}
-        <SectionSertificate />
+        <SectionSertificate sertificate={userProfile?.UserCertificates || []} />
         {/* Link Pendukung */}
         <SectionLinkPendukung linkPendukung={userProfile?.UserLinks || []} />
       </ScrollView>

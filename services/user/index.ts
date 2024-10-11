@@ -5,18 +5,23 @@ import {
   deleteEducationHistory,
   deleteExperienceHistory,
   deleteOrganizationHistory,
+  deleteSertificate,
+  deleteUserLink,
   getEducationHistoryById,
   getEducationLevel,
   getExperienceHistoryById,
   getOrganizationHistory,
   getOrganizationHistoryById,
+  getSertificateById,
   getSkills,
+  getUserLinkById,
   getUserProfile,
   postEducationHistory,
   postExperienceHistory,
   postLogin,
   postOrganizationHistory,
   postRegister,
+  postSertificate,
   postUserLink,
   postUserSkills,
   putAbout,
@@ -24,6 +29,8 @@ import {
   putEducationHistory,
   putExperienceHistory,
   putOrganizationHistory,
+  putSertificate,
+  putUserLink,
   ResponseError,
 } from "@/api";
 import {
@@ -69,9 +76,33 @@ export const useUpdatePrfoile = () => {
   });
 };
 
+export const useGetUserLinkById = (id: string) => {
+  const accessToken = useAccessToken();
+
+  return useQuery({
+    queryKey: ["useGetUserLinkById", accessToken],
+    // TODO replace with actual get Profile API
+    queryFn: () => getUserLinkById(id),
+    enabled: !!accessToken,
+  });
+};
+
 export const usePostLiks = () => {
   return useMutation({
     mutationFn: (payload: userLinkForm) => postUserLink(payload),
+    onError: (error: AxiosError<ResponseError>) => error,
+  });
+};
+export const useUpdateLiks = () => {
+  return useMutation({
+    mutationFn: (payload: { data: userLinkForm; id: string }) =>
+      putUserLink(payload.data, payload.id),
+    onError: (error: AxiosError<ResponseError>) => error,
+  });
+};
+export const useDeleteLiks = () => {
+  return useMutation({
+    mutationFn: (payload: string) => deleteUserLink(payload),
     onError: (error: AxiosError<ResponseError>) => error,
   });
 };
@@ -220,5 +251,38 @@ export const useCreateUserSkill = () => {
   return useMutation({
     mutationFn: (payload: { skills: number[] }) => postUserSkills(payload),
     onError: (error: AxiosError<ResponseError>) => error,
+  });
+};
+
+export const useCreateSetificate = () => {
+  return useMutation({
+    mutationFn: (payload: FormData) => postSertificate(payload),
+    onError: (error: AxiosError<ResponseError>) => error,
+  });
+};
+
+export const useUpdateSetificate = () => {
+  return useMutation({
+    mutationFn: (payload: { data: FormData; id: string }) =>
+      putSertificate(payload.data, payload.id),
+    onError: (error: AxiosError<ResponseError>) => error,
+  });
+};
+
+export const useDeleteSetificate = () => {
+  return useMutation({
+    mutationFn: (payload: string) => deleteSertificate(payload),
+    onError: (error: AxiosError<ResponseError>) => error,
+  });
+};
+
+export const useGetSertificateById = (id: string) => {
+  const accessToken = useAccessToken();
+
+  return useQuery({
+    queryKey: ["useGetSertificateById", accessToken],
+    // TODO replace with actual get Profile API
+    queryFn: () => getSertificateById(id),
+    enabled: !!accessToken,
   });
 };

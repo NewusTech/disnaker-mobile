@@ -5,14 +5,15 @@ import { SelectInput } from "@/components/selectInput";
 import Appbar from "@/components/ui/appBar";
 import { Button } from "@/components/ui/button";
 import { DateInput } from "@/components/ui/inputDate";
-import { DateInputV3 } from "@/components/ui/inputDateV3";
 import Loader from "@/components/ui/loader";
+import ModalAction from "@/components/ui/modalAction";
 import TextInput from "@/components/ui/textInput";
 import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";
 import { formatDateYMD } from "@/constants/dateTime";
 import { useAppTheme } from "@/context/theme-context";
 import {
+  useDeleteExperienceHistory,
   useGetExperienceById,
   useUpdateExperienceHistory,
 } from "@/services/user";
@@ -47,6 +48,8 @@ export default function index() {
   const getExperienceById = useGetExperienceById(params.id);
   const experience = getExperienceById.data?.data;
 
+  const [modalDelete, setModalDelete] = useState<boolean>(false);
+
   const { control, handleSubmit, formState, setValue, watch } =
     useForm<userExperienceForm>({
       defaultValues: {
@@ -59,6 +62,7 @@ export default function index() {
     });
 
   const updateExperienceHistory = useUpdateExperienceHistory();
+  const deleteExperienceHistory = useDeleteExperienceHistory();
 
   const handleLoginMutation = handleSubmit(async (data) => {
     const htmlValue = await editor.getHTML();
@@ -93,6 +97,27 @@ export default function index() {
       }
     );
   });
+
+  const handleDeleteMutation = () => {
+    deleteExperienceHistory.mutate(params.id, {
+      onSuccess: async (response) => {
+        Toast.show({
+          type: "success",
+          text1: "Delete Pengalaman Kerja History Berhasil!",
+          text2: response.message,
+        });
+        router.dismiss();
+      },
+      onError: (reponse) => {
+        console.error(reponse);
+        Toast.show({
+          type: "error",
+          text1: "Delete Pengalaman Kerja History Gagal!",
+          text2: reponse.response?.data.message,
+        });
+      },
+    });
+  };
 
   const masihBekerja = watch("isCurrently");
   useEffect(() => {
@@ -324,10 +349,17 @@ export default function index() {
           color="error-60"
           textColor="error-60"
           variant="secondary"
+          onPress={() => setModalDelete(true)}
         >
           Hapus
         </Button>
       </ScrollView>
+      <ModalAction
+        setVisible={setModalDelete}
+        visible={modalDelete}
+        onAction={handleDeleteMutation}
+        isLoading={deleteExperienceHistory.isPending}
+      />
     </View>
   );
 }

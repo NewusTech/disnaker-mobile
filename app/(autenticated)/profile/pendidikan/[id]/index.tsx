@@ -6,6 +6,7 @@ import Appbar from "@/components/ui/appBar";
 import { Button } from "@/components/ui/button";
 import { DateInput } from "@/components/ui/inputDate";
 import Loader from "@/components/ui/loader";
+import ModalAction from "@/components/ui/modalAction";
 import TextInput from "@/components/ui/textInput";
 import { Typography } from "@/components/ui/typography";
 import UploadFile from "@/components/uploadFile";
@@ -50,6 +51,7 @@ export default function index() {
 
   const [fileIjazah, setFileIjazah] = useState<DocumentPickerAsset>();
   const [fileTranskrip, setFileTranskrip] = useState<DocumentPickerAsset>();
+  const [modalDelete, setModalDelete] = useState<boolean>(false);
 
   const user = useAuthProfile();
 
@@ -85,14 +87,14 @@ export default function index() {
       const unixTimestamp = Math.floor(new Date().getDate() / 1000);
       formData.append("fileIjazah", {
         ...fileIjazah,
-        name: `${user?.UserProfile.slug}-${unixTimestamp}-ijazah`,
+        name: `${user?.UserProfile.slug}-${unixTimestamp}-ijazah.pdf`,
       } as any);
     }
     if (fileTranskrip) {
       const unixTimestamp = Math.floor(new Date().getDate() / 1000);
       formData.append("fileTranskrip", {
         ...fileTranskrip,
-        name: `${user?.UserProfile.slug}-${unixTimestamp}-transkrip`,
+        name: `${user?.UserProfile.slug}-${unixTimestamp}-transkrip.pdf`,
       } as any);
     }
     if (educationHistory?.id)
@@ -119,7 +121,26 @@ export default function index() {
       );
   });
 
-  const handleDeleteEducation = () => {};
+  const handleDeleteEducation = () => {
+    deleteEducationHistory.mutate(params.id, {
+      onSuccess: async (response) => {
+        Toast.show({
+          type: "success",
+          text1: "Delete Education History Berhasil!",
+          text2: response.message,
+        });
+        router.dismiss();
+      },
+      onError: (reponse) => {
+        console.error(reponse);
+        Toast.show({
+          type: "error",
+          text1: "Delete Education History Gagal!",
+          text2: reponse.response?.data.message,
+        });
+      },
+    });
+  };
 
   useEffect(() => {
     if (educationHistory) {
@@ -379,9 +400,16 @@ export default function index() {
           color="error-60"
           textColor="error-60"
           variant="secondary"
+          onPress={() => setModalDelete(true)}
         >
           Hapus
         </Button>
+        <ModalAction
+          setVisible={setModalDelete}
+          visible={modalDelete}
+          onAction={handleDeleteEducation}
+          isLoading={deleteEducationHistory.isPending}
+        />
       </ScrollView>
     </View>
   );

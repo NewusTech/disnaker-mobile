@@ -90,3 +90,12 @@ export const userExperience = z.object({
 
 export type userExperienceForm = z.infer<typeof userExperience>;
 
+export const userSertificate = z.object({
+  title: z.string({ message: "Harus diisi" }),
+  organization: z.string({ message: "Harus diisi" }),
+  expiredDate: z.date(),
+  isNonExpire: z.boolean(),
+  desc: z.string({ message: "Harus diisi" }),
+});
+
+export type userSertificateForm = z.infer<typeof userSertificate>;

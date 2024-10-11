@@ -5,7 +5,6 @@ import {
   PostLoginPayload,
   PostRegisterPayload,
   userAboutForm,
-  userExperience,
   userExperienceForm,
   userLinkForm,
   userOrganizationForm,
@@ -17,7 +16,9 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 
-const apiClient = axios.create({
+export * from "@/api/vacancy";
+
+export const apiClient = axios.create({
   baseURL: API_URL,
 });
 
@@ -133,10 +134,10 @@ export type userProfileResponseSuccess = {
     };
     UserOrganizations: organizationHistoryIdResponseSuccess["data"];
     Skills: SkillsResponseSuccess["data"];
-    UserCertificates: [];
+    UserCertificates: SertificateResponseSuccess["data"];
     UserLinks: userLinkResponseSuccess["data"];
-    UserExperiences: [];
-    UserEducationHistories: [];
+    UserExperiences: ExperienceHistoryResponseSuccess["data"];
+    UserEducationHistories: educationHistoryResponseSuccess["data"];
     favoriteCount: number;
     applicationCount: number;
   };
@@ -146,40 +147,6 @@ export const getUserProfile = async () => {
   const response = await apiClient<userProfileResponseSuccess>({
     method: "GET",
     url: "/user/profile/get",
-  });
-  return response.data;
-};
-
-export type vacancyResponseSuccess = {
-  status: 200;
-  message: "Success Get User Profiles";
-  data: {
-    id: number;
-    title: string;
-    slug: string;
-    workLocation: string;
-    jobType: string;
-    desc: string;
-    applicationDeadline: string;
-    isPublished: string;
-    createdAt: string;
-    updatedAt: string;
-    Company: {
-      id: number;
-      name: string;
-      imageLogo: string;
-    };
-    VacancyCategory: {
-      id: number;
-      name: string;
-    };
-  }[];
-};
-
-export const getVacancy = async () => {
-  const response = await apiClient<vacancyResponseSuccess>({
-    method: "GET",
-    url: "/vacancy/get",
   });
   return response.data;
 };
@@ -218,6 +185,20 @@ export const putEditProfile = async (payload: FormData, slug: string) => {
 export type userLinkResponseSuccess = {
   status: 200;
   message: "Success Get User Profiles";
+  data: userLinkByIdResponseSuccess["data"][];
+};
+
+export const getUserLink = async () => {
+  const response = await apiClient<userLinkResponseSuccess>({
+    method: "GET",
+    url: "/user/link/get",
+  });
+  return response.data;
+};
+
+export type userLinkByIdResponseSuccess = {
+  status: 200;
+  message: "Success Get User Profiles";
   data: {
     id: number;
     user_id: number;
@@ -225,13 +206,13 @@ export type userLinkResponseSuccess = {
     linkType: string;
     createdAt: string;
     updatedAt: string;
-  }[];
+  };
 };
 
-export const getUserLink = async () => {
-  const response = await apiClient<userLinkResponseSuccess>({
+export const getUserLinkById = async (id: string) => {
+  const response = await apiClient<userLinkByIdResponseSuccess>({
     method: "GET",
-    url: "/user/link/get",
+    url: "/user/link/get/" + id,
   });
   return response.data;
 };
@@ -244,20 +225,18 @@ export const postUserLink = async (payload: userLinkForm) => {
   });
   return response.data;
 };
-
-export type vacancyCategoryResponseSuccess = {
-  status: 200;
-  message: "Success Get User Profiles";
-  data: {
-    id: number;
-    name: string;
-  }[];
+export const putUserLink = async (payload: userLinkForm, id: string) => {
+  const response = await apiClient<PostResponseSuccess>({
+    method: "PUT",
+    url: "/user/link/update/" + id,
+    data: payload,
+  });
+  return response.data;
 };
-
-export const getVacancyCategory = async () => {
-  const response = await apiClient<vacancyCategoryResponseSuccess>({
-    method: "GET",
-    url: "/vacancy/category/get/",
+export const deleteUserLink = async (id: string) => {
+  const response = await apiClient<PostResponseSuccess>({
+    method: "DELETE",
+    url: "/user/link/delete/" + id,
   });
   return response.data;
 };
@@ -561,6 +540,116 @@ export const postUserSkills = async (payload: { skills: number[] }) => {
     method: "POST",
     url: "/user/skill/create",
     data: payload,
+  });
+  return response.data;
+};
+
+export const postSertificate = async (payload: FormData) => {
+  const accessToken = getAccessToken();
+  try {
+    const response = await fetch(`${API_URL}/user/certificate/create`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: payload,
+    });
+
+    // Periksa apakah respons sukses (status 2xx)
+    if (!response.ok) {
+      // Jika tidak sukses, ambil pesan error
+      const errorData = await response.json();
+      // Buat error baru dengan pesan dari respons
+      throw new Error(
+        errorData.message || "Gagal Menambah Sertificate History."
+      );
+    }
+    // Respons sukses, kembalikan data JSON
+    const result = await response.json();
+    return result;
+  } catch (error: any) {
+    // Tangani error di sini
+    console.error(
+      `Error saat menambah data : ${error.message} - ${error.data}`
+    );
+    // Kamu bisa mengembalikan error atau menampilkannya ke UI
+    throw error;
+  }
+};
+export const putSertificate = async (payload: FormData, id: string) => {
+  const accessToken = getAccessToken();
+  try {
+    const response = await fetch(`${API_URL}/user/certificate/update/${id}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: payload,
+    });
+
+    // Periksa apakah respons sukses (status 2xx)
+    if (!response.ok) {
+      // Jika tidak sukses, ambil pesan error
+      const errorData = await response.json();
+      // Buat error baru dengan pesan dari respons
+      throw new Error(
+        errorData.message || "Gagal Mengupdate Sertificate History."
+      );
+    }
+    // Respons sukses, kembalikan data JSON
+    const result = await response.json();
+    return result;
+  } catch (error: any) {
+    // Tangani error di sini
+    console.error(
+      `Error saat menambah data : ${error.message} - ${error.data}`
+    );
+    // Kamu bisa mengembalikan error atau menampilkannya ke UI
+    throw error;
+  }
+};
+
+export const deleteSertificate = async (id: string) => {
+  const response = await apiClient<PostResponseSuccess>({
+    method: "DELETE",
+    url: "/user/certificate/delete/" + id,
+  });
+  return response.data;
+};
+
+export type SertificateResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: SertificateByIdResponseSuccess["data"][];
+};
+export const getSertificate = async () => {
+  const response = await apiClient<SertificateResponseSuccess>({
+    method: "GET",
+    url: "/user/certificate/get",
+  });
+  return response.data;
+};
+
+export type SertificateByIdResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    user_id: number;
+    name: string;
+    organization: string;
+    file: string | null;
+    expiredDate: string;
+    isNonExpire: null;
+    desc: string;
+    updatedAt: string;
+    createdAt: string;
+  };
+};
+export const getSertificateById = async (id: string) => {
+  const response = await apiClient<SertificateByIdResponseSuccess>({
+    method: "GET",
+    url: "/user/certificate/get/" + id,
   });
   return response.data;
 };

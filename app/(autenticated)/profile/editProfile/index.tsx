@@ -62,7 +62,7 @@ export default function EditProfile() {
   const { control, handleSubmit, formState, setValue, watch } =
     useForm<profileForm>({
       defaultValues: {
-        birthDate:new Date()
+        birthDate: new Date(),
       },
       resolver: zodResolver(profile),
       mode: "all",
@@ -80,17 +80,16 @@ export default function EditProfile() {
     });
     formData.append("birthDate", formatDateYMD(data.birthDate));
     if (fileKTP) {
-      const unixTimestamp = Math.floor(new Date().getDate() / 1000);
       formData.append("ktp", {
         ...fileKTP,
-        name: `${user?.UserProfile.slug}-${unixTimestamp}-ktp`,
+        name: `${user?.UserProfile.slug}-ktp.pdf`,
       } as any);
     }
     if (fileKK) {
       const unixTimestamp = Math.floor(new Date().getDate() / 1000);
       formData.append("kk", {
         ...fileKK,
-        name: `${user?.UserProfile.slug}-${unixTimestamp}-kk`,
+        name: `${user?.UserProfile.slug}-${unixTimestamp}-kk.pdf`,
       } as any);
     }
     updateProfile.mutate(

@@ -73,14 +73,14 @@ export default function index() {
       const unixTimestamp = Math.floor(new Date().getDate() / 1000);
       formData.append("fileIjazah", {
         ...fileIjazah,
-        name: `${user?.UserProfile.slug}-${unixTimestamp}-ijazah`,
+        name: `${user?.UserProfile.slug}-${unixTimestamp}-ijazah.pdf`,
       } as any);
     }
     if (fileTranskrip) {
       const unixTimestamp = Math.floor(new Date().getDate() / 1000);
       formData.append("fileTranskrip", {
         ...fileTranskrip,
-        name: `${user?.UserProfile.slug}-${unixTimestamp}-transkrip`,
+        name: `${user?.UserProfile.slug}-${unixTimestamp}-transkrip.pdf`,
       } as any);
     }
     creteEducationHistory.mutate(formData, {

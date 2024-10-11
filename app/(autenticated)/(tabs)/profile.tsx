@@ -66,10 +66,19 @@ export default function Profile() {
           }
           style={{ width: 75, height: 75, borderRadius: 100 }}
         />
-        <View style={{ marginTop: 20, marginBottom: 20 }}>
+        <View
+          style={{
+            marginTop: 20,
+            marginBottom: 20,
+            width: "100%",
+          }}
+        >
           <Typography
             fontSize={19}
-            style={{ textAlign: "center" }}
+            style={{
+              textAlign: "center",
+              paddingLeft: 10,
+            }}
             color="white"
           >
             {userProfile?.UserProfile.name}
@@ -77,7 +86,7 @@ export default function Profile() {
           <Typography
             fontSize={16}
             fontFamily="Poppins-Light"
-            style={{ textAlign: "center" }}
+            style={{ textAlign: "center", paddingLeft: 10 }}
             color="white"
           >
             {userProfile?.email || "emty@mail.com"}

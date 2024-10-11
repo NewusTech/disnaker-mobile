@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import { IconBookmarks } from "../icons/IconBookmarks";
 import { IconGraduation } from "../icons/IconGraduation";
-import { IconTipJar } from "../icons/IconTipJat";
+import { IconTipJar } from "../icons/IconTipJar";
 import { IconLocation } from "../icons/IconLocation";
 import Animated, {
   useAnimatedStyle,

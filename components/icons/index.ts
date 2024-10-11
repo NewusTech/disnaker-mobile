@@ -17,3 +17,7 @@ export * from "./IconBookmarkFill";
 export * from "./IconUpload";
 export * from "./IconEyeSlice";
 export * from "./IconPdf";
+export * from "./IconGender";
+export * from "./IconHourglass";
+export * from "./IconGenderNetural";
+export * from "./IconClock";

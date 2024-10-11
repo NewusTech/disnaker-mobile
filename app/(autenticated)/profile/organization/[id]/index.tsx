@@ -4,12 +4,14 @@ import Appbar from "@/components/ui/appBar";
 import { Button } from "@/components/ui/button";
 import { DateInput } from "@/components/ui/inputDate";
 import Loader from "@/components/ui/loader";
+import ModalAction from "@/components/ui/modalAction";
 import TextInput from "@/components/ui/textInput";
 import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";
 import { formatDateYMD } from "@/constants/dateTime";
 import { useAppTheme } from "@/context/theme-context";
 import {
+  useDeleteOrganizationHistory,
   useGetOrganizationById,
   useUpdateOrganizationHistory,
 } from "@/services/user";
@@ -39,6 +41,8 @@ export default function index() {
     initialContent: "Start editing!",
   });
 
+  const [modalDelete, setMOdalDelete] = useState<boolean>(false);
+
   const params = useLocalSearchParams<{ id: string }>();
   const getOrganizationHistoryById = useGetOrganizationById(params.id);
   const organization = getOrganizationHistoryById.data?.data;
@@ -55,6 +59,7 @@ export default function index() {
     });
 
   const updateOrganizationHistory = useUpdateOrganizationHistory();
+  const deleteOrganizationHistory = useDeleteOrganizationHistory();
 
   const handleLoginMutation = handleSubmit(async (data) => {
     const htmlValue = await editor.getHTML();
@@ -89,6 +94,27 @@ export default function index() {
       }
     );
   });
+
+  const handleDeleteOrganization = () => {
+    deleteOrganizationHistory.mutate(params.id, {
+      onSuccess: async (response) => {
+        Toast.show({
+          type: "success",
+          text1: "Delete Organisasi History Berhasil!",
+          text2: response.message,
+        });
+        router.dismiss();
+      },
+      onError: (reponse) => {
+        console.error(reponse);
+        Toast.show({
+          type: "error",
+          text1: "Delete Organisasi History Gagal!",
+          text2: reponse.response?.data.message,
+        });
+      },
+    });
+  };
 
   const masihBerorganisasi = watch("isCurrently");
   useEffect(() => {
@@ -279,10 +305,17 @@ export default function index() {
           color="error-60"
           textColor="error-60"
           variant="secondary"
+          onPress={() => setMOdalDelete(true)}
         >
           Hapus
         </Button>
       </ScrollView>
+      <ModalAction
+        visible={modalDelete}
+        setVisible={setMOdalDelete}
+        onAction={handleDeleteOrganization}
+        isLoading={deleteOrganizationHistory.isPending}
+      />
     </View>
   );
 }

@@ -2,14 +2,13 @@ import { IconBookmarks } from "@/components/icons/IconBookmarks";
 import { IconGraduation } from "@/components/icons/IconGraduation";
 import { IconLocation } from "@/components/icons/IconLocation";
 import { IconTipJar } from "@/components/icons/IconTipJar";
-import Appbar from "@/components/ui/appBar";
 import { SearchBox } from "@/components/ui/searchBox";
 import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
-import { useGetVacancy } from "@/services/vacancy";
-import { useRouter } from "expo-router";
-import React from "react";
+import { useGetVacancy, useGetVacancyCategory } from "@/services/vacancy";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import React, { useState } from "react";
 import {
   Dimensions,
   Image,
@@ -17,31 +16,122 @@ import {
   RefreshControl,
   ScrollView,
   TouchableOpacity,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { formatCurrency } from "@/constants";
 import { calculateDateDifference } from "@/constants/dateTime";
+import { IconCaretLeft, IconSlidebarHorizontal } from "@/components/icons";
+import ModalSwipe from "@/components/ui/modalSwipe";
+import { useGetEducationLevel } from "@/services/user";
+import { Button } from "@/components/ui/button";
+import useDebounce from "@/hooks/useDebounce";
 
 export default function index() {
   const router = useRouter();
   const { Colors } = useAppTheme();
   const insets = useSafeAreaInsets();
 
-  const vacancy = useGetVacancy();
+  const params = useLocalSearchParams<{
+    category_id: string;
+    search: string;
+  }>();
+
+  const [modalFilter, setModalFilter] = useState<boolean>(false);
+
+  const [filter, setFilter] = useState({
+    kategori: params.category_id || "",
+    pekerjaan: "",
+    lokasi: "",
+    pendidikan: "",
+  });
+  const [filterDb, setFilterDb] = useState({
+    kategori: params.category_id || "",
+    pekerjaan: "",
+    lokasi: "",
+    pendidikan: "",
+  });
+
+  const [search, setSearch] = useState<string>(params.search || "");
+  const searchValueDebounce = useDebounce(search, 1000);
+
+  const kategori = useGetVacancyCategory();
+  const pendidikan = useGetEducationLevel();
+  const pekerjaan = ["Full Time", "Part Time", "Freelance", "Magang"];
+  const lokasi = ["Rmote", "Hybrid", "Onsite"];
+
+  const vacancy = useGetVacancy(
+    `category_id=${filter.kategori}&workLocation=${filterDb.lokasi}&jobType=${filterDb.pekerjaan}&educationLevel_id=${filterDb.pendidikan}&search=${searchValueDebounce}`
+  );
 
   const updateVacancyDate = (date: string) => {
     return calculateDateDifference(new Date(date || 0), new Date());
   };
 
+  const handleFilter = () => {
+    setModalFilter(false);
+    setFilterDb(filter);
+  };
+
   return (
-    <View backgroundColor="white" style={{ flex: 1 }}>
-      <Appbar
-        title={"Semua Lowongan"}
-        variant="light"
-        backIconPress={() => router.back()}
-      />
+    <View backgroundColor="white" style={{ flex: 1, paddingBottom: 20 }}>
+      <View
+        backgroundColor="primary-50"
+        style={{
+          width: "100%",
+          flexDirection: "row",
+          paddingTop: insets.top + 20,
+          paddingLeft: 20,
+          padding: 10,
+          gap: 15,
+          alignItems: "center",
+        }}
+      >
+        <TouchableWithoutFeedback onPress={() => router.back()}>
+          <View style={{ height: 24, width: 24 }}>
+            <IconCaretLeft color={"white"} />
+          </View>
+        </TouchableWithoutFeedback>
+        <SearchBox
+          placeholder="Cari Lowongan"
+          width={"87%"}
+          value={search}
+          onChangeText={setSearch}
+        />
+      </View>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          marginHorizontal: 20,
+          marginTop: 20,
+        }}
+      >
+        <Typography>Semua Lowongan</Typography>
+        <TouchableOpacity
+          onPress={() => setModalFilter(true)}
+          style={{ position: "relative" }}
+        >
+          <IconSlidebarHorizontal color="black-80" />
+          {Object.values(filter).some(
+            (value) => value !== "" && value !== null && value !== undefined
+          ) && (
+            <View
+              style={{
+                width: 10,
+                height: 10,
+                borderRadius: 100,
+                position: "absolute",
+                top: 0,
+                right: 0,
+              }}
+              backgroundColor="primary-30"
+            />
+          )}
+        </TouchableOpacity>
+      </View>
       <ScrollView
-        contentContainerStyle={{ paddingHorizontal: 20, paddingVertical: 20 }}
+        contentContainerStyle={{ paddingHorizontal: 20, paddingVertical: 0 }}
         refreshControl={
           <RefreshControl
             refreshing={vacancy.isRefetching}
@@ -50,7 +140,6 @@ export default function index() {
           />
         }
       >
-        <SearchBox placeholder="Cari Lowongan" />
         <View style={{ marginTop: 20, gap: 20 }}>
           {vacancy.data?.data.map((data, index) => (
             <Pressable
@@ -195,8 +284,234 @@ export default function index() {
               </Typography>
             </Pressable>
           ))}
+
+          {!vacancy.isFetching &&
+            vacancy.data?.data &&
+            vacancy.data.data.length === 0 && (
+              <Typography
+                fontFamily="OpenSans-LightItalic"
+                style={{ textAlign: "center", marginVertical: "auto", flex: 1 }}
+              >
+                Opps Sepertinya Lowongan yang diacri tidak tersedia
+              </Typography>
+            )}
         </View>
       </ScrollView>
+      <ModalSwipe setModalVisible={setModalFilter} modalVisible={modalFilter}>
+        <View style={{ height: Dimensions.get("window").height - 100 }}>
+          <ScrollView
+            style={{}}
+            contentContainerStyle={{
+              gap: 10,
+            }}
+          >
+            <Typography fontSize={22} style={{ textAlign: "center" }}>
+              Filter
+            </Typography>
+            <Typography>Kategori</Typography>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: "row",
+                flexWrap: "wrap",
+                gap: 10,
+                width: "100%",
+                height: "auto",
+              }}
+            >
+              {kategori.data?.data.map((item, index) => (
+                <Pressable
+                  key={index}
+                  style={{
+                    paddingHorizontal: 15,
+                    paddingVertical: 8,
+                    borderWidth: 1,
+                    borderRadius: 7,
+                    borderColor:
+                      filter.kategori == item.id.toString()
+                        ? Colors.transparent
+                        : Colors["line-stroke-30"],
+                    backgroundColor:
+                      filter.kategori == item.id.toString()
+                        ? Colors["primary-50"]
+                        : Colors["white"],
+                    width: "auto",
+                  }}
+                  onPress={() =>
+                    setFilter((prev) => {
+                      return {
+                        ...prev,
+                        kategori:
+                          prev.kategori === item.id.toString()
+                            ? ""
+                            : item.id.toString(),
+                      };
+                    })
+                  }
+                >
+                  <Typography
+                    color={
+                      filter.kategori == item.id.toString()
+                        ? "white"
+                        : "black-80"
+                    }
+                  >
+                    {item.name}
+                  </Typography>
+                </Pressable>
+              ))}
+            </View>
+            <Typography>Pekerjaan</Typography>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: "row",
+                flexWrap: "wrap",
+                gap: 10,
+                width: "100%",
+                height: "auto",
+              }}
+            >
+              {pekerjaan.map((item, index) => (
+                <Pressable
+                  key={index}
+                  style={{
+                    paddingHorizontal: 15,
+                    paddingVertical: 8,
+                    borderWidth: 1,
+                    borderRadius: 7,
+                    borderColor:
+                      filter.pekerjaan == item
+                        ? Colors.transparent
+                        : Colors["line-stroke-30"],
+                    backgroundColor:
+                      filter.pekerjaan == item
+                        ? Colors["primary-50"]
+                        : Colors["white"],
+                    width: "auto",
+                  }}
+                  onPress={() =>
+                    setFilter((prev) => {
+                      return {
+                        ...prev,
+                        pekerjaan: prev.pekerjaan === item ? "" : item,
+                      };
+                    })
+                  }
+                >
+                  <Typography
+                    color={filter.pekerjaan == item ? "white" : "black-80"}
+                  >
+                    {item}
+                  </Typography>
+                </Pressable>
+              ))}
+            </View>
+            <Typography>Lokasi</Typography>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: "row",
+                flexWrap: "wrap",
+                gap: 10,
+                width: "100%",
+                height: "auto",
+              }}
+            >
+              {lokasi.map((item, index) => (
+                <Pressable
+                  key={index}
+                  style={{
+                    paddingHorizontal: 15,
+                    paddingVertical: 8,
+                    borderWidth: 1,
+                    borderRadius: 7,
+                    borderColor:
+                      filter.lokasi == item
+                        ? Colors.transparent
+                        : Colors["line-stroke-30"],
+                    backgroundColor:
+                      filter.lokasi == item
+                        ? Colors["primary-50"]
+                        : Colors["white"],
+                    width: "auto",
+                  }}
+                  onPress={() =>
+                    setFilter((prev) => {
+                      return {
+                        ...prev,
+                        lokasi: prev.lokasi === item ? "" : item,
+                      };
+                    })
+                  }
+                >
+                  <Typography
+                    color={filter.lokasi == item ? "white" : "black-80"}
+                  >
+                    {item}
+                  </Typography>
+                </Pressable>
+              ))}
+            </View>
+            <Typography>Pendidikan</Typography>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: "row",
+                flexWrap: "wrap",
+                gap: 10,
+                width: "100%",
+                height: "auto",
+              }}
+            >
+              {pendidikan.data?.data.map((item, index) => (
+                <Pressable
+                  key={index}
+                  style={{
+                    paddingHorizontal: 15,
+                    paddingVertical: 8,
+                    borderWidth: 1,
+                    borderRadius: 7,
+                    borderColor:
+                      filter.pendidikan == item.id.toString()
+                        ? Colors.transparent
+                        : Colors["line-stroke-30"],
+                    backgroundColor:
+                      filter.pendidikan == item.id.toString()
+                        ? Colors["primary-50"]
+                        : Colors["white"],
+                    width: "auto",
+                  }}
+                  onPress={() =>
+                    setFilter((prev) => {
+                      return {
+                        ...prev,
+                        pendidikan:
+                          prev.pendidikan === item.id.toString()
+                            ? ""
+                            : item.id.toString(),
+                      };
+                    })
+                  }
+                >
+                  <Typography
+                    color={
+                      filter.pendidikan == item.id.toString()
+                        ? "white"
+                        : "black-80"
+                    }
+                  >
+                    {item.level}
+                  </Typography>
+                </Pressable>
+              ))}
+            </View>
+          </ScrollView>
+          <Button style={{ marginTop: 20 }} onPress={handleFilter}>
+            Cari
+          </Button>
+        </View>
+      </ModalSwipe>
     </View>
   );
 }

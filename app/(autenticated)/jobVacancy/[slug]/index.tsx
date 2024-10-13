@@ -33,6 +33,7 @@ import {
 } from "@/components/icons";
 import { IconLocation } from "@/components/icons/IconLocation";
 import { IconCalender } from "@/components/icons/IconCalender";
+import Animated, { SlideInLeft, SlideInRight } from "react-native-reanimated";
 
 export default function DetailVacancy() {
   const router = useRouter();
@@ -352,7 +353,8 @@ export default function DetailVacancy() {
         </View>
         {/*  */}
         {tabDetail === "Detail Pekerjaan" && (
-          <View
+          <Animated.View
+            entering={SlideInLeft}
             style={{
               marginHorizontal: 20,
               marginTop: 20,
@@ -394,10 +396,11 @@ export default function DetailVacancy() {
                 </Typography>
               ))}
             </View>
-          </View>
+          </Animated.View>
         )}
         {tabDetail === "Detail Perusahaan" && (
-          <View
+          <Animated.View
+            entering={SlideInRight}
             style={{
               marginHorizontal: 20,
               marginTop: 20,
@@ -538,7 +541,7 @@ export default function DetailVacancy() {
                 </Typography>
               </View>
             </View>
-          </View>
+          </Animated.View>
         )}
         <Button
           style={{ marginVertical: 0, marginHorizontal: 20 }}

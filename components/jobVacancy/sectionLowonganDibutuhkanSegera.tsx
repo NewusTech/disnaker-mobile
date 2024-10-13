@@ -27,7 +27,7 @@ export default function SectionLowonganDibutuhkanSegera() {
         }}
       >
         <Typography fontSize={16} color="black-80">
-          Rekomendasi Pekerjaan
+          Dibutuhkan Segera
         </Typography>
         <TextLink fontSize={14} label="Lihat Semua" />
       </View>

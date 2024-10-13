@@ -1,4 +1,5 @@
 import SectionBerita from "@/components/home/SectionBerita";
+import SectionFasilitas from "@/components/home/SectionFasilitas";
 import SectionPelatihan from "@/components/home/SectionPelatihan";
 import { IconKemenker } from "@/components/icons";
 import PromoItem from "@/components/promoItem";
@@ -59,17 +60,17 @@ const coreMenu2: coreMenu[] = [
   {
     title: "Pelatihan",
     image: require("@/assets/images/teacher.png"),
-    link: "/jobVacancy",
+    link: "/training",
   },
   {
     title: "Konsultasi",
     image: require("@/assets/images/call.png"),
-    link: "/registerYellowCard",
+    link: "/consultation",
   },
   {
     title: "Sertifikasi",
     image: require("@/assets/images/stamp.png"),
-    link: "/transmigrationApplication",
+    link: "/certification",
   },
   {
     title: "Informasi",
@@ -110,8 +111,8 @@ export default function Home() {
         backgroundColor="primary-50"
         style={{
           height: "auto",
-          paddingTop: 70,
-          paddingBottom: 40,
+          paddingTop: 50,
+          paddingBottom: 10,
           flexDirection: "column",
           gap: 20,
           justifyContent: "center",
@@ -262,6 +263,7 @@ export default function Home() {
       </View>
       <SectionBerita />
       <SectionPelatihan />
+      <SectionFasilitas />
     </ScrollView>
   );
 }

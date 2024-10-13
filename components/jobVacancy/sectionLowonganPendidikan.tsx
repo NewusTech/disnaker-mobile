@@ -10,11 +10,20 @@ import { IconBookmarks } from "../icons/IconBookmarks";
 import { IconGraduation } from "../icons/IconGraduation";
 import { IconTipJar } from "../icons/IconTipJar";
 import { IconLocation } from "../icons/IconLocation";
+import { useGetVacancy } from "@/services/vacancy";
+import { formatCurrency } from "@/constants";
+import { calculateDateDifference } from "@/constants/dateTime";
 
 export default function SectionLowonganPendidikan() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
+
+  const getVacancy = useGetVacancy("category_id=3");
+
+  const updateVacancyDate = (date: string) => {
+    return calculateDateDifference(new Date(date || 0), new Date());
+  };
 
   return (
     <View backgroundColor="white" style={{ paddingVertical: 20, gap: 10 }}>
@@ -27,22 +36,15 @@ export default function SectionLowonganPendidikan() {
         }}
       >
         <Typography fontSize={16} color="black-80">
-          Rekomendasi Pekerjaan
+          Lowongan Pendidikan
         </Typography>
         <TextLink fontSize={14} label="Lihat Semua" />
       </View>
       {/*  */}
       <FlatList
-        data={[
-          {
-            tes: "",
-          },
-          {
-            tes: "",
-          },
-        ]}
+        data={getVacancy.data?.data}
         horizontal
-        renderItem={(item) => (
+        renderItem={({ item }) => (
           <Pressable
             style={{
               padding: 20,
@@ -53,12 +55,17 @@ export default function SectionLowonganPendidikan() {
               borderColor: Colors["line-stroke-30"],
               backgroundColor: Colors.white,
             }}
-            onPress={() => router.push(`/jobVacancy/z`)}
+            onPress={() => router.push(`/jobVacancy/${item.slug}`)}
           >
             <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
               <Image
-                source={require("@/assets/images/dummy1.jpg")}
-                style={{ width: 50, height: 50, borderRadius: 100 }}
+                source={{ uri: item.Company.imageLogo }}
+                style={{
+                  width: 50,
+                  height: 50,
+                  borderRadius: 100,
+                  backgroundColor: Colors["black-10"],
+                }}
               />
               <View
                 style={{
@@ -68,7 +75,7 @@ export default function SectionLowonganPendidikan() {
                 }}
               >
                 <Typography fontSize={17} style={{}} color="black-80">
-                  Back End Developer
+                  {item.title}
                 </Typography>
                 <Typography
                   fontSize={15}
@@ -76,7 +83,7 @@ export default function SectionLowonganPendidikan() {
                   style={{}}
                   color="black-50"
                 >
-                  PT Brigitte
+                  {item.Company.name}
                 </Typography>
               </View>
               <TouchableOpacity
@@ -96,7 +103,13 @@ export default function SectionLowonganPendidikan() {
               >
                 <IconGraduation width={20} height={20} color="black-80" />
                 <Typography fontSize={13} style={{}} color="black-80">
-                  SMA/SMK/S1
+                  {item.EducationLevels
+                    ? item?.EducationLevels.sort((a, b) => a.id - b.id)
+                        .map((el) => {
+                          return el.level;
+                        })
+                        .join("/")
+                    : "-"}
                 </Typography>
               </View>
               <View
@@ -104,7 +117,7 @@ export default function SectionLowonganPendidikan() {
               >
                 <IconTipJar width={20} height={20} color="black-80" />
                 <Typography fontSize={13} style={{}} color="black-80">
-                  Rp. 3.000.000 - Rp. 4.500.000
+                  {formatCurrency(Number.parseInt(item.salary || "0"))}
                 </Typography>
               </View>
               <View
@@ -112,7 +125,7 @@ export default function SectionLowonganPendidikan() {
               >
                 <IconLocation width={20} height={20} color="black-80" />
                 <Typography fontSize={13} style={{}} color="black-80">
-                  Tanggamus, Lampung
+                  {item.location || "-"}
                 </Typography>
               </View>
             </View>
@@ -127,7 +140,7 @@ export default function SectionLowonganPendidikan() {
                 }}
                 color="white"
               >
-                Full Time
+                {item.jobType}
               </Typography>
               <Typography
                 fontSize={12}
@@ -139,7 +152,7 @@ export default function SectionLowonganPendidikan() {
                 }}
                 color="white"
               >
-                Remote
+                {item.workLocation}
               </Typography>
             </View>
             <Typography
@@ -148,7 +161,10 @@ export default function SectionLowonganPendidikan() {
               style={{}}
               color="black-80"
             >
-              Note: Update 2 Hari yang lalu
+              Note : Update{" "}
+              {updateVacancyDate(item.updatedAt) === "0 hari"
+                ? "hari ini"
+                : updateVacancyDate(item.updatedAt) + " yang lalu"}
             </Typography>
           </Pressable>
         )}
@@ -162,6 +178,11 @@ export default function SectionLowonganPendidikan() {
         decelerationRate={"normal"}
         snapToInterval={352}
       />
+      {getVacancy.data?.data && getVacancy.data?.data.length === 0 ? (
+        <Typography fontFamily="Poppins-LightItalic" style={{ marginLeft: 20 }}>
+          Lowongan dengan Kategori ini belum tersedia
+        </Typography>
+      ) : null}
     </View>
   );
 }

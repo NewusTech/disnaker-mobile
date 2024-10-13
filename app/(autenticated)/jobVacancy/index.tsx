@@ -11,54 +11,72 @@ import { useAppTheme } from "@/context/theme-context";
 import { useGetProfile } from "@/services/user";
 import { useAuthActions, useAuthProfile } from "@/store/userStore";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 import { Image, Pressable, ScrollView, TouchableOpacity } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const coreMenu: {
   title: string;
   image: any;
-  link: any;
+  params: {
+    category_id: string;
+  };
 }[] = [
   {
     title: "Komputer",
     image: require("@/assets/images/komputer.png"),
-    link: "/jobVacancy",
+    params: {
+      category_id: "1",
+    },
   },
   {
     title: "Keuangan",
     image: require("@/assets/images/keuangan.png"),
-    link: "",
+    params: {
+      category_id: "2",
+    },
   },
   {
     title: "Pendidikan",
     image: require("@/assets/images/pendidikan.png"),
-    link: "",
+    params: {
+      category_id: "3",
+    },
   },
   {
     title: "Marketing",
     image: require("@/assets/images/marketing.png"),
-    link: "",
+    params: {
+      category_id: "4",
+    },
   },
   {
     title: "Administrasi",
     image: require("@/assets/images/tata-usaha.png"),
-    link: "",
+    params: {
+      category_id: "6",
+    },
   },
   {
     title: "Sales",
     image: require("@/assets/images/sales.png"),
-    link: "",
+    params: {
+      category_id: "5",
+    },
   },
   {
     title: "Kesehatan",
     image: require("@/assets/images/kesehatan.png"),
-    link: "",
+    params: {
+      category_id: "7",
+    },
   },
   {
     title: "Semua",
     image: require("@/assets/images/semua.png"),
-    link: "/jobVacancy/all",
+    params: {
+      category_id: "",
+    },
   },
 ];
 
@@ -68,6 +86,17 @@ export default function JobVacancy() {
   const { Colors } = useAppTheme();
 
   const userProfile = useAuthProfile();
+
+  const [search, setSearch] = useState("");
+
+  const handleSearch = () => {
+    router.push({
+      pathname: "/(autenticated)/jobVacancy/all",
+      params: {
+        search,
+      },
+    });
+  };
 
   return (
     <View backgroundColor="white">
@@ -101,7 +130,12 @@ export default function JobVacancy() {
               <IconNotification color="white" />
             </TouchableOpacity>
           </Pressable>
-          <SearchBox placeholder="Search" />
+          <SearchBox
+            placeholder="Search"
+            value={search}
+            onChangeText={setSearch}
+            onSubmitEditing={handleSearch} // Menjalankan aksi ketika tombol search ditekan
+          />
         </View>
         <View
           style={{
@@ -125,7 +159,12 @@ export default function JobVacancy() {
                 justifyContent: "center",
                 alignItems: "center",
               }}
-              onPress={() => (item.link !== "" ? router.push(item.link) : null)}
+              onPress={() =>
+                router.push({
+                  pathname: "/(autenticated)/jobVacancy/all",
+                  params: item.params,
+                })
+              }
             >
               <Image source={item.image} style={{ width: 48, height: 48 }} />
               <Typography

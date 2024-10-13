@@ -26,7 +26,7 @@ const dummyData = [
     des: "Temukan berbagai kesempatan kerja di Career Fair Tanggamus! Hadiri acara ini dan bertemu langsung dengan perusahaan-perusahaan terkemuka yang siap merekrut talenta berbakat.",
   },
 ];
-export default function Information() {
+export default function Certification() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
@@ -42,7 +42,7 @@ export default function Information() {
         }}
       >
         <Typography fontSize={18} style={{ textAlign: "center" }}>
-          Informasi Event
+          Sertifikasi
         </Typography>
       </View>
       <Animated.ScrollView>
@@ -76,9 +76,9 @@ export default function Information() {
               ]}
               onPress={() =>
                 router.push({
-                  pathname: "/(autenticated)/information/[slug]",
+                  pathname: "/(autenticated)/training/1",
                   params: {
-                    slug: "slug",
+                    // slug: "slug",
                   },
                 })
               }
@@ -118,9 +118,9 @@ export default function Information() {
                     style={{ marginHorizontal: 10 }}
                     onPress={() =>
                       router.push({
-                        pathname: "/(autenticated)/information/[slug]",
+                        pathname: "/(autenticated)/training/1",
                         params: {
-                          slug: "slug",
+                          // slug: "slug",
                         },
                       })
                     }

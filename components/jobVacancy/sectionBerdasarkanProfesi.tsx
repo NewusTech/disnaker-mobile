@@ -22,11 +22,30 @@ import Animated, {
   withDelay,
   withSpring,
 } from "react-native-reanimated";
+import { useGetVacancy, useGetVacancyCategory } from "@/services/vacancy";
+import { calculateDateDifference } from "@/constants/dateTime";
+import { formatCurrency } from "@/constants";
+import { useAuthProfile } from "@/store/userStore";
 
 export default function SectionBerdasarkanProfesi() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
+
+  const user = useAuthProfile();
+  const getCategorys = useGetVacancyCategory();
+
+  const getProfesion = getCategorys.data?.data.find(
+    (f) => f.name == user?.UserProfile.department
+  )?.id;
+
+  const getVacancy = useGetVacancy(
+    getProfesion ? `category_id=${getProfesion}` : ""
+  );
+
+  const updateVacancyDate = (date: string) => {
+    return calculateDateDifference(new Date(date || 0), new Date());
+  };
 
   const visible = useSharedValue<boolean>(false);
 
@@ -67,8 +86,8 @@ export default function SectionBerdasarkanProfesi() {
     if (offsetX <= 0) {
       visible.value = false;
     }
-    console.log(offsetX, "offset");
-    console.log(velocityX, "velocity");
+    // console.log(offsetX, "offset");
+    // console.log(velocityX, "velocity");
   };
 
   return (
@@ -117,6 +136,14 @@ export default function SectionBerdasarkanProfesi() {
             borderRadius: 100,
             marginTop: "auto",
           }}
+          onPress={() =>
+            router.push({
+              pathname: "/(autenticated)/jobVacancy/all",
+              params: {
+                category_id: getProfesion,
+              },
+            })
+          }
         >
           <Typography fontSize={12} color="white">
             Lihat Semuanya
@@ -126,18 +153,9 @@ export default function SectionBerdasarkanProfesi() {
       <Animated.FlatList
         ref={flatListRef}
         onScroll={scrollHandler}
-        data={[
-          {
-            id: 1,
-            tes: "",
-          },
-          {
-            id: 2,
-            tes: "",
-          },
-        ]}
+        data={getVacancy.data?.data}
         horizontal
-        renderItem={(item) => (
+        renderItem={({ item }) => (
           <Pressable
             style={{
               padding: 20,
@@ -148,12 +166,17 @@ export default function SectionBerdasarkanProfesi() {
               borderColor: Colors["line-stroke-30"],
               backgroundColor: Colors.white,
             }}
-            onPress={() => router.push(`/jobVacancy/z`)}
+            onPress={() => router.push(`/jobVacancy/${item.slug}`)}
           >
             <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
               <Image
-                source={require("@/assets/images/dummy1.jpg")}
-                style={{ width: 50, height: 50, borderRadius: 100 }}
+                source={{ uri: item.Company.imageLogo }}
+                style={{
+                  width: 50,
+                  height: 50,
+                  borderRadius: 100,
+                  backgroundColor: Colors["black-10"],
+                }}
               />
               <View
                 style={{
@@ -163,7 +186,7 @@ export default function SectionBerdasarkanProfesi() {
                 }}
               >
                 <Typography fontSize={17} style={{}} color="black-80">
-                  Back End Developer
+                  {item.title}
                 </Typography>
                 <Typography
                   fontSize={15}
@@ -171,7 +194,7 @@ export default function SectionBerdasarkanProfesi() {
                   style={{}}
                   color="black-50"
                 >
-                  PT Brigitte
+                  {item.Company.name}
                 </Typography>
               </View>
               <TouchableOpacity
@@ -191,7 +214,13 @@ export default function SectionBerdasarkanProfesi() {
               >
                 <IconGraduation width={20} height={20} color="black-80" />
                 <Typography fontSize={13} style={{}} color="black-80">
-                  SMA/SMK/S1
+                  {item.EducationLevels
+                    ? item?.EducationLevels.sort((a, b) => a.id - b.id)
+                        .map((el) => {
+                          return el.level;
+                        })
+                        .join("/")
+                    : "-"}
                 </Typography>
               </View>
               <View
@@ -199,7 +228,7 @@ export default function SectionBerdasarkanProfesi() {
               >
                 <IconTipJar width={20} height={20} color="black-80" />
                 <Typography fontSize={13} style={{}} color="black-80">
-                  Rp. 3.000.000 - Rp. 4.500.000
+                  {formatCurrency(Number.parseInt(item.salary || "0"))}
                 </Typography>
               </View>
               <View
@@ -207,7 +236,7 @@ export default function SectionBerdasarkanProfesi() {
               >
                 <IconLocation width={20} height={20} color="black-80" />
                 <Typography fontSize={13} style={{}} color="black-80">
-                  Tanggamus, Lampung
+                  {item.location || "-"}
                 </Typography>
               </View>
             </View>
@@ -222,7 +251,7 @@ export default function SectionBerdasarkanProfesi() {
                 }}
                 color="white"
               >
-                Full Time
+                {item.jobType}
               </Typography>
               <Typography
                 fontSize={12}
@@ -234,7 +263,7 @@ export default function SectionBerdasarkanProfesi() {
                 }}
                 color="white"
               >
-                Remote
+                {item.workLocation}
               </Typography>
             </View>
             <Typography
@@ -243,13 +272,16 @@ export default function SectionBerdasarkanProfesi() {
               style={{}}
               color="black-80"
             >
-              Note: Update 2 Hari yang lalu
+              Note : Update{" "}
+              {updateVacancyDate(item.updatedAt) === "0 hari"
+                ? "hari ini"
+                : updateVacancyDate(item.updatedAt) + " yang lalu"}
             </Typography>
           </Pressable>
         )}
         style={[{ position: "relative", left: 190 }, animatedStyle2]}
         contentContainerStyle={{
-          paddingLeft: visible.value ? 60 : 30,
+          paddingLeft: visible.value ? 60 : 20,
           paddingRight: 20,
           columnGap: 20,
           alignItems: "center",

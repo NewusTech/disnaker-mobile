@@ -1,5 +1,5 @@
+import apiClient from "@/lib/fatcher";
 import { HttpStatusCode } from "axios";
-import { apiClient } from ".";
 
 export type vacancyByIdResponseSuccess = {
   status: HttpStatusCode;
@@ -115,10 +115,10 @@ export type vacancyResponseSuccess = {
   }[];
 };
 
-export const getVacancy = async () => {
+export const getVacancy = async (query?: string) => {
   const response = await apiClient<vacancyResponseSuccess>({
     method: "GET",
-    url: "/vacancy/get",
+    url: `/vacancy/get?${query ?? ""}`,
   });
   return response.data;
 };

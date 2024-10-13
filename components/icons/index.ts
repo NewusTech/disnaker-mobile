@@ -21,3 +21,7 @@ export * from "./IconGender";
 export * from "./IconHourglass";
 export * from "./IconGenderNetural";
 export * from "./IconClock";
+export * from "./IconNewsPaperClitp";
+export * from "./IconSlidebarHorizontal";
+export * from "./IconBuilding";
+export * from "./IconInfo";

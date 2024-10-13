@@ -17,6 +17,7 @@ import { Typography } from "@/components/ui/typography";
 import {
   IconHome,
   IconInformation,
+  IconNewsPaperClip,
   IconNotepad,
   IconUser,
 } from "@/components/icons";
@@ -73,13 +74,16 @@ export default function TabLayout() {
       translateX.value = 0;
     }
     if (activePage === 1) {
-      translateX.value = 50 + calculateGap * 2;
+      translateX.value = 30 + calculateGap * 2;
     }
     if (activePage === 2) {
-      translateX.value = 58 * 2 + calculateGap * 3;
+      translateX.value = 74 + calculateGap * 3;
     }
     if (activePage === 3) {
-      translateX.value = 60 * 3 + calculateGap * 4;
+      translateX.value = 59 * 2 + calculateGap * 4;
+    }
+    if (activePage === 4) {
+      translateX.value = 55 * 3 + calculateGap * 5;
     }
   }, [activePage]);
 
@@ -93,7 +97,10 @@ export default function TabLayout() {
         return (
           <Animated.View
             layout={LinearTransition}
-            style={[style.container, { paddingBottom: insets.bottom , backgroundColor:Colors.white}]}
+            style={[
+              style.container,
+              { paddingBottom: insets.bottom, backgroundColor: Colors.white },
+            ]}
           >
             {state.routes.map((route, index) => {
               const { options } = descriptors[route.key];
@@ -193,6 +200,19 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="news"
+        options={{
+          title: "Berita",
+          tabBarIcon: ({ focused }) => (
+            <IconNewsPaperClip
+              color={focused ? "white" : "primary-30"}
+              width={24}
+              height={24}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="history"
         options={{
           title: "Riwayat",
@@ -206,9 +226,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="information"
+        name="event"
         options={{
-          title: "Informasi",
+          title: "Event",
           tabBarIcon: ({ focused }) => (
             <IconInformation
               color={focused ? "white" : "primary-30"}

@@ -5,12 +5,7 @@ import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAppTheme } from "@/context/theme-context";
 import TextLink from "../ui/textLink";
-import {
-  Dimensions,
-  FlatList,
-  Image,
-  Pressable,
-} from "react-native";
+import { Dimensions, FlatList, Image, Pressable } from "react-native";
 import Animated from "react-native-reanimated";
 import { Button } from "../ui/button";
 
@@ -50,7 +45,7 @@ export default function SectionPelatihan() {
         }}
       >
         <Typography fontSize={16} color="black-80">
-          Rekomendasi Pekerjaan
+          Pelatihan
         </Typography>
         <TextLink fontSize={14} label="Lihat Semua" />
       </View>

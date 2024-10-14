@@ -1,3 +1,4 @@
+import { getMasterSkills } from "@/api";
 import { Checkbox } from "@/components/checkBox";
 import { IconMagnifyingGlass } from "@/components/icons";
 import { IconCross } from "@/components/icons/IconCsross";
@@ -11,6 +12,7 @@ import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
 import { useCreateUserSkill, useGetSkills } from "@/services/user";
+import { useGetMasterSkills } from "@/services/vacancy";
 import { useAuthProfile } from "@/store/userStore";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -43,7 +45,7 @@ export default function index() {
 
   const [search, setSearch] = useState("");
 
-  const getSkills = useGetSkills();
+  const getSkills = useGetMasterSkills();
   const dataSkills = getSkills.data?.data?.map((data) => {
     return {
       name: data.name,
@@ -132,10 +134,12 @@ export default function index() {
         >
           <View
             style={{
+              flex: 1,
+              flexDirection: "row",
               flexWrap: "wrap",
               gap: 5,
               width: "100%",
-              height: (5 / 2) * 40,
+              height: "auto",
               minHeight: 40,
             }}
           >

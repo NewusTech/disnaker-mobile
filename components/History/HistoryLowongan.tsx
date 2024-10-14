@@ -13,18 +13,24 @@ import { IconTipJar } from "../icons/IconTipJar";
 import { IconLocation } from "../icons/IconLocation";
 import Separator from "../ui/separator";
 import { Pressable } from "react-native";
+import { useUserHistoryApplication } from "@/services/user";
+import { formatCurrency } from "@/constants";
+import { formatDate } from "@/constants/dateTime";
 
 export default function HistoryLowongan() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
 
-  const [filter, setFilter] = useState("Status 1");
+  const [filter, setFilter] = useState("Semua");
+
+  const getHistory = useUserHistoryApplication();
 
   const dataFilter: DataItem[] = [
-    { title: "Status 1" },
-    { title: "Status 2" },
-    { title: "Status 3" },
+    { title: "Semua" },
+    { title: "Dilamar" },
+    { title: "Diterima" },
+    { title: "Ditolak" },
   ];
 
   const handleSelectFilter = (selectedItem: DataItem, index: number) => {
@@ -38,18 +44,14 @@ export default function HistoryLowongan() {
         value={filter}
         onSelect={handleSelectFilter}
         trailingIcon={<IconCaretDown />}
+        placeholder="pilih status"
       />
       <FlatList
         scrollEnabled={false}
-        data={[
-          {
-            tes: "",
-          },
-          {
-            tes: "",
-          },
-        ]}
-        renderItem={(item) => (
+        data={getHistory.data?.data.filter((f) =>
+          filter !== "Semua" ? f.status === filter : true
+        )}
+        renderItem={({ item }) => (
           <Pressable
             style={{
               padding: 20,
@@ -60,7 +62,7 @@ export default function HistoryLowongan() {
               borderColor: Colors["line-stroke-30"],
               backgroundColor: Colors.white,
             }}
-            onPress={() => router.push(`/jobVacancy/z`)}
+            onPress={() => router.push(`/jobVacancy/${item.Vacancy.slug}`)}
           >
             <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
               <Image
@@ -75,7 +77,7 @@ export default function HistoryLowongan() {
                 }}
               >
                 <Typography fontSize={17} style={{}} color="black-80">
-                  Back End Developer
+                  {item.Vacancy.title}
                 </Typography>
                 <Typography
                   fontSize={15}
@@ -83,7 +85,7 @@ export default function HistoryLowongan() {
                   style={{}}
                   color="black-50"
                 >
-                  PT Brigitte
+                  -
                 </Typography>
               </View>
               {/* <TouchableOpacity
@@ -103,7 +105,7 @@ export default function HistoryLowongan() {
               >
                 <IconGraduation width={20} height={20} color="black-80" />
                 <Typography fontSize={13} style={{}} color="black-80">
-                  SMA/SMK/S1
+                  -
                 </Typography>
               </View>
               <View
@@ -111,7 +113,7 @@ export default function HistoryLowongan() {
               >
                 <IconTipJar width={20} height={20} color="black-80" />
                 <Typography fontSize={13} style={{}} color="black-80">
-                  Rp. 3.000.000 - Rp. 4.500.000
+                  {formatCurrency(Number.parseInt(item.Vacancy.salary || "0"))}
                 </Typography>
               </View>
               <View
@@ -119,7 +121,7 @@ export default function HistoryLowongan() {
               >
                 <IconLocation width={20} height={20} color="black-80" />
                 <Typography fontSize={13} style={{}} color="black-80">
-                  Tanggamus, Lampung
+                  {item.Vacancy.location}
                 </Typography>
               </View>
             </View>
@@ -130,7 +132,7 @@ export default function HistoryLowongan() {
               style={{ textAlign: "center" }}
               color="black-80"
             >
-              Dilamar tanggal : 23 Sep 2023
+              Dilamar tanggal : {formatDate(new Date(item.createdAt || 0))}
             </Typography>
             <Typography
               fontSize={12}

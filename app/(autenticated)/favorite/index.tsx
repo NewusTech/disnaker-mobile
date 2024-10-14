@@ -5,9 +5,13 @@ import { IconTipJar } from "@/components/icons/IconTipJar";
 import Appbar from "@/components/ui/appBar";
 import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";
+import { formatCurrency } from "@/constants";
+import { calculateDateDifference } from "@/constants/dateTime";
 import { useAppTheme } from "@/context/theme-context";
+import { useGetUserSavedVacancy } from "@/services/user";
+import { useAuthActions, useSavedVacancy } from "@/store/userStore";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Dimensions,
   FlatList,
@@ -21,6 +25,29 @@ export default function index() {
   const router = useRouter();
   const { Colors } = useAppTheme();
   const insets = useSafeAreaInsets();
+
+  const getFavorites = useGetUserSavedVacancy();
+  const favorites = getFavorites.data?.data;
+  const { setSavedVacancy } = useAuthActions();
+  const savedVacancy = useSavedVacancy();
+
+  const _favorites =
+    favorites?.map((d) => {
+      return {
+        id: d.id,
+      };
+    }) || [];
+
+  const updateVacancyDate = (date: string) => {
+    return calculateDateDifference(new Date(date || 0), new Date());
+  };
+
+  console.log(savedVacancy, "ini");
+
+  useEffect(() => {
+    setSavedVacancy(_favorites);
+  }, []);
+
   return (
     <View style={{ flex: 1 }} backgroundColor="white">
       <Appbar
@@ -29,15 +56,8 @@ export default function index() {
         backIconPress={() => router.back()}
       />
       <FlatList
-        data={[
-          {
-            tes: "",
-          },
-          {
-            tes: "",
-          },
-        ]}
-        renderItem={(item) => (
+        data={favorites}
+        renderItem={({ item }) => (
           <Pressable
             style={{
               padding: 20,
@@ -48,7 +68,7 @@ export default function index() {
               borderColor: Colors["line-stroke-30"],
               backgroundColor: Colors.white,
             }}
-            onPress={() => router.push(`/jobVacancy/z`)}
+            onPress={() => router.push(`/jobVacancy/${item.Vacancy.salary}`)}
           >
             <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
               <Image
@@ -63,7 +83,7 @@ export default function index() {
                 }}
               >
                 <Typography fontSize={17} style={{}} color="black-80">
-                  Back End Developer
+                  {item.Vacancy.title}
                 </Typography>
                 <Typography
                   fontSize={15}
@@ -71,7 +91,7 @@ export default function index() {
                   style={{}}
                   color="black-50"
                 >
-                  PT Brigitte
+                  -
                 </Typography>
               </View>
               <TouchableOpacity
@@ -91,7 +111,7 @@ export default function index() {
               >
                 <IconGraduation width={20} height={20} color="black-80" />
                 <Typography fontSize={13} style={{}} color="black-80">
-                  SMA/SMK/S1
+                  -
                 </Typography>
               </View>
               <View
@@ -99,7 +119,7 @@ export default function index() {
               >
                 <IconTipJar width={20} height={20} color="black-80" />
                 <Typography fontSize={13} style={{}} color="black-80">
-                  Rp. 3.000.000 - Rp. 4.500.000
+                  {formatCurrency(Number.parseInt(item.Vacancy.salary || "0"))}
                 </Typography>
               </View>
               <View
@@ -107,7 +127,7 @@ export default function index() {
               >
                 <IconLocation width={20} height={20} color="black-80" />
                 <Typography fontSize={13} style={{}} color="black-80">
-                  Tanggamus, Lampung
+                  {item.Vacancy.location}
                 </Typography>
               </View>
             </View>
@@ -122,7 +142,7 @@ export default function index() {
                 }}
                 color="white"
               >
-                Full Time
+                {item.Vacancy.jobType}
               </Typography>
               <Typography
                 fontSize={12}
@@ -134,7 +154,7 @@ export default function index() {
                 }}
                 color="white"
               >
-                Remote
+                {item.Vacancy.workLocation}
               </Typography>
             </View>
             <Typography
@@ -143,7 +163,10 @@ export default function index() {
               style={{}}
               color="black-80"
             >
-              Note: Update 2 Hari yang lalu
+              Note : Update{" "}
+              {updateVacancyDate(item.updatedAt) === "0 hari"
+                ? "hari ini"
+                : updateVacancyDate(item.updatedAt) + " yang lalu"}
             </Typography>
           </Pressable>
         )}

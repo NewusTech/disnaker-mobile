@@ -1,26 +1,27 @@
 import View from "@/components/view";
-import React from "react";
+import React, { useRef } from "react";
 import { Modal, TouchableOpacity } from "react-native";
 import { Typography } from "../typography";
 import { useAppTheme } from "@/context/theme-context";
-import Loader from "../loader";
+import LottieView from "lottie-react-native";
 
 type ModalAction = {
   visible: boolean;
   setVisible: (visible: boolean) => void;
-  onAction: () => void;
-  isLoading: boolean;
+  onAction?: () => void;
   title?: string;
+  subTitle?: string;
 };
 
-export default function ModalAction({
+export default function ModalSuccess({
   visible,
   setVisible,
+  title = "Selamat kamu sudah melamar!!",
+  subTitle = "Check lebih lanjut lamaran kamu di Riwayat Pekerjaan",
   onAction,
-  isLoading = false,
-  title = " Yakin Ingin Menghapus Data Ini?",
 }: ModalAction) {
   const { Colors } = useAppTheme();
+  const animationRef = useRef<LottieView>(null);
   return (
     <Modal visible={visible} transparent={true} animationType="slide">
       <View
@@ -41,11 +42,34 @@ export default function ModalAction({
             padding: 20,
             borderRadius: 15,
             justifyContent: "center",
-            gap: 20,
+            alignItems: "center",
           }}
         >
+          <View
+            style={{
+              width: "80%",
+              height: 220,
+              marginBottom: 20,
+            }}
+          >
+            <LottieView
+              ref={animationRef}
+              source={require("@/assets/lottie/Animation-Succsess.json")}
+              style={{ width: "100%", height: "100%" }}
+              autoPlay
+              loop
+            />
+          </View>
           <Typography fontFamily="Poppins-Medium" fontSize={16}>
             {title}
+          </Typography>
+          <Typography
+            fontFamily="Poppins-Light"
+            fontSize={14}
+            color="black-50"
+            style={{ textAlign: "center" }}
+          >
+            {subTitle}
           </Typography>
           <View
             style={{
@@ -57,12 +81,12 @@ export default function ModalAction({
           >
             <TouchableOpacity
               style={{
-                width: "50%",
+                width: "100%",
                 backgroundColor: Colors["primary-50"],
                 borderRadius: 15,
                 padding: 10,
+                marginTop: 30,
               }}
-              disabled={isLoading}
               onPress={onAction}
             >
               <Typography
@@ -71,25 +95,7 @@ export default function ModalAction({
                 color="white"
                 style={{ textAlign: "center" }}
               >
-                {isLoading ? <Loader color="white" size={24} /> : "Ya!"}
-              </Typography>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                width: "50%",
-                backgroundColor: Colors["error-60"],
-                borderRadius: 15,
-                padding: 10,
-              }}
-              onPress={() => setVisible(false)}
-            >
-              <Typography
-                fontFamily="Poppins-Medium"
-                fontSize={16}
-                color="white"
-                style={{ textAlign: "center" }}
-              >
-                Tidak
+                Riwayat Pekerjaan
               </Typography>
             </TouchableOpacity>
           </View>

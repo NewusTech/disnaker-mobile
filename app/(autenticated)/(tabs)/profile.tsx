@@ -21,6 +21,7 @@ import { IconLogout } from "@/components/icons/IconLogout";
 import { handleLogoutSession } from "@/services/auth.service";
 import { useAuthActions, useAuthProfile } from "@/store/userStore";
 import { useGetProfile } from "@/services/user";
+import ModalAction from "@/components/ui/modalAction";
 
 export default function Profile() {
   const router = useRouter();
@@ -34,7 +35,12 @@ export default function Profile() {
   const userProfile = useAuthProfile();
 
   const [modalUploadCv, setModalUploadCv] = useState<boolean>(false);
+  const [modalLogout, setModalLogout] = useState<boolean>(false);
   const [tabUploadCV, setTabUploadCV] = useState<"cv" | "portofolio">("cv");
+
+  const handleLogout = () => {
+    handleLogoutSession();
+  };
 
   useEffect(() => {
     if (profileQuery.data) {
@@ -256,7 +262,7 @@ export default function Profile() {
             padding: 10,
             borderColor: Colors["line-stroke-30"],
           }}
-          onPress={() => handleLogoutSession()}
+          onPress={() => setModalLogout(true)}
         >
           <IconLogout />
           <Typography
@@ -339,6 +345,13 @@ export default function Profile() {
           <Button>Simpan</Button>
         </View>
       </ModalSwipe>
+      <ModalAction
+        title="Yakin Ingin Keluar dari akun ini?"
+        isLoading={false}
+        onAction={handleLogout}
+        setVisible={setModalLogout}
+        visible={modalLogout}
+      />
     </View>
   );
 }

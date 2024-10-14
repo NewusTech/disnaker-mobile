@@ -6,6 +6,7 @@ import {
   ImageBackground,
   TouchableOpacity,
   Pressable,
+  Modal,
 } from "react-native";
 import React, { useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -34,6 +35,11 @@ import {
 import { IconLocation } from "@/components/icons/IconLocation";
 import { IconCalender } from "@/components/icons/IconCalender";
 import Animated, { SlideInLeft, SlideInRight } from "react-native-reanimated";
+import { useAuthProfile } from "@/store/userStore";
+import { useApplyVacancy } from "@/services/user";
+import Toast from "react-native-toast-message";
+import Loader from "@/components/ui/loader";
+import ModalSuccess from "@/components/ui/modalSuccess";
 
 export default function DetailVacancy() {
   const router = useRouter();
@@ -46,9 +52,34 @@ export default function DetailVacancy() {
   >("Detail Pekerjaan");
 
   const [modalLamar, setModalLamar] = useState<boolean>(false);
+  const [modalSuccess, setModalSuccess] = useState<boolean>(false);
 
   const getVacancyBySLug = useGetVacancyBySlug(params.slug);
   const detail = getVacancyBySLug.data?.data;
+
+  const userProfile = useAuthProfile();
+
+  const applyVacancy = useApplyVacancy();
+
+  const handleApplyVacancy = () => {
+    applyVacancy.mutate(
+      { vacancy_id: detail?.id.toString() || "" },
+      {
+        onSuccess: async (response) => {
+          setModalLamar(false);
+          setModalSuccess(true);
+        },
+        onError: (reponse) => {
+          console.error(reponse);
+          Toast.show({
+            type: "error",
+            text1: "Lamaran gagal!",
+            text2: reponse.response?.data.message,
+          });
+        },
+      }
+    );
+  };
 
   if (!detail) return router.back();
 
@@ -373,13 +404,15 @@ export default function DetailVacancy() {
             </Typography>
             <View
               style={{
+                flex: 1,
+                flexDirection: "row",
                 flexWrap: "wrap",
                 gap: 5,
                 width: "100%",
-                height: (5 / 1) * 20,
+                height: "auto",
               }}
             >
-              {detail?.VacancySkills.map((item, index) => (
+              {detail?.Skills.map((item, index) => (
                 <Typography
                   key={index}
                   style={{
@@ -392,7 +425,7 @@ export default function DetailVacancy() {
                     width: "auto",
                   }}
                 >
-                  {item.Skill.name}
+                  {item.name}
                 </Typography>
               ))}
             </View>
@@ -564,7 +597,7 @@ export default function DetailVacancy() {
             }}
           >
             <Image
-              source={require("@/assets/images/dummy1.jpg")}
+              source={{ uri: userProfile?.UserProfile.image || "" }}
               style={{ width: 75, height: 75, borderRadius: 100 }}
             />
             <View style={{ marginTop: 20, marginBottom: 20 }}>
@@ -573,7 +606,7 @@ export default function DetailVacancy() {
                 style={{ textAlign: "center" }}
                 color="white"
               >
-                Irsyad Abi Izzulhaq
+                {userProfile?.UserProfile.name}
               </Typography>
               <Typography
                 fontSize={16}
@@ -581,7 +614,7 @@ export default function DetailVacancy() {
                 style={{ textAlign: "center" }}
                 color="white"
               >
-                irsyadabiizzulhaq@gmail.com
+                {userProfile?.email}
               </Typography>
             </View>
             <Pressable
@@ -595,30 +628,52 @@ export default function DetailVacancy() {
                 gap: 10,
                 borderRadius: 100,
               }}
-              onPress={() => router.push("/(autenticated)/profile/editProfile")}
+              onPress={() => {
+                setModalLamar(false);
+                router.push("/(autenticated)/profile/userProfile");
+              }}
             >
               <IconPencilLine />
               <Typography color="primary-50">Ubah Profile</Typography>
             </Pressable>
           </LinearGradient>
           <View style={{ marginVertical: 20 }}>
-            <TextInput
-              placeholder="Note: Pastikan profilmu sudah terisi dengan lengkap dan benar sebelum mengirimkan lamaran"
-              keyboardType="default"
-              borderRadius={17}
-              color="primary-50"
-              numberOfLines={5}
-              textAlignVertical="top"
-              multiline={true}
-              value={""}
-              // onBlur={field.onBlur}
-              // onChangeText={field.onChange}
-              // errorMessage={fieldState.error?.message}
-            />
+            <Typography
+              fontFamily="Poppins-LightItalic"
+              fontSize={14}
+              style={{
+                padding: 10,
+                borderColor: Colors["line-stroke-30"],
+                borderWidth: 1,
+                borderRadius: 15,
+              }}
+              color="black-30"
+            >
+              Note: Pastikan profilmu sudah terisi dengan lengkap dan benar
+              sebelum mengirimkan lamaran
+            </Typography>
           </View>
-          <Button style={{ marginVertical: 0 }}>Lamar Sekarang</Button>
+          <Button
+            style={{ marginVertical: 0 }}
+            onPress={handleApplyVacancy}
+            disabled={applyVacancy.isPending}
+          >
+            {applyVacancy.isPending ? (
+              <Loader color="white" />
+            ) : (
+              "Lamar Sekarang"
+            )}
+          </Button>
         </View>
       </ModalSwipe>
+      <ModalSuccess
+        setVisible={setModalSuccess}
+        visible={modalSuccess}
+        onAction={() => {
+          setModalSuccess(false);
+          router.push("/(autenticated)/(tabs)/history");
+        }}
+      />
     </View>
   );
 }

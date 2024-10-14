@@ -7,11 +7,17 @@ import { Button } from "@/components/ui/button";
 import { DateInput } from "@/components/ui/inputDate";
 import Loader from "@/components/ui/loader";
 import TextInput from "@/components/ui/textInput";
+import { Typography } from "@/components/ui/typography";
 import UploadFile from "@/components/uploadFile";
+import UploadFoto from "@/components/uploadFoto";
 import View from "@/components/view";
 import { formatDateYMD } from "@/constants/dateTime";
 import { useAppTheme } from "@/context/theme-context";
-import { useGetProfile, useUpdatePrfoile } from "@/services/user";
+import {
+  useGetProfile,
+  useUpdatePrfoile,
+  useUploadFotoProfile,
+} from "@/services/user";
 import { useGetVacancyCategory } from "@/services/vacancy";
 import { profile, profileForm } from "@/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,7 +25,7 @@ import { DocumentPickerAsset } from "expo-document-picker";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Image, Pressable, RefreshControl } from "react-native";
+import { Image, Modal, Pressable, RefreshControl } from "react-native";
 import { ScrollView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
@@ -58,6 +64,8 @@ export default function EditProfile() {
 
   const [fileKTP, setFileKTP] = useState<DocumentPickerAsset>();
   const [fileKK, setFileKK] = useState<DocumentPickerAsset>();
+  const [newFotoProfile, setNewFotoProfile] = useState("");
+  const [modalProfile, setModalProfile] = useState(false);
 
   const { control, handleSubmit, formState, setValue, watch } =
     useForm<profileForm>({
@@ -69,6 +77,7 @@ export default function EditProfile() {
     });
 
   const updateProfile = useUpdatePrfoile();
+  const uploadFotoProfile = useUploadFotoProfile();
 
   const handleLoginMutation = handleSubmit((data) => {
     const formData = new FormData();
@@ -118,6 +127,51 @@ export default function EditProfile() {
     );
   });
 
+  const handleUploadFotoProfile = () => {
+    const formData = new FormData();
+
+    if (newFotoProfile === "")
+      return Toast.show({
+        type: "error",
+        text1: "Opps Gambar Kosong!",
+        text2: "Mohon pilih gambar terlebih dahulu",
+      });
+    const imageProfile: any = {
+      name: "image_profile",
+      type: "image/jpeg", // Pastikan MIME type sesuai
+      uri: newFotoProfile,
+    };
+
+    formData.append("image", imageProfile);
+    uploadFotoProfile.mutate(
+      { data: formData, slug: user?.UserProfile.slug || "" },
+      {
+        onSuccess: (res) => {
+          console.log(res, "res");
+          Toast.show({
+            type: "success",
+            text1: "Update Profile berhasil!",
+            text2: res.message,
+          });
+          setNewFotoProfile("");
+          setModalProfile(false);
+          profileQuery.refetch();
+        },
+        onError: (res) => {
+          Toast.show({
+            type: "error",
+            text1: "Update Foto Profile gagal, coba setelah beberapa saat",
+            text2: res.response?.data.message,
+          });
+          console.error(res);
+          setNewFotoProfile("");
+          setModalProfile(false);
+          profileQuery.refetch();
+        },
+      }
+    );
+  };
+
   useEffect(() => {
     if (user && user.UserProfile) {
       setValue("name", user.UserProfile.name || "");
@@ -166,7 +220,11 @@ export default function EditProfile() {
           style={{ width: 90, marginHorizontal: "auto", position: "relative" }}
         >
           <Image
-            source={require("@/assets/images/dummy1.jpg")}
+            source={
+              user?.UserProfile.image
+                ? { uri: user.UserProfile.image }
+                : require("@/assets/images/dummy1.jpg")
+            }
             style={{ width: 90, height: 90, borderRadius: 100 }}
           />
           <Pressable
@@ -180,6 +238,7 @@ export default function EditProfile() {
               borderWidth: 1,
               borderColor: Colors["primary-50"],
             }}
+            onPress={() => setModalProfile(true)}
           >
             <IconPencilLine width={20} height={20} />
           </Pressable>
@@ -322,7 +381,7 @@ export default function EditProfile() {
               <SelectInput
                 label="Bidang Pekerjaan"
                 data={vacancyCategory || []}
-                placeholder="Pilih Bidang Agama"
+                placeholder="Pilih Bidang Pekerjaan"
                 onSelect={(dataItem: any, index: any) =>
                   field.onChange(dataItem.title)
                 }
@@ -365,7 +424,7 @@ export default function EditProfile() {
                   { title: "Budha" },
                   { title: "konghucu" },
                 ]}
-                placeholder="Pilih Jenis Agama"
+                placeholder="Pilih Agama"
                 onSelect={(dataItem: any, index: any) =>
                   field.onChange(dataItem.title)
                 }
@@ -480,6 +539,49 @@ export default function EditProfile() {
           </Button>
         </View>
       </ScrollView>
+      {/* Modal foto profile */}
+      <Modal transparent={true} visible={modalProfile}>
+        <Pressable
+          style={{
+            flex: 1,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(20, 21, 17, 0.5)",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+          onPress={() => setModalProfile(false)}
+        >
+          <View
+            backgroundColor="white"
+            style={{
+              width: "80%",
+              height: 300,
+              padding: 20,
+              borderRadius: 15,
+              justifyContent: "center",
+              gap: 20,
+            }}
+          >
+            <UploadFoto
+              label="Masukan Foto Profile"
+              image={newFotoProfile}
+              setImage={setNewFotoProfile}
+              aspect={[1, 1]}
+            />
+            <Button
+              onPress={handleUploadFotoProfile}
+              disabled={uploadFotoProfile.isPending}
+            >
+              {uploadFotoProfile.isPending ? (
+                <Loader />
+              ) : (
+                <Typography color="white">Simpan Foto Profile</Typography>
+              )}
+            </Button>
+          </View>
+        </Pressable>
+      </Modal>
     </View>
   );
 }

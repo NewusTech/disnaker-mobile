@@ -14,20 +14,25 @@ import {
   getOrganizationHistoryById,
   getSertificateById,
   getSkills,
+  getUserHistoryApplication,
   getUserLinkById,
   getUserProfile,
+  getUserSavedVacancy,
   postEducationHistory,
   postExperienceHistory,
   postLogin,
   postOrganizationHistory,
   postRegister,
   postSertificate,
+  postUserApplyVacancy,
   postUserLink,
+  postUserSaveVacancy,
   postUserSkills,
   putAbout,
   putEditProfile,
   putEducationHistory,
   putExperienceHistory,
+  putFotoProfile,
   putOrganizationHistory,
   putSertificate,
   putUserLink,
@@ -65,6 +70,7 @@ export const useGetProfile = () => {
     // TODO replace with actual get Profile API
     queryFn: () => getUserProfile(),
     enabled: !!accessToken,
+    refetchOnWindowFocus: true,
   });
 };
 
@@ -284,5 +290,51 @@ export const useGetSertificateById = (id: string) => {
     // TODO replace with actual get Profile API
     queryFn: () => getSertificateById(id),
     enabled: !!accessToken,
+  });
+};
+
+export const useUploadFotoProfile = () => {
+  return useMutation({
+    mutationFn: (payload: { data: FormData; slug: string }) =>
+      putFotoProfile(payload.data, payload.slug),
+    onError: (error: AxiosError<ResponseError>) => error,
+  });
+};
+
+export const useApplyVacancy = () => {
+  return useMutation({
+    mutationFn: (payload: { vacancy_id: string }) =>
+      postUserApplyVacancy(payload),
+    onError: (error: AxiosError<ResponseError>) => error,
+  });
+};
+
+export const useUserHistoryApplication = () => {
+  const accessToken = useAccessToken();
+
+  return useQuery({
+    queryKey: ["useUserHistoryApplication", accessToken],
+    // TODO replace with actual get Profile API
+    queryFn: () => getUserHistoryApplication(),
+    enabled: !!accessToken,
+  });
+};
+
+export const useGetUserSavedVacancy = () => {
+  const accessToken = useAccessToken();
+
+  return useQuery({
+    queryKey: ["useGetUserSavedVacancy", accessToken],
+    // TODO replace with actual get Profile API
+    queryFn: () => getUserSavedVacancy(),
+    enabled: !!accessToken,
+  });
+};
+
+export const useUserSaveVacancy = () => {
+  return useMutation({
+    mutationFn: (payload: { vacancy_id: string }) =>
+      postUserSaveVacancy(payload),
+    onError: (error: AxiosError<ResponseError>) => error,
   });
 };

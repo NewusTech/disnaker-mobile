@@ -10,11 +10,23 @@ import { IconBookmarks } from "../icons/IconBookmarks";
 import { IconGraduation } from "../icons/IconGraduation";
 import { IconTipJar } from "../icons/IconTipJar";
 import { IconLocation } from "../icons/IconLocation";
+import { useGetVacancyRecomend } from "@/services/vacancy";
+import { useSavedVacancy } from "@/store/userStore";
+import { IconBookmarksFill } from "../icons";
+import { formatCurrency } from "@/constants";
+import { calculateDateDifference } from "@/constants/dateTime";
 
 export default function SectionRekomendasi() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
+
+  const getRecom = useGetVacancyRecomend();
+  const savedVacancy = useSavedVacancy();
+
+  const updateVacancyDate = (date: string) => {
+    return calculateDateDifference(new Date(date || 0), new Date());
+  };
 
   return (
     <View backgroundColor="primary-20" style={{ paddingVertical: 20, gap: 10 }}>
@@ -31,34 +43,42 @@ export default function SectionRekomendasi() {
       </View>
       {/*  */}
       <FlatList
-        data={[
-          {
-            tes: "",
-          },
-          {
-            tes: "",
-          },
-        ]}
+        data={getRecom.data?.data}
         horizontal
-        renderItem={(item) => (
+        renderItem={({ item }) => (
           <Pressable
-            style={{backgroundColor:Colors.white, padding: 20, width: 342, borderRadius: 15, gap: 15 }}
-            onPress={()=>router.push(`/jobVacancy/z`)}
+            style={{
+              padding: 20,
+              width: 342,
+              borderRadius: 15,
+              gap: 10,
+              borderWidth: 1,
+              borderColor: Colors["line-stroke-30"],
+              backgroundColor: Colors.white,
+              height: 280,
+            }}
+            onPress={() => router.push(`/jobVacancy/${item.slug}`)}
           >
             <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
               <Image
-                source={require("@/assets/images/dummy1.jpg")}
-                style={{ width: 50, height: 50, borderRadius: 100 }}
+                source={{ uri: item.Company.imageLogo }}
+                style={{
+                  width: 50,
+                  height: 50,
+                  borderRadius: 100,
+                  backgroundColor: Colors["black-10"],
+                }}
               />
               <View
                 style={{
                   justifyContent: "center",
                   alignItems: "flex-start",
                   marginLeft: 15,
+                  width: "70%",
                 }}
               >
                 <Typography fontSize={17} style={{}} color="black-80">
-                  Back End Developer
+                  {item.title}
                 </Typography>
                 <Typography
                   fontSize={15}
@@ -66,7 +86,7 @@ export default function SectionRekomendasi() {
                   style={{}}
                   color="black-50"
                 >
-                  PT Brigitte
+                  {item.Company.name}
                 </Typography>
               </View>
               <TouchableOpacity
@@ -77,16 +97,30 @@ export default function SectionRekomendasi() {
                   marginLeft: "auto",
                 }}
               >
-                <IconBookmarks width={27} height={27} color="black-80" />
+                {savedVacancy.some((d) => d.id === item.id) ? (
+                  <IconBookmarksFill
+                    width={27}
+                    height={27}
+                    color="primary-50"
+                  />
+                ) : (
+                  <IconBookmarks width={27} height={27} color="black-80" />
+                )}
               </TouchableOpacity>
             </View>
-            <View style={{ gap: 5 }}>
+            <View style={{ gap: 5, marginTop: "auto" }}>
               <View
                 style={{ flexDirection: "row", gap: 5, alignItems: "flex-end" }}
               >
                 <IconGraduation width={20} height={20} color="black-80" />
                 <Typography fontSize={13} style={{}} color="black-80">
-                  SMA/SMK/S1
+                  {item.EducationLevels
+                    ? item?.EducationLevels.sort((a, b) => a.id - b.id)
+                        .map((el) => {
+                          return el.level;
+                        })
+                        .join("/")
+                    : "-"}
                 </Typography>
               </View>
               <View
@@ -94,7 +128,7 @@ export default function SectionRekomendasi() {
               >
                 <IconTipJar width={20} height={20} color="black-80" />
                 <Typography fontSize={13} style={{}} color="black-80">
-                  Rp. 3.000.000 - Rp. 4.500.000
+                  {formatCurrency(Number.parseInt(item.salary || "0"))}
                 </Typography>
               </View>
               <View
@@ -102,7 +136,7 @@ export default function SectionRekomendasi() {
               >
                 <IconLocation width={20} height={20} color="black-80" />
                 <Typography fontSize={13} style={{}} color="black-80">
-                  Tanggamus, Lampung
+                  {item.location || "-"}
                 </Typography>
               </View>
             </View>
@@ -117,7 +151,7 @@ export default function SectionRekomendasi() {
                 }}
                 color="white"
               >
-                Full Time
+                {item.jobType}
               </Typography>
               <Typography
                 fontSize={12}
@@ -129,7 +163,7 @@ export default function SectionRekomendasi() {
                 }}
                 color="white"
               >
-                Remote
+                {item.workLocation}
               </Typography>
             </View>
             <Typography
@@ -138,11 +172,14 @@ export default function SectionRekomendasi() {
               style={{}}
               color="black-80"
             >
-              Note: Update 2 Hari yang lalu
+              Note : Update{" "}
+              {updateVacancyDate(item.updatedAt) === "0 hari"
+                ? "hari ini"
+                : updateVacancyDate(item.updatedAt) + " yang lalu"}
             </Typography>
           </Pressable>
         )}
-        style={{marginBottom:10}}
+        style={{ marginBottom: 10 }}
         contentContainerStyle={{
           paddingLeft: 20,
           paddingRight: 20,

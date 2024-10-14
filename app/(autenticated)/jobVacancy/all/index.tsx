@@ -21,11 +21,16 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { formatCurrency } from "@/constants";
 import { calculateDateDifference } from "@/constants/dateTime";
-import { IconCaretLeft, IconSlidebarHorizontal } from "@/components/icons";
+import {
+  IconBookmarksFill,
+  IconCaretLeft,
+  IconSlidebarHorizontal,
+} from "@/components/icons";
 import ModalSwipe from "@/components/ui/modalSwipe";
 import { useGetEducationLevel } from "@/services/user";
 import { Button } from "@/components/ui/button";
 import useDebounce from "@/hooks/useDebounce";
+import { useSavedVacancy } from "@/store/userStore";
 
 export default function index() {
   const router = useRouter();
@@ -38,6 +43,8 @@ export default function index() {
   }>();
 
   const [modalFilter, setModalFilter] = useState<boolean>(false);
+
+  const savedVacancy = useSavedVacancy();
 
   const [filter, setFilter] = useState({
     kategori: params.category_id || "",
@@ -58,7 +65,7 @@ export default function index() {
   const kategori = useGetVacancyCategory();
   const pendidikan = useGetEducationLevel();
   const pekerjaan = ["Full Time", "Part Time", "Freelance", "Magang"];
-  const lokasi = ["Rmote", "Hybrid", "Onsite"];
+  const lokasi = ["Remote", "Hybrid", "Onsite"];
 
   const vacancy = useGetVacancy(
     `category_id=${filter.kategori}&workLocation=${filterDb.lokasi}&jobType=${filterDb.pekerjaan}&educationLevel_id=${filterDb.pendidikan}&search=${searchValueDebounce}`
@@ -198,7 +205,15 @@ export default function index() {
                     marginLeft: "auto",
                   }}
                 >
-                  <IconBookmarks width={27} height={27} color="black-80" />
+                  {savedVacancy.some((d) => d.id === data.id) ? (
+                    <IconBookmarksFill
+                      width={27}
+                      height={27}
+                      color="primary-50"
+                    />
+                  ) : (
+                    <IconBookmarks width={27} height={27} color="black-80" />
+                  )}
                 </TouchableOpacity>
               </View>
               <View style={{ gap: 5 }}>

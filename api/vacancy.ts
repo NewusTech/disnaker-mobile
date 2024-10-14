@@ -53,16 +53,11 @@ export type vacancyByIdResponseSuccess = {
         updatedAt: string;
       };
     }[];
-    VacancySkills: {
+    Skills: {
       id: number;
-      vacancy_id: number;
-      skill_id: number;
-      Skill: {
-        id: number;
-        name: string;
-        createdAt: string;
-        updatedAt: string;
-      };
+      name: string;
+      createdAt: string;
+      updatedAt: string;
     }[];
   };
 };
@@ -136,6 +131,40 @@ export const getVacancyCategory = async () => {
   const response = await apiClient<vacancyCategoryResponseSuccess>({
     method: "GET",
     url: "/vacancy/category/get/",
+  });
+  return response.data;
+};
+
+export const getVacancyUrgent = async () => {
+  const response = await apiClient<vacancyResponseSuccess>({
+    method: "GET",
+    url: `/user/vacancy/urgent`,
+  });
+  return response.data;
+};
+
+export const getVacancyRecomendation = async () => {
+  const response = await apiClient<vacancyResponseSuccess>({
+    method: "GET",
+    url: `user/vacancy/recomendation`,
+  });
+  return response.data;
+};
+
+export type MasterSkillsResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    name: string;
+    createdAt: string;
+    updatedAt: string;
+  }[];
+};
+export const getMasterSkills = async () => {
+  const response = await apiClient<MasterSkillsResponseSuccess>({
+    method: "GET",
+    url: "/skill/get",
   });
   return response.data;
 };

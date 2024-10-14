@@ -140,6 +140,40 @@ export const putEditProfile = async (payload: FormData, slug: string) => {
   }
 };
 
+export const putFotoProfile = async (payload: FormData, slug: string) => {
+  const accessToken = getAccessToken();
+  try {
+    const response = await fetch(
+      `${API_URL}/user/image-profile/update/${slug}`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: payload,
+      }
+    );
+
+    // Periksa apakah respons sukses (status 2xx)
+    if (!response.ok) {
+      // Jika tidak sukses, ambil pesan error
+      const errorData = await response.json();
+      // Buat error baru dengan pesan dari respons
+      throw new Error(errorData.message || "Gagal memproses update profile.");
+    }
+    // Respons sukses, kembalikan data JSON
+    const result = await response.json();
+    return result;
+  } catch (error: any) {
+    // Tangani error di sini
+    console.error(
+      `Error saat memproses update profile: ${error.message} - ${error.data}`
+    );
+    // Kamu bisa mengembalikan error atau menampilkannya ke UI
+    throw error;
+  }
+};
+
 export type userLinkResponseSuccess = {
   status: 200;
   message: "Success Get User Profiles";
@@ -608,6 +642,109 @@ export const getSertificateById = async (id: string) => {
   const response = await apiClient<SertificateByIdResponseSuccess>({
     method: "GET",
     url: "/user/certificate/get/" + id,
+  });
+  return response.data;
+};
+
+export const postUserApplyVacancy = async (payload: { vacancy_id: string }) => {
+  const response = await apiClient<PostResponseSuccess>({
+    method: "POST",
+    url: "/application/create",
+    data: payload,
+  });
+  return response.data;
+};
+
+export type UserHistoryApplicationResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    user_id: number;
+    vacancy_id: number;
+    status: string;
+    createdAt: string;
+    updatedAt: string;
+    Vacancy: {
+      id: number;
+      category_id: number;
+      company_id: number;
+      title: string;
+      slug: string;
+      desc: string;
+      responsibility: string;
+      requirement: string;
+      location: string;
+      gender: string;
+      minExperience: number;
+      maxAge: number;
+      workingDay: string;
+      workingHour: string;
+      jobType: string;
+      workLocation: string;
+      isPublished: string;
+      applicationDeadline: string;
+      salary: string;
+      createdAt: string;
+      updatedAt: string;
+    };
+  }[];
+};
+export const getUserHistoryApplication = async () => {
+  const response = await apiClient<UserHistoryApplicationResponseSuccess>({
+    method: "GET",
+    url: "/user/application/get",
+  });
+  return response.data;
+};
+
+export type UserSavedVacancyResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    user_id: number;
+    vacancy_id: number;
+    createdAt: string;
+    updatedAt: string;
+    Vacancy: {
+      id: number;
+      category_id: number;
+      company_id: number;
+      title: string;
+      slug: string;
+      desc: string;
+      responsibility: string;
+      requirement: string;
+      location: string;
+      gender: string;
+      minExperience: number;
+      maxAge: number;
+      workingDay: string;
+      workingHour: string;
+      jobType: string;
+      workLocation: string;
+      isPublished: string;
+      applicationDeadline: string;
+      salary: string;
+      createdAt: string;
+      updatedAt: string;
+    };
+  }[];
+};
+export const getUserSavedVacancy = async () => {
+  const response = await apiClient<UserSavedVacancyResponseSuccess>({
+    method: "GET",
+    url: "/user/savedvacancy/get",
+  });
+  return response.data;
+};
+
+export const postUserSaveVacancy = async (payload: { vacancy_id: string }) => {
+  const response = await apiClient<PostResponseSuccess>({
+    method: "POST",
+    url: "/user/savevacancy",
+    data: payload,
   });
   return response.data;
 };

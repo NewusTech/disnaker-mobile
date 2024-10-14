@@ -83,10 +83,12 @@ export default function SectionSkill({
         <View onLayout={onLayout} style={{ height: "auto", padding: 15 }}>
           <View
             style={{
+              flex: 1,
+              flexDirection: "row",
               flexWrap: "wrap",
               gap: 5,
               width: "100%",
-              height: (5 / 2) * 40,
+              height: "auto",
             }}
           >
             {skills.map((item, index) => (
@@ -122,7 +124,7 @@ export default function SectionSkill({
                 marginVertical: 10,
               },
             ]}
-            onPress={() => router.push("profile/skills")}
+            onPress={() => router.push("/(autenticated)/profile/skills")}
           >
             {({ pressed }) => (
               <>

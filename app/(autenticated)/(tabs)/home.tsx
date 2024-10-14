@@ -75,7 +75,7 @@ const coreMenu2: coreMenu[] = [
   {
     title: "Informasi",
     image: require("@/assets/images/information.png"),
-    link: "",
+    link: "/information",
   },
 ];
 

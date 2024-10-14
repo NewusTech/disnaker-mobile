@@ -118,7 +118,7 @@ export default function Consultation() {
                     style={{ marginHorizontal: 10 }}
                     onPress={() =>
                       router.push({
-                        pathname: "/(autenticated)/news/[slug]",
+                        pathname: "/(autenticated)/consultation/1",
                         params: {
                           // slug: "slug",
                         },

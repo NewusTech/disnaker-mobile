@@ -24,6 +24,7 @@ import {
   SafeAreaView,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
+import { useIsFocused } from "@react-navigation/native";
 
 type dummyProps = {
   id: number;
@@ -63,27 +64,35 @@ export default function Index() {
   const ref = useRef<any>(null);
   const translateX = useSharedValue<number>(0);
 
+  const isFocused = useIsFocused();
+
   const animatedStyles = useAnimatedStyle(() => ({
     transform: [{ translateX: withSpring(translateX.value) }],
   }));
 
   const hanldeNext = () => {
-    ref.current?.setPage(activePage + 1);
-    if (activePage === dummy.length - 1) {
+    if (ref.current && activePage < dummy.length - 1) {
+      ref.current.setPage(activePage + 1);
+    } else if (activePage === dummy.length - 1) {
       router.push("/onboard/final");
     }
   };
+
   const handlePrev = () => {
-    ref.current?.setPage(activePage - 1);
+    if (ref.current && activePage > 0) {
+      ref.current.setPage(activePage - 1);
+    }
   };
 
   useEffect(() => {
-    if (activePage === 0) {
-      translateX.value = -100;
-    } else {
-      translateX.value = 0;
+    if (isFocused) {
+      if (activePage === 0) {
+        translateX.value = -100;
+      } else {
+        translateX.value = 0;
+      }
     }
-  }, [activePage]);
+  }, [activePage, isFocused]);
   return (
     <SafeAreaView
       style={{
@@ -102,7 +111,6 @@ export default function Index() {
         <PagerView
           ref={ref}
           style={styles.pagerView}
-          initialPage={0}
           onPageSelected={(e) => setActivePage(e.nativeEvent.position)}
         >
           {dummy.map((data) => (

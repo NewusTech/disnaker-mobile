@@ -42,7 +42,7 @@ export default function Information() {
         }}
       >
         <Typography fontSize={18} style={{ textAlign: "center" }}>
-          Event
+          Innformasi
         </Typography>
       </View>
       <Animated.ScrollView>
@@ -68,27 +68,24 @@ export default function Information() {
                   borderRadius: 15,
                   width: Dimensions.get("window").width - 30,
                   overflow: "hidden",
-                  height: 350,
+                  height: 220,
                   flexDirection: "column",
-                  justifyContent: "flex-start",
+                  justifyContent: "center",
                   rowGap: 10,
+                  paddingVertical: 10,
                 },
               ]}
               onPress={() =>
                 router.push({
-                  pathname: "/(autenticated)/event/slug",
+                  pathname: "/(autenticated)/information/1",
                   params: {
-                    slug: "slug",
+                    // slug: "slug",
                   },
                 })
               }
             >
               {({ pressed }) => (
                 <>
-                  <Image
-                    source={item.image}
-                    style={{ width: "100%", height: "40%" }}
-                  />
                   <Typography
                     fontSize={18}
                     style={{
@@ -118,9 +115,9 @@ export default function Information() {
                     style={{ marginHorizontal: 10 }}
                     onPress={() =>
                       router.push({
-                        pathname: "/(autenticated)/event/slug",
+                        pathname: "/(autenticated)/information/1",
                         params: {
-                          slug: "slug",
+                          // slug: "slug",
                         },
                       })
                     }

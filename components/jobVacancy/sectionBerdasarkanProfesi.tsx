@@ -25,15 +25,17 @@ import Animated, {
 import { useGetVacancy, useGetVacancyCategory } from "@/services/vacancy";
 import { calculateDateDifference } from "@/constants/dateTime";
 import { formatCurrency } from "@/constants";
-import { useAuthProfile } from "@/store/userStore";
+import { useAuthProfile, useSavedVacancy } from "@/store/userStore";
+import { IconBookmarksFill } from "../icons";
 
 export default function SectionBerdasarkanProfesi() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
-
+  
   const user = useAuthProfile();
   const getCategorys = useGetVacancyCategory();
+  const savedVacancy = useSavedVacancy();
 
   const getProfesion = getCategorys.data?.data.find(
     (f) => f.name == user?.UserProfile.department
@@ -76,6 +78,7 @@ export default function SectionBerdasarkanProfesi() {
     ],
   }));
 
+
   // Scroll handler for FlatList
   const scrollHandler = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const offsetX = Math.round(e.nativeEvent.contentOffset.x);
@@ -99,6 +102,7 @@ export default function SectionBerdasarkanProfesi() {
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "center",
+        minHeight: 342,
       }}
     >
       <Animated.View
@@ -161,10 +165,11 @@ export default function SectionBerdasarkanProfesi() {
               padding: 20,
               width: 342,
               borderRadius: 15,
-              gap: 15,
+              gap: 10,
               borderWidth: 1,
               borderColor: Colors["line-stroke-30"],
               backgroundColor: Colors.white,
+              height: 280,
             }}
             onPress={() => router.push(`/jobVacancy/${item.slug}`)}
           >
@@ -183,6 +188,7 @@ export default function SectionBerdasarkanProfesi() {
                   justifyContent: "center",
                   alignItems: "flex-start",
                   marginLeft: 15,
+                  width: "70%",
                 }}
               >
                 <Typography fontSize={17} style={{}} color="black-80">
@@ -205,10 +211,18 @@ export default function SectionBerdasarkanProfesi() {
                   marginLeft: "auto",
                 }}
               >
-                <IconBookmarks width={27} height={27} color="black-80" />
+                {savedVacancy.some((d) => d.id === item.id) ? (
+                  <IconBookmarksFill
+                    width={27}
+                    height={27}
+                    color="primary-50"
+                  />
+                ) : (
+                  <IconBookmarks width={27} height={27} color="black-80" />
+                )}
               </TouchableOpacity>
             </View>
-            <View style={{ gap: 5 }}>
+            <View style={{ gap: 5, marginTop: "auto" }}>
               <View
                 style={{ flexDirection: "row", gap: 5, alignItems: "flex-end" }}
               >

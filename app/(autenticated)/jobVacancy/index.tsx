@@ -12,8 +12,15 @@ import { useGetProfile } from "@/services/user";
 import { useAuthActions, useAuthProfile } from "@/store/userStore";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
-import { Image, Pressable, ScrollView, TouchableOpacity } from "react-native";
+import {
+  Image,
+  Pressable,
+  RefreshControl,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 
 const coreMenu: {
   title: string;
@@ -85,7 +92,17 @@ export default function JobVacancy() {
   const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
 
-  const userProfile = useAuthProfile();
+  const getUserProfile = useGetProfile();
+  const userProfile = getUserProfile.data?.data;
+
+  if (userProfile?.Skills.length === 0) {
+    Toast.show({
+      type: "info",
+      text1: "Skills Kamu Kosong",
+      text2: "Tambahkan Skills Kamu terlebih dahulu",
+    });
+    return router.replace("/(autenticated)/profile/skills");
+  }
 
   const [search, setSearch] = useState("");
 

@@ -98,7 +98,7 @@ export default function index() {
               }}
             >
               <Typography fontSize={18} style={{}} color="white">
-                {userProfile?.UserProfile.name}
+                {userProfile?.UserProfile.name || "-"}
               </Typography>
               <Typography
                 fontSize={15}
@@ -106,7 +106,7 @@ export default function index() {
                 style={{}}
                 color="white"
               >
-                {userProfile?.email}
+                {userProfile?.email || "-"}
               </Typography>
             </View>
           </View>
@@ -201,7 +201,9 @@ export default function index() {
                 style={{}}
                 color="white"
               >
-                {shrotEdu && shrotEdu[0].instanceName}
+                {shrotEdu && shrotEdu.length > 0
+                  ? shrotEdu[0].instanceName
+                  : "-"}
               </Typography>
             </View>
             <View

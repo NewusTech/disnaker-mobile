@@ -52,7 +52,7 @@ const coreMenu1: coreMenu[] = [
   {
     title: "Pengaduan Online",
     image: require("@/assets/images/contract.png"),
-    link: "",
+    link: "/onlineComplaint",
   },
 ];
 

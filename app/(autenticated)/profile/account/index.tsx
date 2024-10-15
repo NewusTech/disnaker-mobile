@@ -17,15 +17,6 @@ export default function index() {
   const { Colors } = useAppTheme();
   const insets = useSafeAreaInsets();
 
-  const dataLinkPendukung = [
-    { title: "Instagram", image: require("@/assets/images/instagram.png") },
-    { title: "Facebook", image: require("@/assets/images/facebook.png") },
-    { title: "Lainnya", image: require("@/assets/images/www.png") },
-  ];
-
-  const [linkPendukung, setLinkPendukung] =
-    useState<string>("Pilih Jenis Link");
-
   return (
     <View style={{ flex: 1 }}>
       <Appbar
@@ -63,7 +54,7 @@ export default function index() {
                 paddingHorizontal: 20,
                 borderRadius: 10,
               }}
-              onPress={()=>router.push("/profile/updatePassword")}
+              onPress={() => router.push("/profile/updatePassword")}
             >
               <Typography fontSize={14} color="white">
                 Ubah Data
@@ -72,16 +63,6 @@ export default function index() {
           </View>
         </View>
       </ScrollView>
-      <View
-        style={{
-          position: "absolute",
-          width: "100%",
-          bottom: 0,
-          marginBottom: insets.bottom + 20,
-        }}
-      >
-        <Button style={{ marginHorizontal: 20 }}>Simpan</Button>
-      </View>
     </View>
   );
 }

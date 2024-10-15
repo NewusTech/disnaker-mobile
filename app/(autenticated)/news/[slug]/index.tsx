@@ -6,12 +6,18 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Appbar from "@/components/ui/appBar";
 import { Typography } from "@/components/ui/typography";
 import RenderHTML, { defaultSystemFonts } from "react-native-render-html";
+import { useGetArticleBySlug } from "@/services/article/insex";
+import { formatDate } from "@/constants/dateTime";
+import Separator from "@/components/ui/separator";
 
 export default function DetailNews() {
   const router = useRouter();
   const { Colors } = useAppTheme();
   const insets = useSafeAreaInsets();
-  const params = useLocalSearchParams<{ id: string }>();
+  const params = useLocalSearchParams<{ slug: string }>();
+
+  const getDetail = useGetArticleBySlug(params.slug);
+  const detail = getDetail.data?.data;
 
   return (
     <View style={{ flex: 1 }}>
@@ -22,13 +28,13 @@ export default function DetailNews() {
       />
       <ScrollView style={{ flex: 1, paddingHorizontal: 20, marginTop: 20 }}>
         <Typography fontFamily="Poppins-Medium" fontSize={20}>
-          Career Fair Tanggamus 2024
+          {detail?.title}
         </Typography>
         <Typography fontFamily="Poppins-Light" fontSize={14}>
-          23 Februari 2024
+          {formatDate(new Date(detail?.updatedAt || 0))}
         </Typography>
         <Image
-          source={require("@/assets/images/image_1.png")}
+          source={{ uri: detail?.image }}
           style={{
             width: "100%",
             height: 150,
@@ -36,11 +42,12 @@ export default function DetailNews() {
             borderRadius: 15,
           }}
         />
+        <Separator style={{ marginVertical: 20 }} />
         <RenderHTML
           systemFonts={[...defaultSystemFonts, "Poppins-Regular"]}
           contentWidth={Dimensions.get("screen").width - 48}
           source={{
-            html: "<p>Hello World</p>",
+            html: detail?.desc || "",
           }}
         />
       </ScrollView>

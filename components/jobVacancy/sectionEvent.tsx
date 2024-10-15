@@ -5,25 +5,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAppTheme } from "@/context/theme-context";
 import PagerView from "react-native-pager-view";
 import PromoItem from "../promoItem";
-import { Pressable } from "react-native";
-
-const PromoItemList = [
-  {
-    image: require("@/assets/images/image_1.png"),
-  },
-  {
-    image: require("@/assets/images/image_1.png"),
-  },
-  {
-    image: require("@/assets/images/image_1.png"),
-  },
-  {
-    image: require("@/assets/images/image_1.png"),
-  },
-  {
-    image: require("@/assets/images/image_1.png"),
-  },
-];
+import { Dimensions, Pressable } from "react-native";
+import { useGetEvent } from "@/services/event";
 
 export default function SectionEvent() {
   const router = useRouter();
@@ -31,6 +14,8 @@ export default function SectionEvent() {
   const { Colors } = useAppTheme();
 
   const bannerRef = useRef<PagerView>(null);
+
+  const getEvent = useGetEvent();
 
   const [activePage, setActivePage] = useState<number>(0);
 
@@ -47,21 +32,30 @@ export default function SectionEvent() {
           ref={bannerRef}
           style={{
             width: "100%",
-            height: 160,
+            height: 150,
             paddingVertical: 10,
             marginLeft: 10,
             marginTop: 10,
-            // backgroundColor: "red",
+            // backgroundColor: "red"
           }}
-          initialPage={0}
           onPageSelected={(e) => setActivePage(e.nativeEvent.position)}
+          transitionStyle="scroll"
         >
-          {PromoItemList.map((data, index) => (
+          {getEvent.data?.data.map((data, index) => (
             <PromoItem
               key={index}
-              imgUrl={data.image}
+              imgUrl={{ uri: data.image || "" }}
               width={350}
+              height={150}
               borderRadius={20}
+              onPress={() =>
+                router.push({
+                  pathname: "/(autenticated)/event/[slug]",
+                  params: {
+                    slug: data.slug,
+                  },
+                })
+              }
             />
           ))}
         </PagerView>
@@ -73,9 +67,10 @@ export default function SectionEvent() {
           alignItems: "center",
           gap: 5,
           marginBottom: 10,
+          marginTop: 10,
         }}
       >
-        {PromoItemList.map((_, index) => {
+        {getEvent.data?.data.map((_, index) => {
           return (
             <Pressable
               key={index}

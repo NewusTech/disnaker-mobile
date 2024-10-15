@@ -3,8 +3,8 @@ import {
   Image,
   ImageProps,
   StyleSheet,
-  TouchableHighlight,
-  TouchableHighlightProps,
+  TouchableOpacity,
+  TouchableOpacityProps,
 } from "react-native";
 
 export type PromoItemProps = {
@@ -12,7 +12,7 @@ export type PromoItemProps = {
   height?: any;
   width?: any;
   borderRadius?: any;
-} & TouchableHighlightProps;
+} & TouchableOpacityProps;
 export default function PromoItem(props: PromoItemProps) {
   // const { imgUrl, height = 187, width = 326, ...rest } = props;
   const {
@@ -24,7 +24,7 @@ export default function PromoItem(props: PromoItemProps) {
   } = props;
 
   return (
-    <TouchableHighlight {...rest}>
+    <TouchableOpacity {...rest} style={{borderRadius,width:width/2}}>
       <Image
         source={imgUrl}
         style={[
@@ -32,7 +32,7 @@ export default function PromoItem(props: PromoItemProps) {
           { height, width, resizeMode: "stretch", borderRadius },
         ]}
       />
-    </TouchableHighlight>
+    </TouchableOpacity>
   );
 }
 

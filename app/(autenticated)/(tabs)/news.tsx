@@ -3,33 +3,22 @@ import { SearchBox } from "@/components/ui/searchBox";
 import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
+import { useGetArticle } from "@/services/article/insex";
 import { useRouter } from "expo-router";
 import React from "react";
 import { Dimensions, Image, Pressable } from "react-native";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const dummyData = [
-  {
-    image: require("@/assets/images/image_1.png"),
-    title: "Career Fair Tanggamus 2024",
-    des: "Temukan berbagai kesempatan kerja di Career Fair Tanggamus! Hadiri acara ini dan bertemu langsung dengan perusahaan-perusahaan terkemuka yang siap merekrut talenta berbakat.",
-  },
-  {
-    image: require("@/assets/images/image_1.png"),
-    title: "Career Fair Tanggamus 2024",
-    des: "Temukan berbagai kesempatan kerja di Career Fair Tanggamus! Hadiri acara ini dan bertemu langsung dengan perusahaan-perusahaan terkemuka yang siap merekrut talenta berbakat.",
-  },
-  {
-    image: require("@/assets/images/image_1.png"),
-    title: "Career Fair Tanggamus 2024",
-    des: "Temukan berbagai kesempatan kerja di Career Fair Tanggamus! Hadiri acara ini dan bertemu langsung dengan perusahaan-perusahaan terkemuka yang siap merekrut talenta berbakat.",
-  },
-];
 export default function Information() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
+
+  const article = useGetArticle();
+
+  console.log(article.data?.data);
+
   return (
     <View style={{ flex: 1, paddingTop: insets.top }} backgroundColor="white">
       <View
@@ -53,7 +42,7 @@ export default function Information() {
           numColumns={1}
           showsHorizontalScrollIndicator={false}
           scrollEnabled={false}
-          data={dummyData}
+          data={article.data?.data}
           renderItem={({ item }) => (
             <Pressable
               style={({ pressed }) => [
@@ -76,9 +65,9 @@ export default function Information() {
               ]}
               onPress={() =>
                 router.push({
-                  pathname: "/(autenticated)/news/1",
+                  pathname: `/(autenticated)/news/[slug]`,
                   params: {
-                    // slug: "slug",
+                    slug: item.slug,
                   },
                 })
               }
@@ -86,7 +75,8 @@ export default function Information() {
               {({ pressed }) => (
                 <>
                   <Image
-                    source={item.image}
+                    // source={require("@/assets/images/image_1.png")}
+                    source={{ uri: item.image }}
                     style={{ width: "100%", height: "40%" }}
                   />
                   <Typography
@@ -112,15 +102,15 @@ export default function Information() {
                     numberOfLines={4}
                     color={pressed ? "black-80" : "black-80"}
                   >
-                    {item.des}
+                    {item.desc}
                   </Typography>
                   <Button
                     style={{ marginHorizontal: 10 }}
                     onPress={() =>
                       router.push({
-                        pathname: "/(autenticated)/news/[slug]",
+                        pathname: `/(autenticated)/news/[slug]`,
                         params: {
-                          // slug: "slug",
+                          slug: item.slug,
                         },
                       })
                     }

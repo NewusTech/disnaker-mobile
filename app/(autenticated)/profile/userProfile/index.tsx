@@ -16,12 +16,14 @@ import { useGetProfile } from "@/services/user";
 import { useAuthActions, useAuthProfile } from "@/store/userStore";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
+import { useRoute } from "@react-navigation/native";
 import React, { useEffect } from "react";
 import { Image, Pressable, RefreshControl, ScrollView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function index() {
   const router = useRouter();
+  const route = useRoute();
   const { Colors } = useAppTheme();
   const insets = useSafeAreaInsets();
 
@@ -42,7 +44,7 @@ export default function index() {
       setAccessToken(null);
       router.replace("/(public)/onboard/final");
     }
-  }, [router, setAccessToken, setProfile, profileQuery.data]);
+  }, [router, setAccessToken, setProfile, profileQuery.data, route.name]);
 
   return (
     <View backgroundColor="white" style={{ flex: 1 }}>

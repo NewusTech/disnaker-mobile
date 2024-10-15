@@ -3,33 +3,21 @@ import { SearchBox } from "@/components/ui/searchBox";
 import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
+import { removeHtmlTags } from "@/helper";
+import { useGetCertification } from "@/services/certification";
 import { useRouter } from "expo-router";
 import React from "react";
-import { Dimensions, Image, Pressable } from "react-native";
+import { Dimensions, Image, Pressable, RefreshControl } from "react-native";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const dummyData = [
-  {
-    image: require("@/assets/images/image_1.png"),
-    title: "Career Fair Tanggamus 2024",
-    des: "Temukan berbagai kesempatan kerja di Career Fair Tanggamus! Hadiri acara ini dan bertemu langsung dengan perusahaan-perusahaan terkemuka yang siap merekrut talenta berbakat.",
-  },
-  {
-    image: require("@/assets/images/image_1.png"),
-    title: "Career Fair Tanggamus 2024",
-    des: "Temukan berbagai kesempatan kerja di Career Fair Tanggamus! Hadiri acara ini dan bertemu langsung dengan perusahaan-perusahaan terkemuka yang siap merekrut talenta berbakat.",
-  },
-  {
-    image: require("@/assets/images/image_1.png"),
-    title: "Career Fair Tanggamus 2024",
-    des: "Temukan berbagai kesempatan kerja di Career Fair Tanggamus! Hadiri acara ini dan bertemu langsung dengan perusahaan-perusahaan terkemuka yang siap merekrut talenta berbakat.",
-  },
-];
 export default function Certification() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
+
+  const getCertification = useGetCertification();
+
   return (
     <View style={{ flex: 1, paddingTop: insets.top }} backgroundColor="white">
       <View
@@ -45,7 +33,15 @@ export default function Certification() {
           Sertifikasi
         </Typography>
       </View>
-      <Animated.ScrollView>
+      <Animated.ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={getCertification.isRefetching}
+            onRefresh={() => getCertification.refetch()}
+            progressViewOffset={20}
+          />
+        }
+      >
         <View style={{ paddingHorizontal: 20, marginVertical: 40 }}>
           <SearchBox placeholder="Search" />
         </View>
@@ -53,7 +49,7 @@ export default function Certification() {
           numColumns={1}
           showsHorizontalScrollIndicator={false}
           scrollEnabled={false}
-          data={dummyData}
+          data={getCertification.data?.data}
           renderItem={({ item }) => (
             <Pressable
               style={({ pressed }) => [
@@ -68,7 +64,7 @@ export default function Certification() {
                   borderRadius: 15,
                   width: Dimensions.get("window").width - 30,
                   overflow: "hidden",
-                  height: 350,
+                  maxHeight: 350,
                   flexDirection: "column",
                   justifyContent: "flex-start",
                   rowGap: 10,
@@ -76,9 +72,9 @@ export default function Certification() {
               ]}
               onPress={() =>
                 router.push({
-                  pathname: "/(autenticated)/training/1",
+                  pathname: `/(autenticated)/certification/[slug]`,
                   params: {
-                    // slug: "slug",
+                    slug: item.id.toString(),
                   },
                 })
               }
@@ -86,7 +82,7 @@ export default function Certification() {
               {({ pressed }) => (
                 <>
                   <Image
-                    source={item.image}
+                    source={{ uri: item.image }}
                     style={{ width: "100%", height: "40%" }}
                   />
                   <Typography
@@ -112,15 +108,15 @@ export default function Certification() {
                     numberOfLines={4}
                     color={pressed ? "black-80" : "black-80"}
                   >
-                    {item.des}
+                    {removeHtmlTags(item.desc, 500)}
                   </Typography>
                   <Button
                     style={{ marginHorizontal: 10 }}
                     onPress={() =>
                       router.push({
-                        pathname: "/(autenticated)/training/1",
+                        pathname: `/(autenticated)/certification/[slug]`,
                         params: {
-                          // slug: "slug",
+                          slug: item.id.toString(),
                         },
                       })
                     }

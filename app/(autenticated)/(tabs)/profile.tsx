@@ -20,11 +20,16 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { IconLogout } from "@/components/icons/IconLogout";
 import { handleLogoutSession } from "@/services/auth.service";
 import { useAuthActions, useAuthProfile } from "@/store/userStore";
-import { useGetProfile } from "@/services/user";
+import { useGetProfile, useUploadCvPortofolio } from "@/services/user";
 import ModalAction from "@/components/ui/modalAction";
+import { DocumentPickerAsset } from "expo-document-picker";
+import Toast from "react-native-toast-message";
+import Loader from "@/components/ui/loader";
+import { useRoute } from "@react-navigation/native";
 
 export default function Profile() {
   const router = useRouter();
+  const route = useRoute();
   const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
 
@@ -38,6 +43,53 @@ export default function Profile() {
   const [modalLogout, setModalLogout] = useState<boolean>(false);
   const [tabUploadCV, setTabUploadCV] = useState<"cv" | "portofolio">("cv");
 
+  const [fileCv, setFileCv] = useState<DocumentPickerAsset>();
+  const [filePortofolio, setFilePortofolio] = useState<DocumentPickerAsset>();
+
+  const uploadCvPortofolio = useUploadCvPortofolio();
+
+  const handleUploadCv = () => {
+    const formData = new FormData();
+
+    if (fileCv) {
+      formData.append("cv", {
+        ...fileCv,
+        name: `${userProfile?.UserProfile.slug}-cv.pdf`,
+      } as any);
+    }
+    if (filePortofolio) {
+      formData.append("portfolio", {
+        ...filePortofolio,
+        name: `${userProfile?.UserProfile.slug}-portfolio.pdf`,
+      } as any);
+    }
+    uploadCvPortofolio.mutate(
+      {
+        data: formData,
+        slug: userProfile?.UserProfile.slug || "",
+      },
+      {
+        onSuccess: async (response) => {
+          Toast.show({
+            type: "success",
+            text1: "Upload CV dan Portfolio berhasil!",
+            text2: response.message,
+          });
+          profileQuery.refetch();
+          setModalUploadCv(false);
+        },
+        onError: (reponse) => {
+          console.error(reponse);
+          Toast.show({
+            type: "error",
+            text1: "Upload CV dan Portfolio gagal!",
+            text2: reponse.response?.data.message,
+          });
+        },
+      }
+    );
+  };
+
   const handleLogout = () => {
     handleLogoutSession();
   };
@@ -49,7 +101,7 @@ export default function Profile() {
       setAccessToken(null);
       router.replace("/(public)/onboard/final");
     }
-  }, [router, setAccessToken, setProfile, profileQuery.data]);
+  }, [router, setAccessToken, setProfile, profileQuery.data, route.path]);
 
   return (
     <View style={{ flex: 1 }} backgroundColor="white">
@@ -338,11 +390,32 @@ export default function Profile() {
               </Typography>
             </TouchableOpacity>
           </View>
-          {tabUploadCV === "cv" && <UploadFile label="Upload CV" />}
-          {tabUploadCV === "portofolio" && (
-            <UploadFile label="Upload Portofolio" />
+          {tabUploadCV === "cv" && (
+            <UploadFile
+              label={`${fileCv ? " Cv-" + fileCv?.name : "Upload Cv"}`}
+              file={fileCv}
+              setFile={setFileCv}
+              fileUrl={userProfile?.UserProfile.cv}
+            />
           )}
-          <Button>Simpan</Button>
+          {tabUploadCV === "portofolio" && (
+            <UploadFile
+              label={`${
+                filePortofolio
+                  ? " Portofolio-" + filePortofolio?.name
+                  : "Upload Portofolio"
+              }`}
+              file={filePortofolio}
+              setFile={setFilePortofolio}
+              fileUrl={userProfile?.UserProfile.portfolio}
+            />
+          )}
+          <Button
+            disabled={uploadCvPortofolio.isPending}
+            onPress={handleUploadCv}
+          >
+            {uploadCvPortofolio.isPending ? <Loader color="white" /> : "Simpan"}
+          </Button>
         </View>
       </ModalSwipe>
       <ModalAction

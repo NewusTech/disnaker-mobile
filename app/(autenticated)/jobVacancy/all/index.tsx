@@ -27,10 +27,15 @@ import {
   IconSlidebarHorizontal,
 } from "@/components/icons";
 import ModalSwipe from "@/components/ui/modalSwipe";
-import { useGetEducationLevel } from "@/services/user";
+import {
+  useGetEducationLevel,
+  useUserDeleteVacancy,
+  useUserSaveVacancy,
+} from "@/services/user";
 import { Button } from "@/components/ui/button";
 import useDebounce from "@/hooks/useDebounce";
-import { useSavedVacancy } from "@/store/userStore";
+import { useAuthActions, useSavedVacancy } from "@/store/userStore";
+import Toast from "react-native-toast-message";
 
 export default function index() {
   const router = useRouter();
@@ -44,7 +49,8 @@ export default function index() {
 
   const [modalFilter, setModalFilter] = useState<boolean>(false);
 
-  const savedVacancy = useSavedVacancy();
+  const dataSavedVacancy = useSavedVacancy();
+  const { setSavedVacancy } = useAuthActions();
 
   const [filter, setFilter] = useState({
     kategori: params.category_id || "",
@@ -64,6 +70,8 @@ export default function index() {
 
   const kategori = useGetVacancyCategory();
   const pendidikan = useGetEducationLevel();
+  const saveVacancy = useUserSaveVacancy();
+  const unsaveVacancy = useUserDeleteVacancy();
   const pekerjaan = ["Full Time", "Part Time", "Freelance", "Magang"];
   const lokasi = ["Remote", "Hybrid", "Onsite"];
 
@@ -78,6 +86,56 @@ export default function index() {
   const handleFilter = () => {
     setModalFilter(false);
     setFilterDb(filter);
+  };
+
+  const handleSaveVacancy = (vacancy_id: number, saved: boolean) => {
+    if (!saved) {
+      saveVacancy.mutate(
+        { vacancy_id: vacancy_id.toString() },
+        {
+          onSuccess: (res) => {
+            Toast.show({
+              type: "success",
+              text1: "Simpan Lowongan berhasil!",
+              text2: res.message,
+            });
+            setSavedVacancy([...dataSavedVacancy, { id: res.data.vacancy_id }]);
+          },
+          onError: (res) => {
+            Toast.show({
+              type: "error",
+              text1: "Simpan Lowongan gagal",
+              text2: res.response?.data.message,
+            });
+            console.error(res);
+          },
+        }
+      );
+      return;
+    }
+    unsaveVacancy.mutate(
+      { vacancy_id: vacancy_id.toString() },
+      {
+        onSuccess: (res) => {
+          Toast.show({
+            type: "success",
+            text1: "Hapus Lowongan berhasil!",
+            text2: res.message,
+          });
+          setSavedVacancy([
+            ...dataSavedVacancy.filter((f) => f.id !== vacancy_id),
+          ]);
+        },
+        onError: (res) => {
+          Toast.show({
+            type: "error",
+            text1: "Hapus Lowongan gagal",
+            text2: res.response?.data.message,
+          });
+          console.error(res);
+        },
+      }
+    );
   };
 
   return (
@@ -148,157 +206,161 @@ export default function index() {
         }
       >
         <View style={{ marginTop: 20, gap: 20 }}>
-          {vacancy.data?.data.map((data, index) => (
-            <Pressable
-              key={index}
-              style={{
-                backgroundColor: Colors.white,
-                borderColor: Colors["line-stroke-30"],
-                borderWidth: 1,
-                padding: 20,
-                width: Dimensions.get("window").width - 40,
-                borderRadius: 15,
-                gap: 15,
-              }}
-              onPress={() => router.push(`/jobVacancy/${data.slug}`)}
-            >
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Image
-                  source={{
-                    uri:
-                      data.Company.imageLogo.trim() !== ""
-                        ? data.Company.imageLogo
-                        : "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg",
-                  }}
-                  style={{
-                    width: 50,
-                    height: 50,
-                    borderRadius: 100,
-                    backgroundColor: Colors["black-10"],
-                  }}
-                />
-                <View
-                  style={{
-                    justifyContent: "center",
-                    alignItems: "flex-start",
-                    marginLeft: 15,
-                    width: "70%",
-                  }}
-                >
-                  <Typography fontSize={17} style={{}} color="black-80">
-                    {data.title}
+          {vacancy.data?.data.map((data, index) => {
+            const isSaved = dataSavedVacancy.some((d) => d.id === data.id);
+            return (
+              <Pressable
+                key={index}
+                style={{
+                  backgroundColor: Colors.white,
+                  borderColor: Colors["line-stroke-30"],
+                  borderWidth: 1,
+                  padding: 20,
+                  width: Dimensions.get("window").width - 40,
+                  borderRadius: 15,
+                  gap: 15,
+                }}
+                onPress={() => router.push(`/jobVacancy/${data.slug}`)}
+              >
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Image
+                    source={{
+                      uri:
+                        data.Company.imageLogo.trim() !== ""
+                          ? data.Company.imageLogo
+                          : "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg",
+                    }}
+                    style={{
+                      width: 50,
+                      height: 50,
+                      borderRadius: 100,
+                      backgroundColor: Colors["black-10"],
+                    }}
+                  />
+                  <View
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "flex-start",
+                      marginLeft: 15,
+                      width: "70%",
+                    }}
+                  >
+                    <Typography fontSize={17} style={{}} color="black-80">
+                      {data.title}
+                    </Typography>
+                    <Typography
+                      fontSize={15}
+                      fontFamily="Poppins-Light"
+                      style={{}}
+                      color="black-50"
+                    >
+                      {data.Company.name}
+                    </Typography>
+                  </View>
+                  <TouchableOpacity
+                    style={{
+                      width: 30,
+                      height: 30,
+                      padding: 3,
+                      marginLeft: "auto",
+                    }}
+                    onPress={() => handleSaveVacancy(data.id, isSaved)}
+                  >
+                    {isSaved ? (
+                      <IconBookmarksFill
+                        width={27}
+                        height={27}
+                        color="primary-50"
+                      />
+                    ) : (
+                      <IconBookmarks width={27} height={27} color="black-80" />
+                    )}
+                  </TouchableOpacity>
+                </View>
+                <View style={{ gap: 5 }}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      gap: 5,
+                      alignItems: "flex-end",
+                    }}
+                  >
+                    <IconGraduation width={20} height={20} color="black-80" />
+                    <Typography fontSize={13} style={{}} color="black-80">
+                      {data.EducationLevels
+                        ? data?.EducationLevels.sort((a, b) => a.id - b.id)
+                            .map((el) => {
+                              return el.level;
+                            })
+                            .join("/")
+                        : "-"}
+                    </Typography>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      gap: 5,
+                      alignItems: "flex-end",
+                    }}
+                  >
+                    <IconTipJar width={20} height={20} color="black-80" />
+                    <Typography fontSize={13} style={{}} color="black-80">
+                      {formatCurrency(Number.parseInt(data.salary || "0"))}
+                    </Typography>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      gap: 5,
+                      alignItems: "flex-end",
+                    }}
+                  >
+                    <IconLocation width={20} height={20} color="black-80" />
+                    <Typography fontSize={13} style={{}} color="black-80">
+                      {data.location || "-"}
+                    </Typography>
+                  </View>
+                </View>
+                <View style={{ width: "100%", flexDirection: "row", gap: 10 }}>
+                  <Typography
+                    fontSize={12}
+                    style={{
+                      padding: 7,
+                      paddingHorizontal: 25,
+                      backgroundColor: Colors["primary-50"],
+                      borderRadius: 100,
+                    }}
+                    color="white"
+                  >
+                    {data.jobType}
                   </Typography>
                   <Typography
-                    fontSize={15}
-                    fontFamily="Poppins-Light"
-                    style={{}}
-                    color="black-50"
+                    fontSize={12}
+                    style={{
+                      padding: 7,
+                      paddingHorizontal: 25,
+                      backgroundColor: Colors["secondary-40"],
+                      borderRadius: 100,
+                    }}
+                    color="white"
                   >
-                    {data.Company.name}
+                    {data.workLocation}
                   </Typography>
                 </View>
-                <TouchableOpacity
-                  style={{
-                    width: 30,
-                    height: 30,
-                    padding: 3,
-                    marginLeft: "auto",
-                  }}
-                >
-                  {savedVacancy.some((d) => d.id === data.id) ? (
-                    <IconBookmarksFill
-                      width={27}
-                      height={27}
-                      color="primary-50"
-                    />
-                  ) : (
-                    <IconBookmarks width={27} height={27} color="black-80" />
-                  )}
-                </TouchableOpacity>
-              </View>
-              <View style={{ gap: 5 }}>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    gap: 5,
-                    alignItems: "flex-end",
-                  }}
-                >
-                  <IconGraduation width={20} height={20} color="black-80" />
-                  <Typography fontSize={13} style={{}} color="black-80">
-                    {data.EducationLevels
-                      ? data?.EducationLevels.sort((a, b) => a.id - b.id)
-                          .map((el) => {
-                            return el.level;
-                          })
-                          .join("/")
-                      : "-"}
-                  </Typography>
-                </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    gap: 5,
-                    alignItems: "flex-end",
-                  }}
-                >
-                  <IconTipJar width={20} height={20} color="black-80" />
-                  <Typography fontSize={13} style={{}} color="black-80">
-                    {formatCurrency(Number.parseInt(data.salary || "0"))}
-                  </Typography>
-                </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    gap: 5,
-                    alignItems: "flex-end",
-                  }}
-                >
-                  <IconLocation width={20} height={20} color="black-80" />
-                  <Typography fontSize={13} style={{}} color="black-80">
-                    {data.location || "-"}
-                  </Typography>
-                </View>
-              </View>
-              <View style={{ width: "100%", flexDirection: "row", gap: 10 }}>
                 <Typography
-                  fontSize={12}
-                  style={{
-                    padding: 7,
-                    paddingHorizontal: 25,
-                    backgroundColor: Colors["primary-50"],
-                    borderRadius: 100,
-                  }}
-                  color="white"
+                  fontSize={14}
+                  fontFamily="Poppins-LightItalic"
+                  style={{}}
+                  color="black-80"
                 >
-                  {data.jobType}
+                  Note : Update{" "}
+                  {updateVacancyDate(data.updatedAt) === "0 hari"
+                    ? "hari ini"
+                    : updateVacancyDate(data.updatedAt) + " yang lalu"}
                 </Typography>
-                <Typography
-                  fontSize={12}
-                  style={{
-                    padding: 7,
-                    paddingHorizontal: 25,
-                    backgroundColor: Colors["secondary-40"],
-                    borderRadius: 100,
-                  }}
-                  color="white"
-                >
-                  {data.workLocation}
-                </Typography>
-              </View>
-              <Typography
-                fontSize={14}
-                fontFamily="Poppins-LightItalic"
-                style={{}}
-                color="black-80"
-              >
-                Note : Update{" "}
-                {updateVacancyDate(data.updatedAt) === "0 hari"
-                  ? "hari ini"
-                  : updateVacancyDate(data.updatedAt) + " yang lalu"}
-              </Typography>
-            </Pressable>
-          ))}
+              </Pressable>
+            );
+          })}
 
           {!vacancy.isFetching &&
             vacancy.data?.data &&

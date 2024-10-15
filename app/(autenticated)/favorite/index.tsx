@@ -9,7 +9,7 @@ import { formatCurrency } from "@/constants";
 import { calculateDateDifference } from "@/constants/dateTime";
 import { useAppTheme } from "@/context/theme-context";
 import { useGetUserSavedVacancy } from "@/services/user";
-import { useAuthActions, useSavedVacancy } from "@/store/userStore";
+import { useAuthActions } from "@/store/userStore";
 import { useRouter } from "expo-router";
 import React, { useEffect } from "react";
 import {
@@ -29,12 +29,11 @@ export default function index() {
   const getFavorites = useGetUserSavedVacancy();
   const favorites = getFavorites.data?.data;
   const { setSavedVacancy } = useAuthActions();
-  const savedVacancy = useSavedVacancy();
 
   const _favorites =
     favorites?.map((d) => {
       return {
-        id: d.id,
+        id: d.vacancy_id,
       };
     }) || [];
 
@@ -42,11 +41,9 @@ export default function index() {
     return calculateDateDifference(new Date(date || 0), new Date());
   };
 
-  console.log(savedVacancy, "ini");
-
   useEffect(() => {
     setSavedVacancy(_favorites);
-  }, []);
+  }, [getFavorites.data?.data]);
 
   return (
     <View style={{ flex: 1 }} backgroundColor="white">
@@ -68,7 +65,7 @@ export default function index() {
               borderColor: Colors["line-stroke-30"],
               backgroundColor: Colors.white,
             }}
-            onPress={() => router.push(`/jobVacancy/${item.Vacancy.salary}`)}
+            onPress={() => router.push(`/jobVacancy/${item.Vacancy.slug}`)}
           >
             <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
               <Image
@@ -80,6 +77,7 @@ export default function index() {
                   justifyContent: "center",
                   alignItems: "flex-start",
                   marginLeft: 15,
+                  width: "70%",
                 }}
               >
                 <Typography fontSize={17} style={{}} color="black-80">

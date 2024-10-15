@@ -3,33 +3,21 @@ import { SearchBox } from "@/components/ui/searchBox";
 import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
+import { removeHtmlTags } from "@/helper";
+import { useGetConsultation } from "@/services/consultation";
 import { useRouter } from "expo-router";
 import React from "react";
 import { Dimensions, Image, Pressable } from "react-native";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const dummyData = [
-  {
-    image: require("@/assets/images/image_1.png"),
-    title: "Career Fair Tanggamus 2024",
-    des: "Temukan berbagai kesempatan kerja di Career Fair Tanggamus! Hadiri acara ini dan bertemu langsung dengan perusahaan-perusahaan terkemuka yang siap merekrut talenta berbakat.",
-  },
-  {
-    image: require("@/assets/images/image_1.png"),
-    title: "Career Fair Tanggamus 2024",
-    des: "Temukan berbagai kesempatan kerja di Career Fair Tanggamus! Hadiri acara ini dan bertemu langsung dengan perusahaan-perusahaan terkemuka yang siap merekrut talenta berbakat.",
-  },
-  {
-    image: require("@/assets/images/image_1.png"),
-    title: "Career Fair Tanggamus 2024",
-    des: "Temukan berbagai kesempatan kerja di Career Fair Tanggamus! Hadiri acara ini dan bertemu langsung dengan perusahaan-perusahaan terkemuka yang siap merekrut talenta berbakat.",
-  },
-];
 export default function Consultation() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
+
+  const getConsultation = useGetConsultation();
+
   return (
     <View style={{ flex: 1, paddingTop: insets.top }} backgroundColor="white">
       <View
@@ -53,7 +41,7 @@ export default function Consultation() {
           numColumns={1}
           showsHorizontalScrollIndicator={false}
           scrollEnabled={false}
-          data={dummyData}
+          data={getConsultation.data?.data}
           renderItem={({ item }) => (
             <Pressable
               style={({ pressed }) => [
@@ -68,7 +56,7 @@ export default function Consultation() {
                   borderRadius: 15,
                   width: Dimensions.get("window").width - 30,
                   overflow: "hidden",
-                  height: 350,
+                  maxHeight: 350,
                   flexDirection: "column",
                   justifyContent: "flex-start",
                   rowGap: 10,
@@ -76,9 +64,9 @@ export default function Consultation() {
               ]}
               onPress={() =>
                 router.push({
-                  pathname: "/(autenticated)/news/1",
+                  pathname: `/(autenticated)/consultation/[slug]`,
                   params: {
-                    // slug: "slug",
+                    slug: item.id,
                   },
                 })
               }
@@ -86,7 +74,7 @@ export default function Consultation() {
               {({ pressed }) => (
                 <>
                   <Image
-                    source={item.image}
+                    source={{ uri: item.image }}
                     style={{ width: "100%", height: "40%" }}
                   />
                   <Typography
@@ -112,15 +100,15 @@ export default function Consultation() {
                     numberOfLines={4}
                     color={pressed ? "black-80" : "black-80"}
                   >
-                    {item.des}
+                    {removeHtmlTags(item.desc, 500)}
                   </Typography>
                   <Button
                     style={{ marginHorizontal: 10 }}
                     onPress={() =>
                       router.push({
-                        pathname: "/(autenticated)/consultation/1",
+                        pathname: `/(autenticated)/consultation/[slug]`,
                         params: {
-                          // slug: "slug",
+                          slug: item.id,
                         },
                       })
                     }

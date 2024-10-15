@@ -13,11 +13,14 @@ import AnggotaJiwa from "@/components/tansmigrationApplication/AnggotaJiwa";
 import { Button } from "@/components/ui/button";
 import UploadFile from "@/components/uploadFile";
 import UploadFoto from "@/components/uploadFoto";
+import { useAuthProfile } from "@/store/userStore";
 
 export default function Index() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
+
+  const user = useAuthProfile();
 
   const [imageKtp, setImageKtp] = useState<string>("");
   return (
@@ -36,11 +39,18 @@ export default function Index() {
           }}
         >
           <Image
-            source={require("@/assets/images/dummy1.jpg")}
+            source={{ uri: user?.UserProfile.image || "" }}
             style={{ width: 50, height: 50, borderRadius: 100 }}
           />
-          <Typography fontSize={18} style={{}} color="white">
-            Hi, Irsyad Abi Izzulhaq
+          <Typography
+            fontSize={18}
+            style={{}}
+            color="white"
+            onPress={() =>
+              router.push({ pathname: "/(autenticated)/profile/userProfile" })
+            }
+          >
+            Hi, {user?.UserProfile.name}
           </Typography>
           <TouchableOpacity style={{ marginLeft: "auto" }}>
             <IconNotification color="white" />

@@ -14,23 +14,32 @@ import Appbar from "@/components/ui/appBar";
 import { Typography } from "@/components/ui/typography";
 import RenderHTML, { defaultSystemFonts } from "react-native-render-html";
 import { IconBuilding, IconInfo } from "@/components/icons";
+import Separator from "@/components/ui/separator";
+import { formatDate } from "@/constants/dateTime";
+import { useGetCertificationgById } from "@/services/certification";
 
 export default function DetailCertification() {
   const router = useRouter();
   const { Colors } = useAppTheme();
   const insets = useSafeAreaInsets();
-  const params = useLocalSearchParams<{ id: string }>();
+  const params = useLocalSearchParams<{ slug: string }>();
+
+  const getCertification = useGetCertificationgById(params.slug);
+  const detail = getCertification.data?.data;
 
   return (
     <View style={{ flex: 1 }}>
       <Appbar
-        title={"Detail Sertifikasi"}
+        title={"Detail Sertifikassi"}
         variant="light"
         backIconPress={() => router.back()}
       />
-      <ScrollView style={{ flex: 1, paddingHorizontal: 20, marginTop: 10 }}>
+      <ScrollView
+        style={{ flex: 1, paddingHorizontal: 20, marginTop: 10 }}
+        contentContainerStyle={{ paddingBottom: 20 }}
+      >
         <Image
-          source={require("@/assets/images/image_1.png")}
+          source={{ uri: detail?.image }}
           style={{
             width: "100%",
             height: 150,
@@ -40,7 +49,7 @@ export default function DetailCertification() {
         />
         <View style={{ marginTop: 10 }}>
           <Typography fontFamily="Poppins-Medium" fontSize={20}>
-            Career Fair Tanggamus 2024
+            {detail?.title}
           </Typography>
           <View style={{ flexDirection: "row", gap: 15 }}>
             <View
@@ -64,62 +73,10 @@ export default function DetailCertification() {
             >
               <IconInfo width={20} height={20} color="black-80" />
               <Typography fontFamily="Poppins-Light" fontSize={14}>
-                Menengah
+                {detail?.level}
               </Typography>
             </View>
           </View>
-        </View>
-        {/* tab */}
-        <View
-          style={{
-            width: "100%",
-            height: 60,
-            backgroundColor: Colors["primary-50"],
-            borderRadius: 100,
-            overflow: "hidden",
-            flexDirection: "row",
-            padding: 10,
-            paddingVertical: 10,
-            marginTop: 20,
-            marginHorizontal: "auto",
-          }}
-        >
-          <View
-            style={{
-              width: "50%",
-              backgroundColor: Colors["white"],
-              height: "100%",
-              alignItems: "center",
-              justifyContent: "center",
-              borderRadius: 100,
-            }}
-          >
-            <Typography
-              fontSize={15}
-              style={{ textAlignVertical: "center" }}
-              color={"primary-50"}
-            >
-              Detail Pelatihan
-            </Typography>
-          </View>
-          <TouchableOpacity
-            style={{
-              width: "50%",
-              backgroundColor: Colors["primary-50"],
-              height: "100%",
-              alignItems: "center",
-              justifyContent: "center",
-              borderRadius: 100,
-            }}
-          >
-            <Typography
-              fontSize={15}
-              style={{ textAlignVertical: "center" }}
-              color={"white"}
-            >
-              Download Materi
-            </Typography>
-          </TouchableOpacity>
         </View>
         <Typography fontSize={18} style={{ marginTop: 20 }}>
           Deskripsi
@@ -128,9 +85,121 @@ export default function DetailCertification() {
           systemFonts={[...defaultSystemFonts, "Poppins-Regular"]}
           contentWidth={Dimensions.get("screen").width - 48}
           source={{
-            html: "<p>Hello World</p>",
+            html: detail?.desc || "<p>Hello World</p>",
           }}
         />
+        <Separator style={{ marginVertical: 20 }} />
+
+        <View style={{ gap: 10 }}>
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "flex-start",
+            }}
+          >
+            <Typography fontSize={15} fontFamily="Poppins-Light" style={{}}>
+              Nama Lembaga/Instansi
+            </Typography>
+            <Typography fontSize={16} fontFamily="Poppins-Medium" style={{}}>
+              {detail?.Company.name || "-"}
+            </Typography>
+          </View>
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "flex-start",
+            }}
+          >
+            <Typography fontSize={15} fontFamily="Poppins-Light" style={{}}>
+              Kategori
+            </Typography>
+            <Typography fontSize={16} fontFamily="Poppins-Medium" style={{}}>
+              {detail?.VacancyCategory.name || "-"}
+            </Typography>
+          </View>
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "flex-start",
+            }}
+          >
+            <Typography fontSize={15} fontFamily="Poppins-Light" style={{}}>
+              Kouta Peserta
+            </Typography>
+            <Typography fontSize={16} fontFamily="Poppins-Medium" style={{}}>
+              {detail?.quota || "-"}
+            </Typography>
+          </View>
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "flex-start",
+            }}
+          >
+            <Typography fontSize={15} fontFamily="Poppins-Light" style={{}}>
+              Tempat
+            </Typography>
+            <Typography fontSize={16} fontFamily="Poppins-Medium" style={{}}>
+              {detail?.location || "-"}
+            </Typography>
+          </View>
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "flex-start",
+            }}
+          >
+            <Typography fontSize={15} fontFamily="Poppins-Light" style={{}}>
+              Jam Mulai
+            </Typography>
+            <Typography fontSize={16} fontFamily="Poppins-Medium" style={{}}>
+              {detail?.time || "-"}
+            </Typography>
+          </View>
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "flex-start",
+            }}
+          >
+            <Typography fontSize={15} fontFamily="Poppins-Light" style={{}}>
+              Tanggal Mulai
+            </Typography>
+            <Typography fontSize={16} fontFamily="Poppins-Medium" style={{}}>
+              {formatDate(new Date(detail?.startDate || 0))}
+            </Typography>
+          </View>
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "flex-start",
+            }}
+          >
+            <Typography fontSize={15} fontFamily="Poppins-Light" style={{}}>
+              No WhatsApp :
+            </Typography>
+            <Typography fontSize={16} fontFamily="Poppins-Medium" style={{}}>
+              {detail?.phoneNumber || "-"}
+            </Typography>
+          </View>
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "flex-start",
+            }}
+          >
+            <Typography fontSize={15} fontFamily="Poppins-Light" style={{}}>
+              Link Pendaftaran :
+            </Typography>
+            <Typography
+              fontSize={16}
+              fontFamily="Poppins-Medium"
+              style={{ textDecorationLine: "underline" }}
+            >
+              {detail?.regisLink || "-"}
+            </Typography>
+          </View>
+        </View>
       </ScrollView>
     </View>
   );

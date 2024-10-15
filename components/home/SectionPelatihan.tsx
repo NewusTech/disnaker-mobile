@@ -8,24 +8,8 @@ import TextLink from "../ui/textLink";
 import { Dimensions, FlatList, Image, Pressable } from "react-native";
 import Animated from "react-native-reanimated";
 import { Button } from "../ui/button";
-
-const dummyData = [
-  {
-    image: require("@/assets/images/image_1.png"),
-    title: "Career Fair Tanggamus 2024",
-    des: "Temukan berbagai kesempatan kerja di Career Fair Tanggamus! Hadiri acara ini dan bertemu langsung dengan perusahaan-perusahaan terkemuka yang siap merekrut talenta berbakat.",
-  },
-  {
-    image: require("@/assets/images/image_1.png"),
-    title: "Career Fair Tanggamus 2024",
-    des: "Temukan berbagai kesempatan kerja di Career Fair Tanggamus! Hadiri acara ini dan bertemu langsung dengan perusahaan-perusahaan terkemuka yang siap merekrut talenta berbakat.",
-  },
-  {
-    image: require("@/assets/images/image_1.png"),
-    title: "Career Fair Tanggamus 2024",
-    des: "Temukan berbagai kesempatan kerja di Career Fair Tanggamus! Hadiri acara ini dan bertemu langsung dengan perusahaan-perusahaan terkemuka yang siap merekrut talenta berbakat.",
-  },
-];
+import { useGetTraining } from "@/services/training";
+import { removeHtmlTags } from "@/helper";
 
 export default function SectionPelatihan() {
   const router = useRouter();
@@ -33,6 +17,8 @@ export default function SectionPelatihan() {
   const { Colors } = useAppTheme();
 
   const flatListRef = useRef<FlatList>(null);
+
+  const getTraining = useGetTraining();
 
   return (
     <View backgroundColor="white" style={{ paddingVertical: 20, gap: 10 }}>
@@ -47,12 +33,16 @@ export default function SectionPelatihan() {
         <Typography fontSize={16} color="black-80">
           Pelatihan
         </Typography>
-        <TextLink fontSize={14} label="Lihat Semua" />
+        <TextLink
+          fontSize={14}
+          label="Lihat Semua"
+          onPress={() => router.push("/training")}
+        />
       </View>
       {/*  */}
       <Animated.FlatList
         ref={flatListRef}
-        data={dummyData}
+        data={getTraining.data?.data}
         horizontal
         renderItem={({ item }) => (
           <Pressable
@@ -68,7 +58,7 @@ export default function SectionPelatihan() {
                 borderRadius: 15,
                 width: Dimensions.get("window").width - 30,
                 overflow: "hidden",
-                height: 320,
+                maxHeight: 320,
                 flexDirection: "column",
                 justifyContent: "flex-start",
                 rowGap: 10,
@@ -76,7 +66,7 @@ export default function SectionPelatihan() {
             ]}
             onPress={() =>
               router.push({
-                pathname: "/(autenticated)/information/[slug]",
+                pathname: "/(autenticated)/training/[slug]",
                 params: {
                   slug: "slug",
                 },
@@ -86,8 +76,8 @@ export default function SectionPelatihan() {
             {({ pressed }) => (
               <>
                 <Image
-                  source={item.image}
-                  style={{ width: "100%", height: "33%" }}
+                  source={{ uri: item.image }}
+                  style={{ width: "100%", height: "43%" }}
                 />
                 <Typography
                   fontSize={18}
@@ -112,13 +102,13 @@ export default function SectionPelatihan() {
                   numberOfLines={4}
                   color={pressed ? "black-80" : "black-80"}
                 >
-                  {item.des}
+                  {removeHtmlTags(item.desc, 500)}
                 </Typography>
                 <Button
                   style={{ marginHorizontal: 10 }}
                   onPress={() =>
                     router.push({
-                      pathname: "/(autenticated)/information/[slug]",
+                      pathname: "/(autenticated)/training/[slug]",
                       params: {
                         slug: "slug",
                       },

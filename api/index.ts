@@ -1,6 +1,5 @@
 import { API_URL } from "@/constants";
 import apiClient from "@/lib/fatcher";
-import { handleLogoutSession } from "@/services/auth.service";
 import { getAccessToken } from "@/store/userStore";
 import {
   PostLoginPayload,
@@ -741,10 +740,429 @@ export const getUserSavedVacancy = async () => {
 };
 
 export const postUserSaveVacancy = async (payload: { vacancy_id: string }) => {
-  const response = await apiClient<PostResponseSuccess>({
+  const response = await apiClient<
+    PostResponseSuccess & { data: { vacancy_id: number } }
+  >({
     method: "POST",
     url: "/user/savevacancy",
     data: payload,
+  });
+  return response.data;
+};
+export const deleteUserSaveVacancy = async (payload: {
+  vacancy_id: string;
+}) => {
+  const response = await apiClient<
+    PostResponseSuccess & { data: { vacancy_id: number } }
+  >({
+    method: "DELETE",
+    url: "/user/unsavevacancy",
+    data: payload,
+  });
+  return response.data;
+};
+
+export type ArticleResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    title: string;
+    slug: string;
+    desc: string;
+    image: string;
+    kategori_id: number;
+    createdAt: string;
+    updatedAt: string;
+    Kategoriartikel: {
+      id: number;
+      title: string;
+    };
+  }[];
+};
+export const getArticle = async () => {
+  const response = await apiClient<ArticleResponseSuccess>({
+    method: "GET",
+    url: "/artikel/get",
+  });
+  return response.data;
+};
+
+export type ArticleBySlugResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    title: string;
+    slug: string;
+    desc: string;
+    image: string;
+    kategori_id: number;
+    createdAt: string;
+    updatedAt: string;
+    Kategoriartikel: {
+      id: number;
+      title: string;
+    };
+  };
+};
+export const getArticleBySlug = async (slug: string) => {
+  const response = await apiClient<ArticleBySlugResponseSuccess>({
+    method: "GET",
+    url: "/artikel/get/" + slug,
+  });
+  return response.data;
+};
+
+export type EventResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    title: string;
+    slug: string;
+    desc: string;
+    category_id: string | null;
+    image: string | null;
+    startDate: string | null;
+    endDate: string | null;
+    regisLink: string | null;
+    phoneNumber: string | null;
+    time: string | null;
+    location: string | null;
+    VacancyCategory: string | null;
+    createdAt: string;
+    updatedAt: string;
+  }[];
+};
+export const getEvent = async () => {
+  const response = await apiClient<EventResponseSuccess>({
+    method: "GET",
+    url: "/event/get",
+  });
+  return response.data;
+};
+
+export type EventBySlugResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    title: string;
+    slug: string;
+    desc: string;
+    category_id: string | null;
+    image: string | null;
+    startDate: string | null;
+    endDate: string | null;
+    regisLink: string | null;
+    phoneNumber: string | null;
+    time: string | null;
+    location: string | null;
+    VacancyCategory: string | null;
+    createdAt: string;
+    updatedAt: string;
+  };
+};
+export const getEventBySlug = async (slug: string) => {
+  const response = await apiClient<EventBySlugResponseSuccess>({
+    method: "GET",
+    url: "/event/get/" + slug,
+  });
+  return response.data;
+};
+
+export const putCvPortofolio = async (payload: FormData, slug: string) => {
+  const accessToken = getAccessToken();
+  try {
+    const response = await fetch(
+      `${API_URL}/user/cv-portfolio/upload/${slug}`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: payload,
+      }
+    );
+
+    // Periksa apakah respons sukses (status 2xx)
+    if (!response.ok) {
+      // Jika tidak sukses, ambil pesan error
+      const errorData = await response.json();
+      // Buat error baru dengan pesan dari respons
+      throw new Error(errorData.message || "Gagal Mengupdate CV Portofolio.");
+    }
+    // Respons sukses, kembalikan data JSON
+    const result = await response.json();
+    return result;
+  } catch (error: any) {
+    // Tangani error di sini
+    console.error(
+      `Error saat menambah data : ${error.message} - ${error.data}`
+    );
+    // Kamu bisa mengembalikan error atau menampilkannya ke UI
+    throw error;
+  }
+};
+
+export type TrainingResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    company_id: number;
+    category_id: number;
+    title: string;
+    desc: string;
+    location: string;
+    quota: number;
+    startDate: string;
+    endDate: string;
+    time: string;
+    linkModule: string;
+    phoneNumber: string;
+    level: string;
+    regisLink: string;
+    image: string;
+    createdAt: string;
+    updatedAt: string;
+    Company: {
+      id: number;
+      name: string;
+    };
+    VacancyCategory: {
+      id: number;
+      name: string;
+    };
+  }[];
+};
+export const getTraining = async () => {
+  const response = await apiClient<TrainingResponseSuccess>({
+    method: "GET",
+    url: "/training/get",
+  });
+  return response.data;
+};
+
+export type TrainingByIdResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    company_id: number;
+    category_id: number;
+    title: string;
+    desc: string;
+    location: string;
+    quota: number;
+    startDate: string;
+    endDate: string;
+    time: string;
+    linkModule: string;
+    phoneNumber: string;
+    level: string;
+    regisLink: string;
+    image: string;
+    createdAt: string;
+    updatedAt: string;
+    Company: {
+      id: number;
+      name: string;
+    };
+    VacancyCategory: {
+      id: number;
+      name: string;
+    };
+  };
+};
+export const getTrainingById = async (id: string) => {
+  const response = await apiClient<TrainingByIdResponseSuccess>({
+    method: "GET",
+    url: "/training/get/" + id,
+  });
+  return response.data;
+};
+
+export type CertificationResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    company_id: number;
+    category_id: number;
+    title: string;
+    desc: string;
+    location: string;
+    quota: number;
+    startDate: string;
+    endDate: string;
+    time: string;
+    linkModule: string;
+    phoneNumber: string;
+    level: string;
+    regisLink: string;
+    image: string;
+    createdAt: string;
+    updatedAt: string;
+    Company: {
+      id: number;
+      name: string;
+    };
+    VacancyCategory: {
+      id: number;
+      name: string;
+    };
+  }[];
+};
+export const getCertification = async () => {
+  const response = await apiClient<CertificationResponseSuccess>({
+    method: "GET",
+    url: "/certification/get",
+  });
+  return response.data;
+};
+
+export type CertificationByIdResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    company_id: number;
+    category_id: number;
+    title: string;
+    desc: string;
+    location: string;
+    quota: number;
+    startDate: string;
+    endDate: string;
+    time: string;
+    linkModule: string;
+    phoneNumber: string;
+    level: string;
+    regisLink: string;
+    image: string;
+    createdAt: string;
+    updatedAt: string;
+    Company: {
+      id: number;
+      name: string;
+    };
+    VacancyCategory: {
+      id: number;
+      name: string;
+    };
+  };
+};
+export const getCertificationById = async (id: string) => {
+  const response = await apiClient<CertificationByIdResponseSuccess>({
+    method: "GET",
+    url: "/certification/get/" + id,
+  });
+  return response.data;
+};
+
+export type TncResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    desc: string;
+    createdAt: string;
+    updatedAt: string;
+  };
+};
+export const getTnc = async () => {
+  const response = await apiClient<TncResponseSuccess>({
+    method: "GET",
+    url: "/snk/get",
+  });
+  return response.data;
+};
+
+export type ConsultationResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    company_id: number;
+    category_id: number;
+    title: string;
+    desc: string;
+    location: string;
+    quota: number;
+    startDate: string;
+    endDate: string;
+    time: string;
+    phoneNumber: string;
+    regisLink: string;
+    image: string;
+    createdAt: string;
+    updatedAt: string;
+    Company: {
+      id: number;
+      name: string;
+    };
+    VacancyCategory: {
+      id: number;
+      name: string;
+    };
+  }[];
+};
+export const getConsultation = async () => {
+  const response = await apiClient<ConsultationResponseSuccess>({
+    method: "GET",
+    url: "/consultation/get",
+  });
+  return response.data;
+};
+
+export type ConsultationByIdResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    company_id: number;
+    category_id: number;
+    title: string;
+    desc: string;
+    location: string;
+    quota: number;
+    startDate: string;
+    endDate: string;
+    time: string;
+    phoneNumber: string;
+    regisLink: string;
+    image: string;
+    createdAt: string;
+    updatedAt: string;
+    Company: {
+      id: number;
+      name: string;
+    };
+    VacancyCategory: {
+      id: number;
+      name: string;
+    };
+  };
+};
+export const getConsultationById = async (id: string) => {
+  const response = await apiClient<ConsultationByIdResponseSuccess>({
+    method: "GET",
+    url: "/consultation/get/" + id,
+  });
+  return response.data;
+};
+
+export type UserNotificationResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {};
+};
+export const getUserNotification = async () => {
+  const response = await apiClient<UserNotificationResponseSuccess>({
+    method: "GET",
+    url: "/user/invitation/get",
   });
   return response.data;
 };

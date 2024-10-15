@@ -7,6 +7,7 @@ import {
   deleteOrganizationHistory,
   deleteSertificate,
   deleteUserLink,
+  deleteUserSaveVacancy,
   getEducationHistoryById,
   getEducationLevel,
   getExperienceHistoryById,
@@ -16,6 +17,7 @@ import {
   getSkills,
   getUserHistoryApplication,
   getUserLinkById,
+  getUserNotification,
   getUserProfile,
   getUserSavedVacancy,
   postEducationHistory,
@@ -29,6 +31,7 @@ import {
   postUserSaveVacancy,
   postUserSkills,
   putAbout,
+  putCvPortofolio,
   putEditProfile,
   putEducationHistory,
   putExperienceHistory,
@@ -336,5 +339,32 @@ export const useUserSaveVacancy = () => {
     mutationFn: (payload: { vacancy_id: string }) =>
       postUserSaveVacancy(payload),
     onError: (error: AxiosError<ResponseError>) => error,
+  });
+};
+
+export const useUserDeleteVacancy = () => {
+  return useMutation({
+    mutationFn: (payload: { vacancy_id: string }) =>
+      deleteUserSaveVacancy(payload),
+    onError: (error: AxiosError<ResponseError>) => error,
+  });
+};
+
+export const useUploadCvPortofolio = () => {
+  return useMutation({
+    mutationFn: (payload: { data: FormData; slug: string }) =>
+      putCvPortofolio(payload.data, payload.slug),
+    onError: (error: AxiosError<ResponseError>) => error,
+  });
+};
+
+export const useGetUserNotification = () => {
+  const accessToken = useAccessToken();
+
+  return useQuery({
+    queryKey: ["useGetUserNotification", accessToken],
+    // TODO replace with actual get Profile API
+    queryFn: () => getUserNotification(),
+    enabled: !!accessToken,
   });
 };

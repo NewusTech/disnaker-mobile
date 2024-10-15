@@ -143,6 +143,26 @@ export default function Register() {
             onPress={() => router.replace("/auth/login")}
           />
         </View>
+        <Typography style={{ textAlign: "center" }}>
+          Dengan mendaftar, Anda menyetujui{" "}
+          <Typography
+            color="primary-50"
+            fontFamily="Poppins-Medium"
+            onPress={() => router.push("/tnc")}
+          >
+            Syarat & Ketentuan
+          </Typography>{" "}
+          kami dan Anda telah membaca{" "}
+          <Typography
+            color="primary-50"
+            fontFamily="Poppins-Medium"
+            onPress={() => router.push("/pnp")}
+          >
+            {" "}
+            Kebijakan Privasi
+          </Typography>{" "}
+          kami
+        </Typography>
       </View>
     </View>
   );

@@ -1,8 +1,7 @@
 import { useEffect } from "react";
 import { StyleSheet } from "react-native";
-import { useNavigation, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import View from "@/components/view";
-import Loader from "@/components/ui/loader";
 import { getItem } from "@/lib/async-storage";
 import Animated, {
   Easing,
@@ -14,19 +13,17 @@ import Animated, {
 } from "react-native-reanimated";
 import { IconKemenker } from "@/components/icons";
 import { Typography } from "@/components/ui/typography";
-import { useAccessToken, useAuthActions } from "@/store/userStore";
-import { useGetProfile } from "@/services/user";
+import { useAuthActions } from "@/store/userStore";
 
 const duration = 2000;
 const easing = Easing.bezier(0.25, -0.5, 0.25, 1);
 
 export default function InitialScreen() {
   const router = useRouter();
-  
+
   const { setAccessToken } = useAuthActions();
 
   const logo = useSharedValue<number>(0);
-
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ rotate: `${logo.value * 360}deg` }],
@@ -45,11 +42,11 @@ export default function InitialScreen() {
 
       if (storageAccessToken) {
         setAccessToken(storageAccessToken);
+        router.replace("/(autenticated)/(tabs)/home");
+        // router.replace("/(autenticated)/notification")
       } else {
         router.replace("/(public)/onboard");
       }
-      router.replace("/(autenticated)/(tabs)/home");
-      // router.replace("/(autenticated)/profile/account")
     };
 
     initAuth();

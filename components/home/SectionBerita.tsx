@@ -19,24 +19,8 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { Button } from "../ui/button";
-
-const dummyData = [
-  {
-    image: require("@/assets/images/image_1.png"),
-    title: "Career Fair Tanggamus 2024",
-    des: "Temukan berbagai kesempatan kerja di Career Fair Tanggamus! Hadiri acara ini dan bertemu langsung dengan perusahaan-perusahaan terkemuka yang siap merekrut talenta berbakat.",
-  },
-  {
-    image: require("@/assets/images/image_1.png"),
-    title: "Career Fair Tanggamus 2024",
-    des: "Temukan berbagai kesempatan kerja di Career Fair Tanggamus! Hadiri acara ini dan bertemu langsung dengan perusahaan-perusahaan terkemuka yang siap merekrut talenta berbakat.",
-  },
-  {
-    image: require("@/assets/images/image_1.png"),
-    title: "Career Fair Tanggamus 2024",
-    des: "Temukan berbagai kesempatan kerja di Career Fair Tanggamus! Hadiri acara ini dan bertemu langsung dengan perusahaan-perusahaan terkemuka yang siap merekrut talenta berbakat.",
-  },
-];
+import { useGetArticle } from "@/services/article/insex";
+import { removeHtmlTags } from "@/helper";
 
 export default function SectionBerita() {
   const router = useRouter();
@@ -46,6 +30,8 @@ export default function SectionBerita() {
   const visible = useSharedValue<boolean>(false);
 
   const flatListRef = useRef<FlatList>(null);
+
+  const getNews = useGetArticle();
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [
@@ -96,6 +82,7 @@ export default function SectionBerita() {
         alignItems: "center",
         justifyContent: "center",
         marginTop: 0,
+        height: 360,
       }}
     >
       <Animated.View
@@ -133,6 +120,7 @@ export default function SectionBerita() {
             borderRadius: 100,
             // marginTop: "auto",
           }}
+          onPress={() => router.push("/news")}
         >
           <Typography fontSize={12} color="white">
             Lihat Semuanya
@@ -142,7 +130,7 @@ export default function SectionBerita() {
       <Animated.FlatList
         ref={flatListRef}
         onScroll={scrollHandler}
-        data={dummyData}
+        data={getNews.data?.data}
         horizontal
         renderItem={({ item }) => (
           <Pressable
@@ -166,9 +154,9 @@ export default function SectionBerita() {
             ]}
             onPress={() =>
               router.push({
-                pathname: "/(autenticated)/information/[slug]",
+                pathname: "/(autenticated)/news/[slug]",
                 params: {
-                  slug: "slug",
+                  slug: item.slug,
                 },
               })
             }
@@ -176,7 +164,7 @@ export default function SectionBerita() {
             {({ pressed }) => (
               <>
                 <Image
-                  source={item.image}
+                  source={{ uri: item.image }}
                   style={{ width: "100%", height: "33%" }}
                 />
                 <Typography
@@ -202,15 +190,15 @@ export default function SectionBerita() {
                   numberOfLines={4}
                   color={pressed ? "black-80" : "black-80"}
                 >
-                  {item.des}
+                  {removeHtmlTags(item.desc, 500)}
                 </Typography>
                 <Button
                   style={{ marginHorizontal: 10 }}
                   onPress={() =>
                     router.push({
-                      pathname: "/(autenticated)/information/[slug]",
+                      pathname: "/(autenticated)/news/[slug]",
                       params: {
-                        slug: "slug",
+                        slug: item.slug,
                       },
                     })
                   }

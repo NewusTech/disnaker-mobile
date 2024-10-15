@@ -3,33 +3,21 @@ import { SearchBox } from "@/components/ui/searchBox";
 import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
+import { removeHtmlTags } from "@/helper";
+import { useGetEvent } from "@/services/event";
 import { useRouter } from "expo-router";
 import React from "react";
-import { Dimensions, Image, Pressable } from "react-native";
+import { Dimensions, Image, Pressable, RefreshControl } from "react-native";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const dummyData = [
-  {
-    image: require("@/assets/images/image_1.png"),
-    title: "Career Fair Tanggamus 2024",
-    des: "Temukan berbagai kesempatan kerja di Career Fair Tanggamus! Hadiri acara ini dan bertemu langsung dengan perusahaan-perusahaan terkemuka yang siap merekrut talenta berbakat.",
-  },
-  {
-    image: require("@/assets/images/image_1.png"),
-    title: "Career Fair Tanggamus 2024",
-    des: "Temukan berbagai kesempatan kerja di Career Fair Tanggamus! Hadiri acara ini dan bertemu langsung dengan perusahaan-perusahaan terkemuka yang siap merekrut talenta berbakat.",
-  },
-  {
-    image: require("@/assets/images/image_1.png"),
-    title: "Career Fair Tanggamus 2024",
-    des: "Temukan berbagai kesempatan kerja di Career Fair Tanggamus! Hadiri acara ini dan bertemu langsung dengan perusahaan-perusahaan terkemuka yang siap merekrut talenta berbakat.",
-  },
-];
 export default function Information() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
+
+  const getEvent = useGetEvent();
+
   return (
     <View style={{ flex: 1, paddingTop: insets.top }} backgroundColor="white">
       <View
@@ -45,7 +33,15 @@ export default function Information() {
           Event
         </Typography>
       </View>
-      <Animated.ScrollView>
+      <Animated.ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={getEvent.isRefetching}
+            onRefresh={() => getEvent.refetch()}
+            progressViewOffset={20}
+          />
+        }
+      >
         <View style={{ paddingHorizontal: 20, marginVertical: 40 }}>
           <SearchBox placeholder="Search" />
         </View>
@@ -53,7 +49,7 @@ export default function Information() {
           numColumns={1}
           showsHorizontalScrollIndicator={false}
           scrollEnabled={false}
-          data={dummyData}
+          data={getEvent.data?.data}
           renderItem={({ item }) => (
             <Pressable
               style={({ pressed }) => [
@@ -68,7 +64,7 @@ export default function Information() {
                   borderRadius: 15,
                   width: Dimensions.get("window").width - 30,
                   overflow: "hidden",
-                  height: 350,
+                  maxHeight: 350,
                   flexDirection: "column",
                   justifyContent: "flex-start",
                   rowGap: 10,
@@ -76,9 +72,9 @@ export default function Information() {
               ]}
               onPress={() =>
                 router.push({
-                  pathname: "/(autenticated)/event/slug",
+                  pathname: `/(autenticated)/event/[slug]`,
                   params: {
-                    slug: "slug",
+                    slug: item.slug,
                   },
                 })
               }
@@ -86,7 +82,7 @@ export default function Information() {
               {({ pressed }) => (
                 <>
                   <Image
-                    source={item.image}
+                    source={{ uri: item.image || "" }}
                     style={{ width: "100%", height: "40%" }}
                   />
                   <Typography
@@ -112,15 +108,15 @@ export default function Information() {
                     numberOfLines={4}
                     color={pressed ? "black-80" : "black-80"}
                   >
-                    {item.des}
+                    {removeHtmlTags(item.desc, 500)}
                   </Typography>
                   <Button
                     style={{ marginHorizontal: 10 }}
                     onPress={() =>
                       router.push({
-                        pathname: "/(autenticated)/event/slug",
+                        pathname: `/(autenticated)/event/[slug]`,
                         params: {
-                          slug: "slug",
+                          slug: item.slug,
                         },
                       })
                     }

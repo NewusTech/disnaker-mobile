@@ -6,7 +6,7 @@ import {
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
@@ -15,6 +15,8 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "@/lib/transtack-query";
 import { AppThemeProvider } from "@/context/theme-context";
 import Toast from "react-native-toast-message";
+import CustomSplashScreen from "@/components/customSplashScreen";
+import React from "react";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -57,21 +59,34 @@ export default function RootLayout() {
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
+  const [animationCompleted, setAnimationComplete] = useState<Boolean>(false);
+
+  const changeAnimationStatus = (param: Boolean) => {
+    setAnimationComplete(param);
+  };
+
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider
-        value={colorScheme === "dark" ? DefaultTheme : DefaultTheme}
-      >
-        <AppThemeProvider>
-          <Stack
-            screenOptions={{
-              headerShown: false,
-              animation: "ios",
-            }}
-          />
-           <Toast />
-        </AppThemeProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+    <>
+      {animationCompleted && (
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider
+            value={colorScheme === "dark" ? DefaultTheme : DefaultTheme}
+          >
+            <AppThemeProvider>
+              <Stack
+                screenOptions={{
+                  headerShown: false,
+                  animation: "ios",
+                }}
+              />
+              <Toast />
+            </AppThemeProvider>
+          </ThemeProvider>
+        </QueryClientProvider>
+      )}
+      {!animationCompleted && (
+        <CustomSplashScreen onFinish={changeAnimationStatus} />
+      )}
+    </>
   );
 }

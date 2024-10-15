@@ -6,6 +6,7 @@ import TextInput from "@/components/ui/textInput";
 import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
+import { useAuthProfile } from "@/store/userStore";
 import { useRouter } from "expo-router";
 import React from "react";
 import { Image, ScrollView, TouchableOpacity } from "react-native";
@@ -15,6 +16,9 @@ export default function index() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
+
+  const user = useAuthProfile();
+
   return (
     <View style={{ flex: 1 }} backgroundColor="white">
       <View
@@ -31,11 +35,18 @@ export default function index() {
           }}
         >
           <Image
-            source={require("@/assets/images/dummy1.jpg")}
+            source={{ uri: user?.UserProfile.image || "" }}
             style={{ width: 50, height: 50, borderRadius: 100 }}
           />
-          <Typography fontSize={18} style={{}} color="white">
-            Hi, Irsyad Abi Izzulhaq
+          <Typography
+            fontSize={18}
+            style={{}}
+            color="white"
+            onPress={() =>
+              router.push({ pathname: "/(autenticated)/profile/userProfile" })
+            }
+          >
+            Hi, {user?.UserProfile.name}
           </Typography>
           <TouchableOpacity style={{ marginLeft: "auto" }}>
             <IconNotification color="white" />

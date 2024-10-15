@@ -8,10 +8,10 @@ import { SearchBox } from "@/components/ui/searchBox";
 import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
-import { useGetProfile } from "@/services/user";
+import { useGetProfile, useGetUserSavedVacancy } from "@/services/user";
 import { useAuthActions, useAuthProfile } from "@/store/userStore";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Image,
   Pressable,
@@ -94,6 +94,9 @@ export default function JobVacancy() {
 
   const getUserProfile = useGetProfile();
   const userProfile = getUserProfile.data?.data;
+  const getFavorites = useGetUserSavedVacancy();
+  const favorites = getFavorites.data?.data;
+  const { setSavedVacancy } = useAuthActions();
 
   if (userProfile?.Skills.length === 0) {
     Toast.show({
@@ -103,6 +106,13 @@ export default function JobVacancy() {
     });
     return router.replace("/(autenticated)/profile/skills");
   }
+
+  const _favorites =
+    favorites?.map((d) => {
+      return {
+        id: d.vacancy_id,
+      };
+    }) || [];
 
   const [search, setSearch] = useState("");
 
@@ -114,6 +124,10 @@ export default function JobVacancy() {
       },
     });
   };
+
+  useEffect(() => {
+    setSavedVacancy(_favorites);
+  }, [getFavorites.data?.data]);
 
   return (
     <View backgroundColor="white">
@@ -130,7 +144,7 @@ export default function JobVacancy() {
               justifyContent: "flex-start",
               gap: 10,
             }}
-            onPress={() => router.push("/profile")}
+            onPress={() => router.push("/profile/userProfile")}
           >
             <Image
               source={
@@ -143,7 +157,7 @@ export default function JobVacancy() {
             <Typography fontSize={18} style={{}} color="white">
               Hi, {userProfile?.UserProfile.name}
             </Typography>
-            <TouchableOpacity style={{ marginLeft: "auto" }}>
+            <TouchableOpacity style={{ marginLeft: "auto" }} onPress={()=>router.push("/notification")}>
               <IconNotification color="white" />
             </TouchableOpacity>
           </Pressable>

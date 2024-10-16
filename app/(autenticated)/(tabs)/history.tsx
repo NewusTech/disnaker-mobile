@@ -1,10 +1,11 @@
 import HistoryLowongan from "@/components/History/HistoryLowongan";
+import HistoryPengaduan from "@/components/History/HistoryPengaduan";
 import { SelectInput } from "@/components/selectInput";
 import Appbar from "@/components/ui/appBar";
 import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import { ScrollView, TouchableOpacity } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -14,12 +15,20 @@ export default function History() {
   const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
 
-  const [tanbRiwayat, setTanbRiwayat] = useState<
+  const params = useLocalSearchParams<{
+    tabRiwayat:
+      | "Lowongan Pekerjaan"
+      | "Daftar Kartu Kuning"
+      | "Pengaduan"
+      | "Daftar Tansmigrasi";
+  }>();
+
+  const [tabRiwayat, setTabRiwayat] = useState<
     | "Lowongan Pekerjaan"
     | "Daftar Kartu Kuning"
     | "Pengaduan"
     | "Daftar Tansmigrasi"
-  >("Lowongan Pekerjaan");
+  >(() => (params.tabRiwayat ? params.tabRiwayat : "Lowongan Pekerjaan"));
 
   return (
     <View backgroundColor="white" style={{ flex: 1 }}>
@@ -46,20 +55,20 @@ export default function History() {
               style={{
                 width: 200,
                 backgroundColor:
-                  tanbRiwayat === "Lowongan Pekerjaan"
+                  tabRiwayat === "Lowongan Pekerjaan"
                     ? Colors["primary-50"]
                     : Colors.white,
                 height: "100%",
                 alignItems: "center",
                 justifyContent: "center",
               }}
-              onPress={() => setTanbRiwayat("Lowongan Pekerjaan")}
+              onPress={() => setTabRiwayat("Lowongan Pekerjaan")}
             >
               <Typography
                 fontSize={14}
                 style={{ textAlignVertical: "center" }}
                 color={
-                  tanbRiwayat === "Lowongan Pekerjaan" ? "white" : "primary-50"
+                  tabRiwayat === "Lowongan Pekerjaan" ? "white" : "primary-50"
                 }
               >
                 Lowongan Pekerjaan
@@ -69,20 +78,20 @@ export default function History() {
               style={{
                 width: 200,
                 backgroundColor:
-                  tanbRiwayat === "Daftar Kartu Kuning"
+                  tabRiwayat === "Daftar Kartu Kuning"
                     ? Colors["primary-50"]
                     : Colors.white,
                 height: "100%",
                 alignItems: "center",
                 justifyContent: "center",
               }}
-              onPress={() => setTanbRiwayat("Daftar Kartu Kuning")}
+              onPress={() => setTabRiwayat("Daftar Kartu Kuning")}
             >
               <Typography
                 fontSize={14}
                 style={{ textAlignVertical: "center" }}
                 color={
-                  tanbRiwayat === "Daftar Kartu Kuning" ? "white" : "primary-50"
+                  tabRiwayat === "Daftar Kartu Kuning" ? "white" : "primary-50"
                 }
               >
                 Daftar Kartu Kuning
@@ -92,20 +101,20 @@ export default function History() {
               style={{
                 width: 200,
                 backgroundColor:
-                  tanbRiwayat === "Daftar Tansmigrasi"
+                  tabRiwayat === "Daftar Tansmigrasi"
                     ? Colors["primary-50"]
                     : Colors.white,
                 height: "100%",
                 alignItems: "center",
                 justifyContent: "center",
               }}
-              onPress={() => setTanbRiwayat("Daftar Tansmigrasi")}
+              onPress={() => setTabRiwayat("Daftar Tansmigrasi")}
             >
               <Typography
                 fontSize={14}
                 style={{ textAlignVertical: "center" }}
                 color={
-                  tanbRiwayat === "Daftar Tansmigrasi" ? "white" : "primary-50"
+                  tabRiwayat === "Daftar Tansmigrasi" ? "white" : "primary-50"
                 }
               >
                 Daftar Tansmigrasi
@@ -115,26 +124,27 @@ export default function History() {
               style={{
                 width: 200,
                 backgroundColor:
-                  tanbRiwayat === "Pengaduan"
+                  tabRiwayat === "Pengaduan"
                     ? Colors["primary-50"]
                     : Colors.white,
                 height: "100%",
                 alignItems: "center",
                 justifyContent: "center",
               }}
-              onPress={() => setTanbRiwayat("Pengaduan")}
+              onPress={() => setTabRiwayat("Pengaduan")}
             >
               <Typography
                 fontSize={14}
                 style={{ textAlignVertical: "center" }}
-                color={tanbRiwayat === "Pengaduan" ? "white" : "primary-50"}
+                color={tabRiwayat === "Pengaduan" ? "white" : "primary-50"}
               >
                 Pengaduan Online
               </Typography>
             </TouchableOpacity>
           </View>
         </ScrollView>
-        {tanbRiwayat === "Lowongan Pekerjaan" && <HistoryLowongan />}
+        {tabRiwayat === "Lowongan Pekerjaan" && <HistoryLowongan />}
+        {tabRiwayat === "Pengaduan" && <HistoryPengaduan />}
       </ScrollView>
     </View>
   );

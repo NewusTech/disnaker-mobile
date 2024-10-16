@@ -108,7 +108,7 @@ export default function Information() {
                     numberOfLines={4}
                     color={pressed ? "black-80" : "black-80"}
                   >
-                    {removeHtmlTags(item.desc, 500)}
+                    {removeHtmlTags(item.desc || "", 500)}
                   </Typography>
                   <Button
                     style={{ marginHorizontal: 10 }}

@@ -3,33 +3,20 @@ import { SearchBox } from "@/components/ui/searchBox";
 import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
+import { removeHtmlTags } from "@/helper";
+import { useGetInformation } from "@/services/information";
 import { useRouter } from "expo-router";
 import React from "react";
 import { Dimensions, Image, Pressable } from "react-native";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const dummyData = [
-  {
-    image: require("@/assets/images/image_1.png"),
-    title: "Career Fair Tanggamus 2024",
-    des: "Temukan berbagai kesempatan kerja di Career Fair Tanggamus! Hadiri acara ini dan bertemu langsung dengan perusahaan-perusahaan terkemuka yang siap merekrut talenta berbakat.",
-  },
-  {
-    image: require("@/assets/images/image_1.png"),
-    title: "Career Fair Tanggamus 2024",
-    des: "Temukan berbagai kesempatan kerja di Career Fair Tanggamus! Hadiri acara ini dan bertemu langsung dengan perusahaan-perusahaan terkemuka yang siap merekrut talenta berbakat.",
-  },
-  {
-    image: require("@/assets/images/image_1.png"),
-    title: "Career Fair Tanggamus 2024",
-    des: "Temukan berbagai kesempatan kerja di Career Fair Tanggamus! Hadiri acara ini dan bertemu langsung dengan perusahaan-perusahaan terkemuka yang siap merekrut talenta berbakat.",
-  },
-];
 export default function Information() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
+
+  const getInformation = useGetInformation();
   return (
     <View style={{ flex: 1, paddingTop: insets.top }} backgroundColor="white">
       <View
@@ -53,7 +40,7 @@ export default function Information() {
           numColumns={1}
           showsHorizontalScrollIndicator={false}
           scrollEnabled={false}
-          data={dummyData}
+          data={getInformation.data?.data}
           renderItem={({ item }) => (
             <Pressable
               style={({ pressed }) => [
@@ -68,7 +55,7 @@ export default function Information() {
                   borderRadius: 15,
                   width: Dimensions.get("window").width - 30,
                   overflow: "hidden",
-                  height: 220,
+                  maxHeight: 220,
                   flexDirection: "column",
                   justifyContent: "center",
                   rowGap: 10,
@@ -77,9 +64,9 @@ export default function Information() {
               ]}
               onPress={() =>
                 router.push({
-                  pathname: "/(autenticated)/information/1",
+                  pathname: "/(autenticated)/information/[slug]",
                   params: {
-                    // slug: "slug",
+                    slug: item.id,
                   },
                 })
               }
@@ -109,7 +96,7 @@ export default function Information() {
                     numberOfLines={4}
                     color={pressed ? "black-80" : "black-80"}
                   >
-                    {item.des}
+                    {removeHtmlTags(item.desc, 500)}
                   </Typography>
                   <Button
                     style={{ marginHorizontal: 10 }}

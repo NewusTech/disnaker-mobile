@@ -99,3 +99,10 @@ export const userSertificate = z.object({
 });
 
 export type userSertificateForm = z.infer<typeof userSertificate>;
+
+export const userComplaint = z.object({
+  title: z.string({ message: "Harus diisi" }),
+  desc: z.string({ message: "Harus diisi" }),
+});
+
+export type userComplaintForm = z.infer<typeof userComplaint>;

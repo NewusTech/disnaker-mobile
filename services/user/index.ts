@@ -15,6 +15,8 @@ import {
   getOrganizationHistoryById,
   getSertificateById,
   getSkills,
+  getUserComplaint,
+  getUserComplaintById,
   getUserHistoryApplication,
   getUserLinkById,
   getUserNotification,
@@ -27,6 +29,7 @@ import {
   postRegister,
   postSertificate,
   postUserApplyVacancy,
+  postUserComplaint,
   postUserLink,
   postUserSaveVacancy,
   postUserSkills,
@@ -365,6 +368,34 @@ export const useGetUserNotification = () => {
     queryKey: ["useGetUserNotification", accessToken],
     // TODO replace with actual get Profile API
     queryFn: () => getUserNotification(),
+    enabled: !!accessToken,
+  });
+};
+
+export const useUserComplaint = () => {
+  return useMutation({
+    mutationFn: (payload: FormData) => postUserComplaint(payload),
+    onError: (error: AxiosError<ResponseError>) => error,
+  });
+};
+
+export const useGetUserComplaint = () => {
+  const accessToken = useAccessToken();
+
+  return useQuery({
+    queryKey: ["useGetUserComplaint", accessToken],
+    // TODO replace with actual get Profile API
+    queryFn: () => getUserComplaint(),
+    enabled: !!accessToken,
+  });
+};
+export const useGetUserComplaintById = (id: string) => {
+  const accessToken = useAccessToken();
+
+  return useQuery({
+    queryKey: ["useGetUserComplaintById", accessToken],
+    // TODO replace with actual get Profile API
+    queryFn: () => getUserComplaintById(id),
     enabled: !!accessToken,
   });
 };

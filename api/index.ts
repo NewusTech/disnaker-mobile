@@ -12,6 +12,7 @@ import {
 import { HttpStatusCode } from "axios";
 
 export * from "@/api/vacancy";
+export * from "@/api/user"
 
 export type PostLoginResponseSuccess = {
   data: {
@@ -1163,6 +1164,65 @@ export const getUserNotification = async () => {
   const response = await apiClient<UserNotificationResponseSuccess>({
     method: "GET",
     url: "/user/invitation/get",
+  });
+  return response.data;
+};
+
+export type InformationResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    slug: string;
+    title: string;
+    desc: string;
+    createdAt: string;
+    updatedAt: string;
+  }[];
+};
+export const getInformation = async () => {
+  const response = await apiClient<InformationResponseSuccess>({
+    method: "GET",
+    url: "/information/get",
+  });
+  return response.data;
+};
+
+export type InformationByIdResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    slug: string;
+    title: string;
+    desc: string;
+    createdAt: string;
+    updatedAt: string;
+  };
+};
+export const getInformationById = async (id: string) => {
+  const response = await apiClient<InformationByIdResponseSuccess>({
+    method: "GET",
+    url: "/information/get/" + id,
+  });
+  return response.data;
+};
+
+export type FacilityResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    title: string;
+    image: string;
+    createdAt: string;
+    updatedAt: string;
+  }[];
+};
+export const getFacility = async () => {
+  const response = await apiClient<FacilityResponseSuccess>({
+    method: "GET",
+    url: "/facility/get",
   });
   return response.data;
 };

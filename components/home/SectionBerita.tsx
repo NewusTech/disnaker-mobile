@@ -68,8 +68,6 @@ export default function SectionBerita() {
     if (offsetX <= 0) {
       visible.value = false;
     }
-    console.log(offsetX, "offset");
-    console.log(velocityX, "velocity");
   };
 
   return (
@@ -106,10 +104,21 @@ export default function SectionBerita() {
         <Typography fontSize={17} style={{ textAlign: "center" }} color="white">
           Berita Disnaker Tanggamus
         </Typography>
+        {/* <View
+          style={{
+            width: 80,
+            height: 130,
+            backgroundColor: "red",
+          }}
+        > */}
         <Image
-          source={require("@/assets/images/ilustrasi-profesi.png")}
-          style={{ width: 130, height: 130 }}
+          source={require("@/assets/images/news.png")}
+          style={{
+            width: 105,
+            height: 130,
+          }}
         />
+        {/* </View> */}
         <Pressable
           style={{
             backgroundColor: Colors.transparent,

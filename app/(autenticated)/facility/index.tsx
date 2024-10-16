@@ -1,20 +1,24 @@
+import {
+  Image,
+  Dimensions,
+  Animated,
+  FlatList,
+  Pressable,
+  Modal,
+} from "react-native";
 import React, { useRef, useState } from "react";
-import View from "../view";
-import { Typography } from "../ui/typography";
 import { useRouter } from "expo-router";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAppTheme } from "@/context/theme-context";
-import TextLink from "../ui/textLink";
-import { Dimensions, FlatList, Image, Pressable } from "react-native";
-import Animated from "react-native-reanimated";
-import { Button } from "../ui/button";
-import { Modal } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Appbar from "@/components/ui/appBar";
+import { Typography } from "@/components/ui/typography";
 import { useGetFacility } from "@/services/facility";
+import View from "@/components/view";
 
-export default function SectionFasilitas() {
+export default function Facility() {
   const router = useRouter();
-  const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
+  const insets = useSafeAreaInsets();
 
   const flatListRef = useRef<FlatList>(null);
 
@@ -30,36 +34,18 @@ export default function SectionFasilitas() {
   const getFacility = useGetFacility();
 
   return (
-    <View
-      backgroundColor="white"
-      style={{ paddingVertical: 20, gap: 10, paddingHorizontal: 20 }}
-    >
-      <View
-        style={{
-          paddingHorizontal: 5,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <Typography fontSize={16} color="black-80">
-          Fasilitas
-        </Typography>
-        <TextLink
-          fontSize={14}
-          label="Lihat Semua"
-          onPress={() => router.push("/facility")}
-        />
-      </View>
-      {/*  */}
+    <View style={{ flex: 1, gap: 20 }}>
+      <Appbar
+        title={"Fasilitas"}
+        variant="light"
+        backIconPress={() => router.back()}
+      />
       <Animated.FlatList
-        scrollEnabled={false}
         ref={flatListRef}
         data={getFacility.data?.data}
-        numColumns={2}
         renderItem={({ item }) => (
           <Pressable
-            style={{ gap: 10, marginHorizontal: 10 }}
+            style={{ gap: 10, marginHorizontal: 10, width: "100%" }}
             onPress={() => {
               setModalFoto(true);
               setContentModal({
@@ -71,8 +57,8 @@ export default function SectionFasilitas() {
             <Image
               source={{ uri: item.image }}
               style={{
-                width: Dimensions.get("window").width / 2 - 30,
-                height: 130,
+                width: Dimensions.get("window").width - 40,
+                height: 180,
                 borderRadius: 15,
               }}
             />
@@ -90,7 +76,6 @@ export default function SectionFasilitas() {
           gap: 20,
         }}
       />
-      <Button onPress={() => router.push("/facility")}>Selengkapnya</Button>
       {/* modal */}
       <Modal transparent={true} visible={modalFoto} animationType="fade">
         <Pressable

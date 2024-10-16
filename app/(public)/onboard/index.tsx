@@ -35,22 +35,29 @@ type dummyProps = {
 const dummy: dummyProps[] = [
   {
     id: 1,
-    image: require("@/assets/images/dummy1.jpg"),
-    title: "Temukan Lowongan Kerja dengan Mudah di Aplikasi Disnaker 1",
+    image: require("@/assets/images/checklist.png"),
+    title: "Temukan Lowongan Kerja dengan Mudah di Aplikasi Disnaker",
     subTitle:
       "Cukup gunakan filter lokasi dan keahlian untuk menemukan pekerjaan yang sesuai denganmu",
   },
   {
     id: 2,
-    image: require("@/assets/images/dummy1.jpg"),
-    title: "Temukan Lowongan Kerja dengan Mudah di Aplikasi Disnaker 2",
+    image: require("@/assets/images/credit-card.png"),
+    title: "Temukan Lowongan Kerja dengan Mudah di Aplikasi Disnaker",
     subTitle:
       "Cukup gunakan filter lokasi dan keahlian untuk menemukan pekerjaan yang sesuai denganmu",
   },
   {
     id: 3,
-    image: require("@/assets/images/dummy1.jpg"),
-    title: "Temukan Lowongan Kerja dengan Mudah di Aplikasi Disnaker 3",
+    image: require("@/assets/images/data.png"),
+    title: "Temukan Lowongan Kerja dengan Mudah di Aplikasi Disnaker",
+    subTitle:
+      "Cukup gunakan filter lokasi dan keahlian untuk menemukan pekerjaan yang sesuai denganmu",
+  },
+  {
+    id: 4,
+    image: require("@/assets/images/contract.png"),
+    title: "Temukan Lowongan Kerja dengan Mudah di Aplikasi Disnaker",
     subTitle:
       "Cukup gunakan filter lokasi dan keahlian untuk menemukan pekerjaan yang sesuai denganmu",
   },

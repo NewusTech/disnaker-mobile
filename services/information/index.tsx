@@ -1,25 +1,25 @@
-import { getEvent, getEventBySlug } from "@/api";
+import { getInformation, getInformationById } from "@/api";
 import { useAccessToken } from "@/store/userStore";
 import { useQuery } from "@tanstack/react-query";
 
-export const useGetEvent = (query?: string) => {
+export const useGetInformation = (query?: string) => {
   const accessToken = useAccessToken();
 
   return useQuery({
-    queryKey: ["useGetEvent", accessToken],
+    queryKey: ["useGetInformation", accessToken],
     // TODO replace with actual get Profile API
-    queryFn: () => getEvent(),
+    queryFn: () => getInformation(),
     enabled: !!accessToken,
   });
 };
 
-export const useGetEventBySlug = (slug: string) => {
+export const useGetInformationBySlug = (slug: string) => {
   const accessToken = useAccessToken();
 
   return useQuery({
-    queryKey: ["useGetEventBySlug", slug, accessToken],
+    queryKey: ["useGetInformationBySlug", slug, accessToken],
     // TODO replace with actual get Profile API
-    queryFn: () => getEventBySlug(slug),
+    queryFn: () => getInformationById(slug),
     enabled: !!accessToken,
   });
 };

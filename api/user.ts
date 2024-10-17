@@ -1,7 +1,12 @@
 import { API_URL } from "@/constants";
 import apiClient from "@/lib/fatcher";
 import { getAccessToken } from "@/store/userStore";
+import {
+  userRegisterYellowCardForm,
+  userTransmigrationForm,
+} from "@/validation";
 import { HttpStatusCode } from "axios";
+import { PostResponseSuccess } from ".";
 
 export const postUserComplaint = async (payload: FormData) => {
   const accessToken = getAccessToken();
@@ -76,6 +81,260 @@ export const getUserComplaint = async () => {
   const response = await apiClient<userComplaintResponseSuccess>({
     method: "GET",
     url: "/complaint/get/",
+  });
+  return response.data;
+};
+
+export const postUserRegisterYellowCard = async (
+  payload: userRegisterYellowCardForm
+) => {
+  const response = await apiClient<PostResponseSuccess>({
+    method: "POST",
+    url: "/yellowcard/create",
+    data: payload,
+  });
+
+  return response.data;
+};
+
+export type userYellowCardResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    user_id: number;
+    residance: string;
+    submissionNumber: string;
+    provinsi: string;
+    kabupaten: string;
+    kecamatan: string;
+    kelurahan: string;
+    educationLevel_id: number;
+    job: string;
+    skill: string;
+    status: string;
+    createdAt: string;
+    updatedAt: string;
+    User: {
+      id: number;
+      UserProfile: {
+        id: number;
+        name: string;
+        nik: string;
+        birthDate: string;
+        slug: string;
+        department: string;
+        gender: string;
+        address: string;
+        phoneNumber: string;
+        about: string;
+        cv: string;
+        portfolio: string;
+        birthPlace: string;
+        religion: string;
+        provinsi: string | null;
+        kabupaten: string | null;
+        kecamatan: string | null;
+        kelurahan: string | null;
+        location: string | null;
+        profession: string;
+        image: string | null;
+        kk: string | null;
+        ktp: string | null;
+        employmentStatus: string;
+        maritalStatus: string;
+        citizenship: string;
+      };
+    };
+  }[];
+};
+
+export const getUserYellowCard = async () => {
+  const response = await apiClient<userYellowCardResponseSuccess>({
+    method: "GET",
+    url: "/yellowcard/get",
+  });
+  return response.data;
+};
+
+export type userYellowCardByIdResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    user_id: number;
+    residance: string;
+    submissionNumber: string;
+    provinsi: string;
+    kabupaten: string;
+    kecamatan: string;
+    kelurahan: string;
+    educationLevel_id: number;
+    job: string;
+    skill: string;
+    status: string;
+    createdAt: string;
+    updatedAt: string;
+    User: {
+      id: number;
+      UserProfile: {
+        id: number;
+        name: string;
+        nik: string;
+        birthDate: string;
+        slug: string;
+        department: string;
+        gender: string;
+        address: string;
+        phoneNumber: string;
+        about: string;
+        cv: string;
+        portfolio: string;
+        birthPlace: string;
+        religion: string;
+        location: string | null;
+        profession: string;
+        image: string | null;
+        kk: string | null;
+        ktp: string | null;
+        employmentStatus: string;
+        maritalStatus: string;
+        citizenship: string;
+      };
+    };
+  };
+};
+
+export const getUserYellowCardById = async (id: string) => {
+  const response = await apiClient<userYellowCardByIdResponseSuccess>({
+    method: "GET",
+    url: "/yellowcard/get/" + id,
+  });
+  return response.data;
+};
+
+export const postUserTransmigration = async (payload: any) => {
+  const response = await apiClient<PostResponseSuccess>({
+    method: "POST",
+    url: "/transmigration/create",
+    data: payload,
+  });
+
+  return response.data;
+};
+
+export type userTransmigrationResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    user_id: number;
+    submissionNumber: string;
+    domicile: string;
+    provinsi: string;
+    kabupaten: string;
+    kecamatan: string;
+    kelurahan: string;
+    status: string;
+    kk: string;
+    createdAt: string;
+    updatedAt: string;
+    User: {
+      id: number;
+      UserProfile: {
+        id: number;
+        name: string;
+        nik: string;
+        birthDate: string;
+        slug: string;
+        department: string;
+        gender: string;
+        address: string;
+        phoneNumber: string;
+        about: string;
+        cv: string;
+        portfolio: string;
+        birthPlace: string;
+        religion: string;
+        provinsi: string | null;
+        kabupaten: string | null;
+        kecamatan: string | null;
+        kelurahan: string | null;
+        location: string | null;
+        profession: string;
+        image: string | null;
+        kk: string | null;
+        ktp: string | null;
+        employmentStatus: string;
+        maritalStatus: string;
+        citizenship: string;
+      };
+    };
+  }[];
+};
+
+export const getUserTransmigration = async () => {
+  const response = await apiClient<userTransmigrationResponseSuccess>({
+    method: "GET",
+    url: "/transmigration/get",
+  });
+  return response.data;
+};
+
+export type userTransmigrationByIdResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    user_id: number;
+    submissionNumber: string;
+    domicile: string;
+    provinsi: string;
+    kabupaten: string;
+    kecamatan: string;
+    kelurahan: string;
+    status: string;
+    kk: string;
+    createdAt: string;
+    updatedAt: string;
+    User: {
+      id: number;
+      UserProfile: {
+        id: number;
+        name: string;
+        nik: string;
+        birthDate: string;
+        slug: string;
+        department: string;
+        gender: string;
+        address: string;
+        phoneNumber: string;
+        about: string;
+        cv: string;
+        portfolio: string;
+        birthPlace: string;
+        religion: string;
+        provinsi: string | null;
+        kabupaten: string | null;
+        kecamatan: string | null;
+        kelurahan: string | null;
+        location: string | null;
+        profession: string;
+        image: string | null;
+        kk: string | null;
+        ktp: string | null;
+        employmentStatus: string;
+        maritalStatus: string;
+        citizenship: string;
+      };
+    };
+  };
+};
+
+export const getUserTransmigrationById = async (id: string) => {
+  const response = await apiClient<userTransmigrationByIdResponseSuccess>({
+    method: "GET",
+    url: "/transmigration/get/" + id,
   });
   return response.data;
 };

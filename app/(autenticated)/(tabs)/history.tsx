@@ -1,5 +1,7 @@
+import HistoryKartuKuning from "@/components/History/HistoryKartuKuning";
 import HistoryLowongan from "@/components/History/HistoryLowongan";
 import HistoryPengaduan from "@/components/History/HistoryPengaduan";
+import HistoryTransmigrasi from "@/components/History/HistoryTrnasmigrasi";
 import { SelectInput } from "@/components/selectInput";
 import Appbar from "@/components/ui/appBar";
 import { Typography } from "@/components/ui/typography";
@@ -40,7 +42,7 @@ export default function History() {
           paddingTop: 20,
         }}
       >
-        <ScrollView horizontal>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           <View
             style={{
               height: 50,
@@ -145,6 +147,8 @@ export default function History() {
         </ScrollView>
         {tabRiwayat === "Lowongan Pekerjaan" && <HistoryLowongan />}
         {tabRiwayat === "Pengaduan" && <HistoryPengaduan />}
+        {tabRiwayat === "Daftar Kartu Kuning" && <HistoryKartuKuning />}
+        {tabRiwayat === "Daftar Tansmigrasi" && <HistoryTransmigrasi />}
       </ScrollView>
     </View>
   );

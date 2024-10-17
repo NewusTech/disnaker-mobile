@@ -11,34 +11,61 @@ import TextInput from "../ui/textInput";
 import { SelectInput } from "../selectInput";
 import { IconCaretDown } from "../icons/IconCeretDown";
 import { Button } from "../ui/button";
+import { gender } from "@/constants";
 
 type anggota = {
   id: number;
+  nik: string;
+  name: string;
+  gender: string;
+  familyStatus: string;
 };
 
-export default function AnggotaJiwa() {
+export default function AnggotaJiwa({
+  setDataAnggota,
+}: {
+  setDataAnggota: (data: anggota[]) => void;
+}) {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
 
   const [dataAnggotaJiwa, setDataAnggotaJiwa] = useState<anggota[]>([
-    { id: 1 },
+    { id: 0, name: "", nik: "", gender: "", familyStatus: "" },
   ]);
 
   const handleAddAnggota = () => {
-    setDataAnggotaJiwa([
-      ...dataAnggotaJiwa,
-      { id: dataAnggotaJiwa.length + 1 },
+    setDataAnggotaJiwa((prevData) => [
+      ...prevData,
+      { id: prevData.length, name: "", nik: "", gender: "", familyStatus: "" },
     ]);
   };
 
   const handleDeleteAnggota = (id: number) => {
-    setDataAnggotaJiwa(dataAnggotaJiwa.filter((data) => data.id !== id));
+    setDataAnggotaJiwa((prevData) => prevData.filter((item) => item.id !== id));
+  };
+
+  const handleUpdateAnggota = (
+    id: number,
+    key: keyof anggota,
+    value: string
+  ) => {
+    setDataAnggotaJiwa((prevData) =>
+      prevData.map((item) =>
+        item.id === id ? { ...item, [key]: value } : item
+      )
+    );
   };
 
   useEffect(() => {
+    setDataAnggota(dataAnggotaJiwa);
+  }, [dataAnggotaJiwa]);
+
+  useEffect(() => {
     if (dataAnggotaJiwa.length === 0) {
-      setDataAnggotaJiwa([{ id: 1 }]);
+      setDataAnggotaJiwa([
+        { id: 0, name: "", nik: "", gender: "", familyStatus: "" },
+      ]);
     }
   }, [dataAnggotaJiwa]);
 
@@ -89,10 +116,11 @@ export default function AnggotaJiwa() {
                 borderRadius={17}
                 color="primary-50"
                 textAlignVertical="top"
-                // value={field.value}
-                // onBlur={field.onBlur}
-                // onChangeText={field.onChange}
-                // errorMessage={fieldState.error?.message}
+                value={data.nik}
+                onChangeText={(text) =>
+                  handleUpdateAnggota(data.id, "nik", text)
+                }
+                maxLength={16}
               />
               <TextInput
                 label="Nama"
@@ -101,26 +129,40 @@ export default function AnggotaJiwa() {
                 borderRadius={17}
                 color="primary-50"
                 textAlignVertical="top"
-                // value={field.value}
-                // onBlur={field.onBlur}
-                // onChangeText={field.onChange}
-                // errorMessage={fieldState.error?.message}
+                value={data.name}
+                onChangeText={(text) =>
+                  handleUpdateAnggota(data.id, "name", text)
+                }
               />
               <SelectInput
                 label="Jenis Klamin"
-                data={[{ title: "laki-laki" }, { title: "perempuan" }]}
-                onSelect={() => console.log()}
-                value={"laki-laki"}
-                trailingIcon={<IconCaretDown />}
+                data={Object.keys(gender).map((value) => {
+                  return {
+                    title: value,
+                  };
+                })}
+                placeholder="Pilih Jenis Kelamin"
+                onSelect={(dataItem: any) =>
+                  handleUpdateAnggota(data.id, "gender", dataItem.title)
+                }
+                value={data.gender}
+                trailingIcon={<IconCaretDown color="black-80" />}
                 padding={12}
                 borderRadius={15}
               />
               <SelectInput
                 label="Status Kartu Keluarga"
-                data={[{ title: "status 1" }, { title: "status 2" }]}
-                onSelect={() => console.log()}
-                value={"Pilih Status"}
-                trailingIcon={<IconCaretDown />}
+                data={[
+                  { title: "Anak" },
+                  { title: "Istri" },
+                  { title: "Suami" },
+                ]}
+                placeholder="Pilih Status Keluarga"
+                onSelect={(dataItem: any) =>
+                  handleUpdateAnggota(data.id, "familyStatus", dataItem.title)
+                }
+                value={data.familyStatus}
+                trailingIcon={<IconCaretDown color="black-80" />}
                 padding={12}
                 borderRadius={15}
               />

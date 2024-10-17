@@ -36,6 +36,10 @@ export const profile = z.object({
   employmentStatus: z.string({ message: "Harus diisi" }),
   maritalStatus: z.string({ message: "Harus diisi" }),
   citizenship: z.string({ message: "Harus diisi" }),
+  provinsi: z.string({ message: "Harus diisi" }),
+  kabupaten: z.string({ message: "Harus diisi" }),
+  kecamatan: z.string({ message: "Harus diisi" }),
+  kelurahan: z.string({ message: "Harus diisi" }),
 });
 
 export type profileForm = z.infer<typeof profile>;
@@ -61,7 +65,7 @@ export const userEducation = z.object({
   joinDate: z.date(),
   graduationDate: z.date(),
   desc: z.string({ message: "Harus diisi" }),
-  isCurrently: z.boolean(),
+  isCurrently: z.boolean().optional(),
 });
 
 export type userEducationForm = z.infer<typeof userEducation>;
@@ -71,7 +75,7 @@ export const userOrganization = z.object({
   organizationName: z.string({ message: "Harus diisi" }),
   joinDate: z.date(),
   leaveDate: z.date(),
-  isCurrently: z.boolean(),
+  isCurrently: z.boolean().optional(),
   desc: z.string({ message: "Harus diisi" }).optional(),
 });
 
@@ -84,7 +88,7 @@ export const userExperience = z.object({
   contractType: z.string({ message: "Harus diisi" }),
   joinDate: z.date(),
   leaveDate: z.date(),
-  isCurrently: z.boolean(),
+  isCurrently: z.boolean().optional(),
   desc: z.string({ message: "Harus diisi" }).optional(),
 });
 
@@ -106,3 +110,27 @@ export const userComplaint = z.object({
 });
 
 export type userComplaintForm = z.infer<typeof userComplaint>;
+
+export const userRegisterYellowCard = z.object({
+  residance: z.string({ message: "Harus diisi" }),
+  provinsi: z.string({ message: "Harus diisi" }),
+  kabupaten: z.string({ message: "Harus diisi" }),
+  kecamatan: z.string({ message: "Harus diisi" }),
+  kelurahan: z.string({ message: "Harus diisi" }),
+  educationLevel_id: z.number({ message: "Harus diisi" }),
+  job: z.string({ message: "Harus diisi" }),
+  skill: z.string({ message: "Harus diisi" }),
+});
+
+export type userRegisterYellowCardForm = z.infer<typeof userRegisterYellowCard>;
+
+export const userTransmigration = z.object({
+  domicile: z.string({ message: "Harus diisi" }),
+  provinsi: z.string({ message: "Harus diisi" }),
+  kabupaten: z.string({ message: "Harus diisi" }),
+  kecamatan: z.string({ message: "Harus diisi" }),
+  kelurahan: z.string({ message: "Harus diisi" }),
+  kk: z.string({ message: "Harus diisi" }).optional(),
+});
+
+export type userTransmigrationForm = z.infer<typeof userTransmigration>;

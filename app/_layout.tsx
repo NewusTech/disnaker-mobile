@@ -59,7 +59,7 @@ export default function RootLayout() {
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
-  const [animationCompleted, setAnimationComplete] = useState<Boolean>(false);
+  const [animationCompleted, setAnimationComplete] = useState<Boolean>(true);
 
   const changeAnimationStatus = (param: Boolean) => {
     setAnimationComplete(param);

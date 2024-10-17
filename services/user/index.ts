@@ -22,6 +22,10 @@ import {
   getUserNotification,
   getUserProfile,
   getUserSavedVacancy,
+  getUserTransmigration,
+  getUserTransmigrationById,
+  getUserYellowCard,
+  getUserYellowCardById,
   postEducationHistory,
   postExperienceHistory,
   postLogin,
@@ -31,8 +35,10 @@ import {
   postUserApplyVacancy,
   postUserComplaint,
   postUserLink,
+  postUserRegisterYellowCard,
   postUserSaveVacancy,
   postUserSkills,
+  postUserTransmigration,
   putAbout,
   putCvPortofolio,
   putEditProfile,
@@ -51,6 +57,7 @@ import {
   userExperienceForm,
   userLinkForm,
   userOrganizationForm,
+  userRegisterYellowCardForm,
 } from "@/validation";
 import { useAccessToken } from "@/store/userStore";
 
@@ -396,6 +403,65 @@ export const useGetUserComplaintById = (id: string) => {
     queryKey: ["useGetUserComplaintById", accessToken],
     // TODO replace with actual get Profile API
     queryFn: () => getUserComplaintById(id),
+    enabled: !!accessToken,
+  });
+};
+
+export const useUserRegisterYellowCard = () => {
+  return useMutation({
+    mutationFn: (payload: userRegisterYellowCardForm) =>
+      postUserRegisterYellowCard(payload),
+    onError: (error: AxiosError<ResponseError>) => error,
+  });
+};
+
+export const useGetUserYellowCard = () => {
+  const accessToken = useAccessToken();
+
+  return useQuery({
+    queryKey: ["useGetUserYellowCard", accessToken],
+    // TODO replace with actual get Profile API
+    queryFn: () => getUserYellowCard(),
+    enabled: !!accessToken,
+  });
+};
+
+export const useGetUserYellowCardById = (id: string) => {
+  const accessToken = useAccessToken();
+
+  return useQuery({
+    queryKey: ["useGetUserYellowCardById", accessToken],
+    // TODO replace with actual get Profile API
+    queryFn: () => getUserYellowCardById(id),
+    enabled: !!accessToken,
+  });
+};
+
+export const useUserTransmigration = () => {
+  return useMutation({
+    mutationFn: (payload: any) => postUserTransmigration(payload),
+    onError: (error: AxiosError<ResponseError>) => error,
+  });
+};
+
+export const useGetUserTransmigration = () => {
+  const accessToken = useAccessToken();
+
+  return useQuery({
+    queryKey: ["useGetUserTransmigration", accessToken],
+    // TODO replace with actual get Profile API
+    queryFn: () => getUserTransmigration(),
+    enabled: !!accessToken,
+  });
+};
+
+export const useGetUserTransmigrationById = (id: string) => {
+  const accessToken = useAccessToken();
+
+  return useQuery({
+    queryKey: ["useGetUserTransmigrationById", accessToken],
+    // TODO replace with actual get Profile API
+    queryFn: () => getUserTransmigrationById(id),
     enabled: !!accessToken,
   });
 };

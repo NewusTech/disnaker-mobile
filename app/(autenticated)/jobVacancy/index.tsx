@@ -107,13 +107,6 @@ export default function JobVacancy() {
     return router.replace("/(autenticated)/profile/skills");
   }
 
-  const _favorites =
-    favorites?.map((d) => {
-      return {
-        id: d.vacancy_id,
-      };
-    }) || [];
-
   const [search, setSearch] = useState("");
 
   const handleSearch = () => {
@@ -126,6 +119,12 @@ export default function JobVacancy() {
   };
 
   useEffect(() => {
+    const _favorites =
+      favorites?.map((d) => {
+        return {
+          id: d.vacancy_id,
+        };
+      }) || [];
     setSavedVacancy(_favorites);
   }, [getFavorites.data?.data]);
 
@@ -157,7 +156,10 @@ export default function JobVacancy() {
             <Typography fontSize={18} style={{}} color="white">
               Hi, {userProfile?.UserProfile.name}
             </Typography>
-            <TouchableOpacity style={{ marginLeft: "auto" }} onPress={()=>router.push("/notification")}>
+            <TouchableOpacity
+              style={{ marginLeft: "auto" }}
+              onPress={() => router.push("/notification")}
+            >
               <IconNotification color="white" />
             </TouchableOpacity>
           </Pressable>

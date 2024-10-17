@@ -60,7 +60,12 @@ export default function index() {
           text2: res.message,
         });
         setFileBukti("");
-        router.replace("/(autenticated)/(tabs)/history");
+        router.replace({
+          pathname: "/(autenticated)/(tabs)/history",
+          params: {
+            tabRiwayat: "Pengaduan",
+          },
+        });
       },
       onError: (res) => {
         Toast.show({

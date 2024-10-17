@@ -12,7 +12,7 @@ import {
 import { HttpStatusCode } from "axios";
 
 export * from "@/api/vacancy";
-export * from "@/api/user"
+export * from "@/api/user";
 
 export type PostLoginResponseSuccess = {
   data: {
@@ -83,6 +83,10 @@ export type userProfileResponseSuccess = {
       maritalStatus: string | null;
       citizenship: string | null;
       deletedAt: string | null;
+      provinsi: string | null;
+      kabupaten: string | null;
+      kecamatan: string | null;
+      kelurahan: string | null;
       loclocation: string | null;
       createdAt: string;
       updatedAt: string;
@@ -1158,7 +1162,7 @@ export const getConsultationById = async (id: string) => {
 export type UserNotificationResponseSuccess = {
   status: HttpStatusCode;
   message: string;
-  data: {};
+  data: {}[];
 };
 export const getUserNotification = async () => {
   const response = await apiClient<UserNotificationResponseSuccess>({
@@ -1223,6 +1227,75 @@ export const getFacility = async () => {
   const response = await apiClient<FacilityResponseSuccess>({
     method: "GET",
     url: "/facility/get",
+  });
+  return response.data;
+};
+
+export type provinsiResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    name: string;
+  }[];
+};
+
+export const getProvinsi = async () => {
+  const response = await apiClient<provinsiResponseSuccess>({
+    method: "GET",
+    url: "/region/provinsi/get",
+  });
+  return response.data;
+};
+export type kabupatenResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    provinsi_id: number;
+    name: string;
+  }[];
+};
+
+export const getKabupaten = async () => {
+  const response = await apiClient<kabupatenResponseSuccess>({
+    method: "GET",
+    url: "/region/kabupaten/get?limit=1000",
+  });
+  return response.data;
+};
+export type kecamatanResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    kabupaten_id: number;
+    name: string;
+  }[];
+};
+
+export const getKecamatan = async () => {
+  const response = await apiClient<kecamatanResponseSuccess>({
+    method: "GET",
+    url: "region/kecamatan/get?limit=1000",
+  });
+  return response.data;
+};
+
+export type kelurahanResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    kabupaten_id: number;
+    name: string;
+  }[];
+};
+
+export const getKelurahan = async () => {
+  const response = await apiClient<kelurahanResponseSuccess>({
+    method: "GET",
+    url: "region/kelurahan/get?limit=1000",
   });
   return response.data;
 };

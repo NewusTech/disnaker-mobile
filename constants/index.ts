@@ -27,3 +27,17 @@ export const formatCurrency = (amount: number) => {
   // Format the number into IDR currency
   return formatter.format(amount);
 };
+
+export enum employmentStatus {
+  "Sudah Bekerja" = "Sudah Bekerja",
+  "Siap Bekerja" = "Siap Bekerja",
+  "Tidak Bekerja" = "Tidak Bekerja",
+}
+export enum maritalStatus {
+  "Menikah" = "Menikah",
+  "Belum Menikah" = "Belum Menikah",
+}
+export enum gender {
+  "Laki-laki" = "Laki-laki",
+  "Perempuan" = "Perempuan",
+}

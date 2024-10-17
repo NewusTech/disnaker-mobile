@@ -80,14 +80,14 @@ export default function SectionBerita() {
         alignItems: "center",
         justifyContent: "center",
         marginTop: 0,
-        height: 360,
+        minHeight: 342,
       }}
     >
       <Animated.View
         style={[
           {
             width: 189,
-            height: 320,
+            height: 280,
             backgroundColor: Colors["primary-50"],
             borderTopRightRadius: 15,
             borderBottomRightRadius: 15,
@@ -104,21 +104,13 @@ export default function SectionBerita() {
         <Typography fontSize={17} style={{ textAlign: "center" }} color="white">
           Berita Disnaker Tanggamus
         </Typography>
-        {/* <View
-          style={{
-            width: 80,
-            height: 130,
-            backgroundColor: "red",
-          }}
-        > */}
         <Image
           source={require("@/assets/images/news.png")}
           style={{
-            width: 105,
-            height: 130,
+            width: 75,
+            height: 92,
           }}
         />
-        {/* </View> */}
         <Pressable
           style={{
             backgroundColor: Colors.transparent,
@@ -153,12 +145,12 @@ export default function SectionBerita() {
                   ? Colors["primary-10"]
                   : Colors.transparent,
                 borderRadius: 15,
-                width: Dimensions.get("window").width - 30,
+                width: Dimensions.get("window").width * 0.7,
                 overflow: "hidden",
-                height: 320,
+                height: 280,
                 flexDirection: "column",
                 justifyContent: "flex-start",
-                rowGap: 10,
+                rowGap: 8,
               },
             ]}
             onPress={() =>
@@ -174,10 +166,10 @@ export default function SectionBerita() {
               <>
                 <Image
                   source={{ uri: item.image }}
-                  style={{ width: "100%", height: "33%" }}
+                  style={{ width: "100%", height: "37%" }}
                 />
                 <Typography
-                  fontSize={18}
+                  fontSize={17}
                   style={{
                     textAlign: "left",
                     width: "100%",
@@ -189,7 +181,7 @@ export default function SectionBerita() {
                   {item.title}
                 </Typography>
                 <Typography
-                  fontSize={14}
+                  fontSize={13}
                   fontFamily="Poppins-Light"
                   style={{
                     textAlign: "left",
@@ -199,10 +191,16 @@ export default function SectionBerita() {
                   numberOfLines={4}
                   color={pressed ? "black-80" : "black-80"}
                 >
-                  {removeHtmlTags(item.desc, 500)}
+                  {removeHtmlTags(item.desc, 90)}
                 </Typography>
-                <Button
-                  style={{ marginHorizontal: 10 }}
+                <Pressable
+                  style={{
+                    padding: 10,
+                    backgroundColor: Colors["primary-50"],
+                    marginHorizontal: 10,
+                    borderRadius: 100,
+                    marginTop: 5,
+                  }}
                   onPress={() =>
                     router.push({
                       pathname: "/(autenticated)/news/[slug]",
@@ -212,15 +210,17 @@ export default function SectionBerita() {
                     })
                   }
                 >
-                  Selengkapnya
-                </Button>
+                  <Typography color="white" style={{ textAlign: "center" }}>
+                    Selengkapnya
+                  </Typography>
+                </Pressable>
               </>
             )}
           </Pressable>
         )}
         style={[{ position: "relative", left: 190 }, animatedStyle2]}
         contentContainerStyle={{
-          paddingLeft: visible.value ? 60 : 30,
+          paddingLeft: 20,
           paddingRight: 20,
           columnGap: 20,
           alignItems: "center",

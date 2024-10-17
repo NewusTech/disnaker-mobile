@@ -132,7 +132,7 @@ export default function Profile() {
           }}
         >
           <Typography
-            fontSize={19}
+            fontSize={22}
             style={{
               textAlign: "center",
               paddingLeft: 10,
@@ -250,11 +250,11 @@ export default function Profile() {
             borderColor: Colors["line-stroke-30"],
           }}
         >
-          <IconFilwArrowDown />
+          <IconFilwArrowDown color="black-80" height={30} width={30} />
           <Typography
             color="black-80"
             fontSize={18}
-            fontFamily="Poppins-Medium"
+            fontFamily="Poppins-Regular"
           >
             Download CV Disnaker
           </Typography>
@@ -270,16 +270,16 @@ export default function Profile() {
           }}
           onPress={() => setModalUploadCv(true)}
         >
-          <IconFilwArrowUp />
+          <IconFilwArrowUp color="black-80" height={30} width={30} />
           <Typography
             color="black-80"
             fontSize={18}
-            fontFamily="Poppins-Medium"
+            fontFamily="Poppins-Regular"
           >
             Upload CV
           </Typography>
           <View style={{ marginLeft: "auto" }}>
-            <IconCaretRight />
+            <IconCaretRight color="black-80" height={30} width={30} />
           </View>
         </Pressable>
         <Pressable
@@ -293,16 +293,16 @@ export default function Profile() {
           }}
           onPress={() => router.push("/(autenticated)/profile/account")}
         >
-          <IconUserProfile />
+          <IconUserProfile color="black-80" height={30} width={30} />
           <Typography
             color="black-80"
             fontSize={18}
-            fontFamily="Poppins-Medium"
+            fontFamily="Poppins-Regular"
           >
             Akun Saya
           </Typography>
           <View style={{ marginLeft: "auto" }}>
-            <IconCaretRight />
+            <IconCaretRight color="black-80" height={30} width={30} />
           </View>
         </Pressable>
         <Pressable
@@ -316,11 +316,11 @@ export default function Profile() {
           }}
           onPress={() => setModalLogout(true)}
         >
-          <IconLogout />
+          <IconLogout color="black-80" height={30} width={30} />
           <Typography
             color="black-80"
             fontSize={18}
-            fontFamily="Poppins-Medium"
+            fontFamily="Poppins-Regular"
           >
             Logout
           </Typography>

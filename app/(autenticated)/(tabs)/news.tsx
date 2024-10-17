@@ -3,6 +3,7 @@ import { SearchBox } from "@/components/ui/searchBox";
 import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
+import { removeHtmlTags } from "@/helper";
 import { useGetArticle } from "@/services/article/insex";
 import { useRouter } from "expo-router";
 import React from "react";
@@ -102,7 +103,7 @@ export default function Information() {
                     numberOfLines={4}
                     color={pressed ? "black-80" : "black-80"}
                   >
-                    {item.desc}
+                    {removeHtmlTags(item.desc, 500)}
                   </Typography>
                   <Button
                     style={{ marginHorizontal: 10 }}

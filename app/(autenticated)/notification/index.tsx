@@ -16,26 +16,26 @@ export default function index() {
   const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
 
-  //   const getNotification = useGetUserNotification();
+    const getNotification = useGetUserNotification();
 
   return (
     <View>
       <Appbar title="Notifikasi" backIconPress={() => router.back()} />
       <Animated.ScrollView
-        // refreshControl={
-        //   <RefreshControl
-        //     refreshing={getNotification.isRefetching}
-        //     onRefresh={() => getNotification.refetch()}
-        //     progressViewOffset={20}
-        //   />
-        // }
+        refreshControl={
+          <RefreshControl
+            refreshing={getNotification.isRefetching}
+            onRefresh={() => getNotification.refetch()}
+            progressViewOffset={20}
+          />
+        }
         contentContainerStyle={{
           gap: 20,
           alignItems: "center",
           paddingVertical: 40,
         }}
       >
-        {Array.from({ length: 3 }).map((data, index) => (
+        {getNotification.data?.data.map((data, index) => (
           <Pressable
             key={index}
             style={({ pressed }) => [
@@ -89,7 +89,7 @@ export default function index() {
                   systemFonts={[...defaultSystemFonts, "Poppins-Regular"]}
                   contentWidth={Dimensions.get("screen").width - 48}
                   source={{
-                    html: "<p>Halo Irsyad Abi, selamat! Anda telah diundang untuk mengikuti wawancara di Telkom Indonesia sebagai UI Designer . Harap konfirmasi kehadiran Anda melalui aplikasi ini.</p>",
+                    html: "<p>Halo Dunia.</p>",
                   }}
                 />
                 <Button>Selengkapnya</Button>

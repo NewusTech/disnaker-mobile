@@ -3,7 +3,7 @@ import { DataItem, SelectInput } from "../selectInput";
 import View from "../view";
 import { IconCaretDown } from "../icons/IconCeretDown";
 import { Dimensions, FlatList, Pressable } from "react-native";
-import { useGetUserComplaint } from "@/services/user";
+import { useGetUserComplaint, useGetUserYellowCard } from "@/services/user";
 import Separator from "../ui/separator";
 import { Typography } from "../ui/typography";
 import { formatDate } from "@/constants/dateTime";
@@ -11,8 +11,9 @@ import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAppTheme } from "@/context/theme-context";
 import { useAuthProfile } from "@/store/userStore";
+import { AppColorUnion } from "@/constants/Colors";
 
-export default function HistoryPengaduan() {
+export default function HistoryKartuKuning() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
@@ -21,7 +22,7 @@ export default function HistoryPengaduan() {
 
   const dataFilter: DataItem[] = [
     { title: "Semua" },
-    { title: "Proses" },
+    { title: "Pengajuan" },
     { title: "Terbit" },
     { title: "Ditolak" },
   ];
@@ -31,12 +32,12 @@ export default function HistoryPengaduan() {
   };
 
   const handleChangeBgColor = (status: string) => {
-    if (status === "Proses") return Colors["primary-50"];
+    if (status === "Pengajuan") return Colors["primary-50"];
     if (status === "Terbit") return Colors["success-60"];
     return Colors["error-60"];
   };
 
-  const getComplaint = useGetUserComplaint();
+  const getUserYellowCard = useGetUserYellowCard();
 
   return (
     <View style={{ marginTop: 20 }}>
@@ -49,7 +50,7 @@ export default function HistoryPengaduan() {
       />
       <FlatList
         scrollEnabled={false}
-        data={getComplaint.data?.data.filter((f) =>
+        data={getUserYellowCard.data?.data.filter((f) =>
           filter !== "Semua" ? f.status === filter : true
         )}
         renderItem={({ item }) => (
@@ -65,7 +66,7 @@ export default function HistoryPengaduan() {
             }}
             onPress={() =>
               router.push({
-                pathname: "/(autenticated)/onlineComplaint/[id]",
+                pathname: "/(autenticated)/registerYellowCard/[id]",
                 params: {
                   id: item.id,
                 },
@@ -95,14 +96,14 @@ export default function HistoryPengaduan() {
                   fontFamily="Poppins-Light"
                   color="black-80"
                 >
-                  Judul Pengaduan
+                  Nama
                 </Typography>
                 <Typography
                   fontSize={15}
                   fontFamily="Poppins-Medium"
                   color="black-80"
                 >
-                  {item.title}
+                  {item.User.UserProfile.name}
                 </Typography>
               </View>
               <View>
@@ -111,14 +112,14 @@ export default function HistoryPengaduan() {
                   fontFamily="Poppins-Light"
                   color="black-80"
                 >
-                  Deskripsi Pengaduan
+                  NIK
                 </Typography>
                 <Typography
                   fontSize={15}
                   fontFamily="Poppins-Medium"
                   color="black-80"
                 >
-                  {item.desc}
+                  {item.User.UserProfile.nik}
                 </Typography>
               </View>
             </View>

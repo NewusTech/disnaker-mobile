@@ -25,3 +25,4 @@ export * from "./IconNewsPaperClitp";
 export * from "./IconSlidebarHorizontal";
 export * from "./IconBuilding";
 export * from "./IconInfo";
+export * from "./IconDownload";

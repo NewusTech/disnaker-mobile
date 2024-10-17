@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { Image, StyleSheet } from "react-native";
 import SelectDropdown from "react-native-select-dropdown";
 
@@ -6,6 +6,8 @@ import { useAppTheme } from "@/context/theme-context";
 import View from "../view";
 import { Typography } from "../ui/typography";
 import { AppColorUnion } from "@/constants/Colors";
+import TextInput from "../ui/textInput";
+import { IconMagnifyingGlass } from "../icons";
 
 export type DataItem = {
   title: string | number;
@@ -91,6 +93,18 @@ export function SelectInput(props: SelectInputProps) {
           </View>
         </View>
       )}
+      search
+      searchInputStyle={{
+        backgroundColor: Colors.white,
+        borderBottomWidth: 1,
+        borderBottomColor: "#FFFFFF",
+      }}
+      searchInputTxtColor={"#151E26"}
+      searchPlaceHolder={"Search here"}
+      searchPlaceHolderColor={"#72808D"}
+      renderSearchInputLeftIcon={() => {
+        return <IconMagnifyingGlass />;
+      }}
       renderItem={(item, index, isSelected) => {
         return (
           <View
@@ -134,5 +148,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 10,
     alignItems: "center",
+  },
+  searchInput: {
+    height: 40,
   },
 });

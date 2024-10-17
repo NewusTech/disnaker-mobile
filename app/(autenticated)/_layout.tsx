@@ -22,7 +22,7 @@ export default function AuthenticatedLayout() {
   useEffect(() => {
     if (profileQuery.data) {
       setProfile(profileQuery.data.data);
-      if (profileQuery.data.data.UserProfile.nik === null) {
+      if (!profileQuery.data.data.UserProfile?.nik) {
         Toast.show({
           type: "info",
           text1: "Hampir selesai",

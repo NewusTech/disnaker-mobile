@@ -11,8 +11,15 @@ import { Typography } from "@/components/ui/typography";
 import UploadFile from "@/components/uploadFile";
 import UploadFoto from "@/components/uploadFoto";
 import View from "@/components/view";
+import { employmentStatus, gender, maritalStatus } from "@/constants";
 import { formatDateYMD } from "@/constants/dateTime";
 import { useAppTheme } from "@/context/theme-context";
+import {
+  useGetKabupaten,
+  useGetkecamatan,
+  useGetkelurahan,
+  useGetProvinsi,
+} from "@/services/region";
 import {
   useGetProfile,
   useUpdatePrfoile,
@@ -31,25 +38,15 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import { any } from "zod";
 
-export enum employmentStatus {
-  "Sudah Bekerja" = "Sudah Bekerja",
-  "Siap Bekerja" = "Siap Bekerja",
-  "Tidak Bekerja" = "Tidak Bekerja",
-}
-export enum maritalStatus {
-  "Menikah" = "Menikah",
-  "Belum Menikah" = "Belum Menikah",
-}
-export enum gender {
-  "Laki-laki" = "Laki-laki",
-  "Perempuan" = "Perempuan",
-}
-
 export default function EditProfile() {
   const router = useRouter();
   const { Colors } = useAppTheme();
   const insets = useSafeAreaInsets();
 
+  const getProvinsi = useGetProvinsi();
+  const getKabupaten = useGetKabupaten();
+  const getKecamatan = useGetkecamatan();
+  const getKelurahan = useGetkelurahan();
   const profileQuery = useGetProfile();
   const user = profileQuery.data?.data;
 
@@ -191,6 +188,11 @@ export default function EditProfile() {
       setValue("employmentStatus", user.UserProfile.employmentStatus || "");
       setValue("maritalStatus", user.UserProfile.maritalStatus || "");
       setValue("citizenship", user.UserProfile.citizenship || "");
+
+      setValue("provinsi", user.UserProfile.provinsi || "");
+      setValue("kabupaten", user.UserProfile.kabupaten || "");
+      setValue("kelurahan", user.UserProfile.kelurahan || "");
+      setValue("kecamatan", user.UserProfile.kecamatan || "");
     }
   }, [user]);
 
@@ -387,6 +389,102 @@ export default function EditProfile() {
                 }
                 value={field.value}
                 trailingIcon={<IconCaretDown color="black-80" />}
+                padding={12}
+                borderRadius={15}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="provinsi"
+            render={({ field, fieldState }) => (
+              <SelectInput
+                label="Provinsi"
+                placeholder="Pilih Provinsi"
+                data={
+                  getProvinsi.data?.data.map((d) => {
+                    return {
+                      title: d.name,
+                    };
+                  }) || []
+                }
+                onSelect={(dataItem: any, index: any) =>
+                  field.onChange(dataItem.title)
+                }
+                value={field.value}
+                trailingIcon={<IconCaretDown />}
+                padding={12}
+                borderRadius={15}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="kabupaten"
+            render={({ field, fieldState }) => (
+              <SelectInput
+                label="Kabupaten"
+                placeholder="Pilih Kabuten"
+                data={
+                  getKabupaten.data?.data.map((d) => {
+                    return {
+                      title: d.name,
+                    };
+                  }) || []
+                }
+                onSelect={(dataItem: any, index: any) =>
+                  field.onChange(dataItem.title)
+                }
+                value={field.value}
+                trailingIcon={<IconCaretDown />}
+                padding={12}
+                borderRadius={15}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="kecamatan"
+            render={({ field, fieldState }) => (
+              <SelectInput
+                label="Kecamatan"
+                placeholder="Pilih Kecamatan"
+                data={
+                  getKecamatan.data?.data.map((d) => {
+                    return {
+                      title: d.name,
+                    };
+                  }) || []
+                }
+                onSelect={(dataItem: any, index: any) =>
+                  field.onChange(dataItem.title)
+                }
+                value={field.value}
+                trailingIcon={<IconCaretDown />}
+                padding={12}
+                borderRadius={15}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="kelurahan"
+            render={({ field, fieldState }) => (
+              <SelectInput
+                label="Kelurahan"
+                placeholder="Pilih Kelurahan"
+                data={
+                  getKelurahan.data?.data.map((d) => {
+                    return {
+                      title: d.name,
+                    };
+                  }) || []
+                }
+                onSelect={(dataItem: any, index: any) =>
+                  field.onChange(dataItem.title)
+                }
+                value={field.value}
+                trailingIcon={<IconCaretDown />}
                 padding={12}
                 borderRadius={15}
               />

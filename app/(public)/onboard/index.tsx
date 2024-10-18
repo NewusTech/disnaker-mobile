@@ -35,31 +35,31 @@ type dummyProps = {
 const dummy: dummyProps[] = [
   {
     id: 1,
-    image: require("@/assets/images/checklist.png"),
+    image: require("@/assets/images/OnBoaard_1.png"),
     title: "Temukan Lowongan Kerja dengan Mudah di Aplikasi Disnaker",
     subTitle:
       "Cukup gunakan filter lokasi dan keahlian untuk menemukan pekerjaan yang sesuai denganmu",
   },
   {
     id: 2,
-    image: require("@/assets/images/credit-card.png"),
-    title: "Temukan Lowongan Kerja dengan Mudah di Aplikasi Disnaker",
+    image: require("@/assets/images/OnBoaard_2.png"),
+    title: "Ajukan Kartu Kuning dengan Mudah di Aplikasi Disnaker",
     subTitle:
-      "Cukup gunakan filter lokasi dan keahlian untuk menemukan pekerjaan yang sesuai denganmu",
+      "Ajukan kartu kuning secara online tanpa repot. Proses pengajuan cepat dan efisien.",
   },
   {
     id: 3,
-    image: require("@/assets/images/data.png"),
-    title: "Temukan Lowongan Kerja dengan Mudah di Aplikasi Disnaker",
+    image: require("@/assets/images/OnBoaard_3.png"),
+    title: "Ajukan Transmigrasi dengan Mudah di Aplikasi Disnaker",
     subTitle:
-      "Cukup gunakan filter lokasi dan keahlian untuk menemukan pekerjaan yang sesuai denganmu",
+      "Dapatkan kesempatan untuk memulai hidup baru melalui program transmigrasi. Ajukan permohonan dengan langkah mudah.",
   },
   {
     id: 4,
-    image: require("@/assets/images/contract.png"),
-    title: "Temukan Lowongan Kerja dengan Mudah di Aplikasi Disnaker",
+    image: require("@/assets/images/OnBoard_4.png"),
+    title: "Sampaikan Pengaduan Online dengan Mudah di Aplikasi Disnaker",
     subTitle:
-      "Cukup gunakan filter lokasi dan keahlian untuk menemukan pekerjaan yang sesuai denganmu",
+      " Sampaikan pengaduan Anda dengan cepat. Kami siap mendengarkan dan membantu menyelesaikan masalah ketenagakerjaan Anda.",
   },
 ];
 
@@ -121,11 +121,15 @@ export default function Index() {
           onPageSelected={(e) => setActivePage(e.nativeEvent.position)}
         >
           {dummy.map((data) => (
-            <Image key={data.id} source={data.image} />
+            <Image
+              key={data.id}
+              source={data.image}
+              style={{ objectFit: "cover", aspectRatio: 1 / 1 }}
+            />
           ))}
         </PagerView>
       </View>
-      <View style={{ marginTop: 20, display: "flex", gap: 5 }}>
+      <View style={{ marginTop: 20, display: "flex", gap: 5, height: 130 }}>
         <Typography
           fontFamily="Poppins-Medium"
           fontSize={19}
@@ -203,7 +207,8 @@ export default function Index() {
 const styles = StyleSheet.create({
   pagerView: {
     width: "100%",
-    height: "100%",
+    height: 360,
+    objectFit: "cover",
   },
   buttonChevron: {
     borderRadius: 100,

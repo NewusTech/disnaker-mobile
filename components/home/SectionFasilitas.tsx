@@ -59,7 +59,7 @@ export default function SectionFasilitas() {
         numColumns={2}
         renderItem={({ item }) => (
           <Pressable
-            style={{ gap: 10, marginHorizontal: 10 }}
+            style={{ gap: 10, marginHorizontal: 5 }}
             onPress={() => {
               setModalFoto(true);
               setContentModal({
@@ -83,10 +83,10 @@ export default function SectionFasilitas() {
         )}
         style={[{ gap: 20 }]}
         contentContainerStyle={{
-          paddingLeft: 10,
+          paddingLeft: 0,
           paddingRight: 20,
-          columnGap: 20,
           alignItems: "flex-start",
+          flexDirection: "row",
           gap: 20,
         }}
       />

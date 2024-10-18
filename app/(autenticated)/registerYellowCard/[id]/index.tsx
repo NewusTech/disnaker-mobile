@@ -11,6 +11,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Pdf from "react-native-pdf";
 import { Button } from "@/components/ui/button";
 import { IconDownload } from "@/components/icons";
+import downloadFile from "@/helpers/downloadFile";
+import Toast from "react-native-toast-message";
 
 export default function index() {
   const router = useRouter();
@@ -24,6 +26,25 @@ export default function index() {
   const getYellowCard = useGetUserYellowCardById(params.id);
   const detail = getYellowCard.data?.data;
 
+  const handleDownloadFile = async () => {
+    try {
+      await downloadFile(
+        "https://newus-bucket.s3.ap-southeast-2.amazonaws.com/assets_disnaker/file/cv/1729084777892-Hamdan -20241014022834191-cv.pdf",
+        `Kartu-kuning-${detail?.submissionNumber}-${detail?.User.UserProfile.name}`
+      );
+      Toast.show({
+        type: "success",
+        text1: "Berhasil Mendownload Kartu Kuning",
+      });
+    } catch (error) {
+      console.error(error);
+      Toast.show({
+        type: "error",
+        text1: "Gagal Mendownload Kartu Kuning",
+      });
+    }
+  };
+
   return (
     <View style={{ flex: 1 }} backgroundColor="white">
       <Appbar
@@ -32,26 +53,27 @@ export default function index() {
         backIconPress={() => router.back()}
       />
       <View style={{ flex: 1, paddingTop: 20, paddingHorizontal: 20, gap: 10 }}>
-        {!getYellowCard.isFetching && detail?.status === "Pengajuan" && (
-          <Typography
-            fontFamily="Poppins-LightItalic"
-            fontSize={14}
-            style={{
-              padding: 10,
-              borderColor: Colors["line-stroke-30"],
-              borderWidth: 1,
-              borderRadius: 15,
-            }}
-            color="black-30"
-          >
-            Note : Pengajuan{" "}
-            <Typography fontFamily="Poppins-Medium" fontSize={14}>
-              Kartu Kuning
-            </Typography>{" "}
-            Anda masih dalam proses oleh pihak Disnaker. Mohon bersabar dan
-            menunggu informasi selanjutnya. Terima kasih."
-          </Typography>
-        )}
+        {!getYellowCard.isFetching &&
+          (detail?.status === "Pengajuan" || detail?.status === "Proses") && (
+            <Typography
+              fontFamily="Poppins-LightItalic"
+              fontSize={14}
+              style={{
+                padding: 10,
+                borderColor: Colors["line-stroke-30"],
+                borderWidth: 1,
+                borderRadius: 15,
+              }}
+              color="black-30"
+            >
+              Note : Pengajuan{" "}
+              <Typography fontFamily="Poppins-Medium" fontSize={14}>
+                Kartu Kuning
+              </Typography>{" "}
+              Anda masih dalam proses oleh pihak Disnaker. Mohon bersabar dan
+              menunggu informasi selanjutnya. Terima kasih."
+            </Typography>
+          )}
         {!getYellowCard.isFetching && detail?.status === "Ditolak" && (
           <Typography
             fontFamily="Poppins-LightItalic"
@@ -68,7 +90,8 @@ export default function index() {
             <Typography fontFamily="Poppins-Medium" fontSize={14}>
               Kartu Kuning
             </Typography>{" "}
-            Anda ditolak, silahkan cek berkas anda kembali, dan lakukan pengajuan ulang.
+            Anda ditolak, silahkan cek berkas anda kembali, dan lakukan
+            pengajuan ulang.
           </Typography>
         )}
         {!getYellowCard.isFetching && detail?.status === "Terbit" && (
@@ -202,7 +225,7 @@ export default function index() {
                   }}
                 />
               </Pressable>
-              <Button>
+              <Button onPress={handleDownloadFile}>
                 <View style={{ flexDirection: "row", gap: 10 }}>
                   <IconDownload color="white" />
                   <Typography color="white">Download Kartu Kuning</Typography>

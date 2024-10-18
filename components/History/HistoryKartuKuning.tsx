@@ -2,16 +2,14 @@ import React, { useState } from "react";
 import { DataItem, SelectInput } from "../selectInput";
 import View from "../view";
 import { IconCaretDown } from "../icons/IconCeretDown";
-import { Dimensions, FlatList, Pressable } from "react-native";
-import { useGetUserComplaint, useGetUserYellowCard } from "@/services/user";
+import { Dimensions, FlatList, Pressable, RefreshControl } from "react-native";
+import { useGetUserYellowCard } from "@/services/user";
 import Separator from "../ui/separator";
 import { Typography } from "../ui/typography";
 import { formatDate } from "@/constants/dateTime";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAppTheme } from "@/context/theme-context";
-import { useAuthProfile } from "@/store/userStore";
-import { AppColorUnion } from "@/constants/Colors";
 
 export default function HistoryKartuKuning() {
   const router = useRouter();
@@ -23,6 +21,7 @@ export default function HistoryKartuKuning() {
   const dataFilter: DataItem[] = [
     { title: "Semua" },
     { title: "Pengajuan" },
+    { title: "Proses" },
     { title: "Terbit" },
     { title: "Ditolak" },
   ];
@@ -32,7 +31,8 @@ export default function HistoryKartuKuning() {
   };
 
   const handleChangeBgColor = (status: string) => {
-    if (status === "Pengajuan") return Colors["primary-50"];
+    if (status === "Pengajuan") return "656565";
+    if (status === "Proses") return Colors["primary-50"];
     if (status === "Terbit") return Colors["success-60"];
     return Colors["error-60"];
   };
@@ -49,7 +49,14 @@ export default function HistoryKartuKuning() {
         placeholder="pilih status"
       />
       <FlatList
-        scrollEnabled={false}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={getUserYellowCard.isRefetching}
+            onRefresh={() => getUserYellowCard.refetch()}
+            progressViewOffset={20}
+          />
+        }
         data={getUserYellowCard.data?.data.filter((f) =>
           filter !== "Semua" ? f.status === filter : true
         )}
@@ -151,6 +158,7 @@ export default function HistoryKartuKuning() {
         style={{ marginTop: 20 }}
         contentContainerStyle={{
           rowGap: 20,
+          paddingBottom: 90,
         }}
       />
     </View>

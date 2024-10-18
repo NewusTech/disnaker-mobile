@@ -45,7 +45,7 @@ export default function DetailVacancy() {
   const router = useRouter();
   const { Colors } = useAppTheme();
   const insets = useSafeAreaInsets();
-  const params = useLocalSearchParams<{ slug: string }>();
+  const params = useLocalSearchParams<{ slug: string; applied: string }>();
 
   const [tabDetail, setTabDetail] = useState<
     "Detail Pekerjaan" | "Detail Perusahaan"
@@ -577,10 +577,11 @@ export default function DetailVacancy() {
           </Animated.View>
         )}
         <Button
+          disabled={params.applied === "true"}
           style={{ marginVertical: 0, marginHorizontal: 20 }}
           onPress={() => setModalLamar(true)}
         >
-          Lamar Sekarang
+          {params.applied === "true" ? "Telah Dilamar" : "Lamar Sekarang"}
         </Button>
       </ScrollView>
       <ModalSwipe modalVisible={modalLamar} setModalVisible={setModalLamar}>

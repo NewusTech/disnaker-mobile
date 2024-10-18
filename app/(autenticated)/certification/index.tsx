@@ -42,7 +42,7 @@ export default function Certification() {
           />
         }
       >
-        <View style={{ paddingHorizontal: 20, marginVertical: 40 }}>
+        <View style={{ paddingHorizontal: 20, marginVertical: 20 }}>
           <SearchBox placeholder="Search" />
         </View>
         <Animated.FlatList
@@ -64,10 +64,11 @@ export default function Certification() {
                   borderRadius: 15,
                   width: Dimensions.get("window").width - 30,
                   overflow: "hidden",
-                  maxHeight: 350,
+                  height: 330,
                   flexDirection: "column",
                   justifyContent: "flex-start",
                   rowGap: 10,
+                  paddingBottom: 10,
                 },
               ]}
               onPress={() =>
@@ -108,7 +109,7 @@ export default function Certification() {
                     numberOfLines={4}
                     color={pressed ? "black-80" : "black-80"}
                   >
-                    {removeHtmlTags(item.desc, 500)}
+                    {removeHtmlTags(item.desc, 135)}
                   </Typography>
                   <Button
                     style={{ marginHorizontal: 10 }}
@@ -131,7 +132,7 @@ export default function Certification() {
           contentContainerStyle={{
             alignItems: "center",
             paddingHorizontal: 20,
-            gap: 30,
+            gap: 20,
           }}
         />
       </Animated.ScrollView>

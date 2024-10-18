@@ -7,7 +7,7 @@ import { removeHtmlTags } from "@/helper";
 import { useGetInformation } from "@/services/information";
 import { useRouter } from "expo-router";
 import React from "react";
-import { Dimensions, Image, Pressable } from "react-native";
+import { Dimensions, Pressable } from "react-native";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -33,7 +33,7 @@ export default function Information() {
         </Typography>
       </View>
       <Animated.ScrollView>
-        <View style={{ paddingHorizontal: 20, marginVertical: 40 }}>
+        <View style={{ paddingHorizontal: 20, marginVertical: 20 }}>
           <SearchBox placeholder="Search" />
         </View>
         <Animated.FlatList
@@ -55,9 +55,9 @@ export default function Information() {
                   borderRadius: 15,
                   width: Dimensions.get("window").width - 30,
                   overflow: "hidden",
-                  maxHeight: 220,
+                  height: 220,
                   flexDirection: "column",
-                  justifyContent: "center",
+                  justifyContent: "space-between",
                   rowGap: 10,
                   paddingVertical: 10,
                 },
@@ -102,9 +102,9 @@ export default function Information() {
                     style={{ marginHorizontal: 10 }}
                     onPress={() =>
                       router.push({
-                        pathname: "/(autenticated)/information/1",
+                        pathname: "/(autenticated)/information/[slug]",
                         params: {
-                          // slug: "slug",
+                          slug: item.slug,
                         },
                       })
                     }
@@ -119,7 +119,7 @@ export default function Information() {
           contentContainerStyle={{
             alignItems: "center",
             paddingHorizontal: 20,
-            gap: 30,
+            gap: 20,
           }}
         />
       </Animated.ScrollView>

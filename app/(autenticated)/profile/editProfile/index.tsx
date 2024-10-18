@@ -538,7 +538,7 @@ export default function EditProfile() {
             name="profession"
             render={({ field, fieldState }) => (
               <TextInput
-                label="profesi"
+                label="Profesi"
                 placeholder="Masukan profesi"
                 keyboardType="default"
                 borderRadius={17}
@@ -659,6 +659,7 @@ export default function EditProfile() {
               borderRadius: 15,
               justifyContent: "center",
               gap: 20,
+              paddingBottom: 10,
             }}
           >
             <UploadFoto

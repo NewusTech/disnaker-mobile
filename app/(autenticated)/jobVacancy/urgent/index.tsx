@@ -6,7 +6,7 @@ import { SearchBox } from "@/components/ui/searchBox";
 import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
-import { useGetVacancyRecomend } from "@/services/vacancy";
+import { useGetVacancyUrgent } from "@/services/vacancy";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -27,7 +27,7 @@ import useDebounce from "@/hooks/useDebounce";
 import { useAuthActions, useSavedVacancy } from "@/store/userStore";
 import Toast from "react-native-toast-message";
 
-export default function Recomendation() {
+export default function index() {
   const router = useRouter();
   const { Colors } = useAppTheme();
   const insets = useSafeAreaInsets();
@@ -46,7 +46,7 @@ export default function Recomendation() {
   const saveVacancy = useUserSaveVacancy();
   const unsaveVacancy = useUserDeleteVacancy();
 
-  const vacancy = useGetVacancyRecomend();
+  const vacancy = useGetVacancyUrgent();
 
   const updateVacancyDate = (date: string) => {
     return calculateDateDifference(new Date(date || 0), new Date());
@@ -136,7 +136,7 @@ export default function Recomendation() {
           marginTop: 20,
         }}
       >
-        <Typography>Rekomendasi Lowongan</Typography>
+        <Typography>Lowongan Dibutuhkan Segera</Typography>
       </View>
       <ScrollView
         contentContainerStyle={{ paddingHorizontal: 20, paddingVertical: 0 }}

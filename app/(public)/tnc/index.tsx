@@ -10,6 +10,8 @@ export default function Tnc() {
 
   const getTnc = useGetTnc();
 
+  console.log(getTnc.data?.data)
+
   return (
     <View style={{ flex: 1 }}>
       <Appbar

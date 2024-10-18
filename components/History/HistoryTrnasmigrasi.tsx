@@ -2,11 +2,8 @@ import React, { useState } from "react";
 import { DataItem, SelectInput } from "../selectInput";
 import View from "../view";
 import { IconCaretDown } from "../icons/IconCeretDown";
-import { Dimensions, FlatList, Pressable } from "react-native";
-import {
-  useGetUserTransmigration,
-  useGetUserYellowCard,
-} from "@/services/user";
+import { Dimensions, FlatList, Pressable, RefreshControl } from "react-native";
+import { useGetUserTransmigration } from "@/services/user";
 import Separator from "../ui/separator";
 import { Typography } from "../ui/typography";
 import { formatDate } from "@/constants/dateTime";
@@ -23,9 +20,9 @@ export default function HistoryTransmigrasi() {
 
   const dataFilter: DataItem[] = [
     { title: "Semua" },
-    { title: "Pengajuan" },
-    { title: "Terbit" },
-    { title: "Ditolak" },
+    { title: "Proses" },
+    { title: "Diterima" },
+    { title: "Ditutup" },
   ];
 
   const handleSelectFilter = (selectedItem: DataItem, index: number) => {
@@ -33,8 +30,8 @@ export default function HistoryTransmigrasi() {
   };
 
   const handleChangeBgColor = (status: string) => {
-    if (status === "Pengajuan") return Colors["primary-50"];
-    if (status === "Terbit") return Colors["success-60"];
+    if (status === "Proses") return Colors["primary-50"];
+    if (status === "Diterima") return Colors["success-60"];
     return Colors["error-60"];
   };
 
@@ -50,7 +47,14 @@ export default function HistoryTransmigrasi() {
         placeholder="pilih status"
       />
       <FlatList
-        scrollEnabled={false}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={getUserTransmigration.isRefetching}
+            onRefresh={() => getUserTransmigration.refetch()}
+            progressViewOffset={20}
+          />
+        }
         data={getUserTransmigration.data?.data.filter((f) =>
           filter !== "Semua" ? f.status === filter : true
         )}
@@ -152,6 +156,7 @@ export default function HistoryTransmigrasi() {
         style={{ marginTop: 20 }}
         contentContainerStyle={{
           rowGap: 20,
+          paddingBottom: 90,
         }}
       />
     </View>

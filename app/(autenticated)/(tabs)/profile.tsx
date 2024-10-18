@@ -13,8 +13,8 @@ import UploadFile from "@/components/uploadFile";
 import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
 import { LinearGradient } from "expo-linear-gradient";
-import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
 import { Dimensions, Image, Pressable, TouchableOpacity } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { IconLogout } from "@/components/icons/IconLogout";
@@ -102,6 +102,17 @@ export default function Profile() {
       router.replace("/(public)/onboard/final");
     }
   }, [router, setAccessToken, setProfile, profileQuery.data, route.path]);
+
+
+  useFocusEffect(
+    useCallback(() => {
+      console.log('Hello, I am focused!');
+      profileQuery.refetch()
+      return () => {
+        console.log('This route is now unfocused.');
+      }
+    }, [])
+  );
 
   return (
     <View style={{ flex: 1 }} backgroundColor="white">

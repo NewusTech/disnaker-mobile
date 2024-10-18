@@ -103,7 +103,7 @@ export default function Information() {
                     numberOfLines={4}
                     color={pressed ? "black-80" : "black-80"}
                   >
-                    {removeHtmlTags(item.desc, 500)}
+                    {removeHtmlTags(item.desc, 200)}
                   </Typography>
                   <Button
                     style={{ marginHorizontal: 10 }}
@@ -126,7 +126,7 @@ export default function Information() {
           contentContainerStyle={{
             alignItems: "center",
             paddingHorizontal: 20,
-            gap: 30,
+            rowGap:20
           }}
         />
       </Animated.ScrollView>

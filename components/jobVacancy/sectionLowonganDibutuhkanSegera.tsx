@@ -97,7 +97,13 @@ export default function SectionLowonganDibutuhkanSegera() {
         <Typography fontSize={16} color="black-80">
           Dibutuhkan Segera
         </Typography>
-        <TextLink fontSize={14} label="Lihat Semua" />
+        <TextLink
+          fontSize={14}
+          label="Lihat Semua"
+          onPress={() =>
+            router.push("/jobVacancy/urgent")
+          }
+        />
       </View>
       {/*  */}
       <FlatList

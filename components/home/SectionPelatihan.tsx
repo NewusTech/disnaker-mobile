@@ -43,6 +43,7 @@ export default function SectionPelatihan() {
       <Animated.FlatList
         ref={flatListRef}
         data={getTraining.data?.data}
+        showsHorizontalScrollIndicator={false}
         horizontal
         renderItem={({ item }) => (
           <Pressable
@@ -58,7 +59,7 @@ export default function SectionPelatihan() {
                 borderRadius: 15,
                 width: Dimensions.get("window").width - 30,
                 overflow: "hidden",
-                maxHeight: 320,
+                height: 300,
                 flexDirection: "column",
                 justifyContent: "flex-start",
                 rowGap: 10,
@@ -102,7 +103,7 @@ export default function SectionPelatihan() {
                   numberOfLines={4}
                   color={pressed ? "black-80" : "black-80"}
                 >
-                  {removeHtmlTags(item.desc, 500)}
+                  {removeHtmlTags(item.desc, 90)}
                 </Typography>
                 <Button
                   style={{ marginHorizontal: 10 }}

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { DataItem, SelectInput } from "../selectInput";
 import View from "../view";
 import { IconCaretDown } from "../icons/IconCeretDown";
-import { Dimensions, FlatList, Pressable } from "react-native";
+import { Dimensions, FlatList, Pressable, RefreshControl } from "react-native";
 import { useGetUserComplaint } from "@/services/user";
 import Separator from "../ui/separator";
 import { Typography } from "../ui/typography";
@@ -10,7 +10,6 @@ import { formatDate } from "@/constants/dateTime";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAppTheme } from "@/context/theme-context";
-import { useAuthProfile } from "@/store/userStore";
 
 export default function HistoryPengaduan() {
   const router = useRouter();
@@ -22,8 +21,8 @@ export default function HistoryPengaduan() {
   const dataFilter: DataItem[] = [
     { title: "Semua" },
     { title: "Proses" },
-    { title: "Terbit" },
-    { title: "Ditolak" },
+    { title: "Diterima" },
+    { title: "Ditutup" },
   ];
 
   const handleSelectFilter = (selectedItem: DataItem, index: number) => {
@@ -32,7 +31,7 @@ export default function HistoryPengaduan() {
 
   const handleChangeBgColor = (status: string) => {
     if (status === "Proses") return Colors["primary-50"];
-    if (status === "Terbit") return Colors["success-60"];
+    if (status === "Diterima") return Colors["success-60"];
     return Colors["error-60"];
   };
 
@@ -48,7 +47,14 @@ export default function HistoryPengaduan() {
         placeholder="pilih status"
       />
       <FlatList
-        scrollEnabled={false}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={getComplaint.isRefetching}
+            onRefresh={() => getComplaint.refetch()}
+            progressViewOffset={20}
+          />
+        }
         data={getComplaint.data?.data.filter((f) =>
           filter !== "Semua" ? f.status === filter : true
         )}
@@ -150,6 +156,7 @@ export default function HistoryPengaduan() {
         style={{ marginTop: 20 }}
         contentContainerStyle={{
           rowGap: 20,
+          paddingBottom: 90,
         }}
       />
     </View>

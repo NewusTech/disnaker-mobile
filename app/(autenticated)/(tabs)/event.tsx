@@ -42,7 +42,7 @@ export default function Information() {
           />
         }
       >
-        <View style={{ paddingHorizontal: 20, marginVertical: 40 }}>
+        <View style={{ paddingHorizontal: 20, marginVertical: 20 }}>
           <SearchBox placeholder="Search" />
         </View>
         <Animated.FlatList
@@ -64,7 +64,7 @@ export default function Information() {
                   borderRadius: 15,
                   width: Dimensions.get("window").width - 30,
                   overflow: "hidden",
-                  maxHeight: 350,
+                  height: 350,
                   flexDirection: "column",
                   justifyContent: "flex-start",
                   rowGap: 10,
@@ -108,7 +108,7 @@ export default function Information() {
                     numberOfLines={4}
                     color={pressed ? "black-80" : "black-80"}
                   >
-                    {removeHtmlTags(item.desc || "", 500)}
+                    {removeHtmlTags(item.desc || "", 90)}
                   </Typography>
                   <Button
                     style={{ marginHorizontal: 10 }}
@@ -131,7 +131,7 @@ export default function Information() {
           contentContainerStyle={{
             alignItems: "center",
             paddingHorizontal: 20,
-            gap: 30,
+            gap: 20,
           }}
         />
       </Animated.ScrollView>

@@ -64,7 +64,7 @@ export const userEducation = z.object({
   gpa: z.string({ message: "Harus diisi" }),
   joinDate: z.date(),
   graduationDate: z.date(),
-  desc: z.string({ message: "Harus diisi" }),
+  desc: z.string({ message: "Harus diisi" }).optional(),
   isCurrently: z.boolean().optional(),
 });
 
@@ -99,7 +99,7 @@ export const userSertificate = z.object({
   organization: z.string({ message: "Harus diisi" }),
   expiredDate: z.date(),
   isNonExpire: z.boolean(),
-  desc: z.string({ message: "Harus diisi" }),
+  desc: z.string({ message: "Harus diisi" }).optional(),
 });
 
 export type userSertificateForm = z.infer<typeof userSertificate>;

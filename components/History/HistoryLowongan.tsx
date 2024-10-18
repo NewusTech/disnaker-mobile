@@ -2,12 +2,16 @@ import React, { useState } from "react";
 import View from "../view";
 import { DataItem, SelectInput } from "../selectInput";
 import { IconCaretDown } from "../icons/IconCeretDown";
-import { Dimensions, FlatList, Image, TouchableOpacity } from "react-native";
+import {
+  Dimensions,
+  FlatList,
+  Image,
+  RefreshControl,
+} from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAppTheme } from "@/context/theme-context";
 import { Typography } from "../ui/typography";
-import { IconBookmarks } from "../icons/IconBookmarks";
 import { IconGraduation } from "../icons/IconGraduation";
 import { IconTipJar } from "../icons/IconTipJar";
 import { IconLocation } from "../icons/IconLocation";
@@ -29,12 +33,22 @@ export default function HistoryLowongan() {
   const dataFilter: DataItem[] = [
     { title: "Semua" },
     { title: "Dilamar" },
+    { title: "Wawancara" },
+    { title: "Tes" },
     { title: "Diterima" },
     { title: "Ditolak" },
   ];
 
   const handleSelectFilter = (selectedItem: DataItem, index: number) => {
     setFilter(selectedItem.title as string);
+  };
+
+  const handleChangeBgColor = (status: string) => {
+    if (status === "Dilamar") return "#656565";
+    if (status === "Wawancara") return Colors["secondary-40"];
+    if (status === "Tes") return Colors["primary-50"];
+    if (status === "Diterima") return Colors["success-60"];
+    return Colors["error-60"];
   };
 
   return (
@@ -47,10 +61,17 @@ export default function HistoryLowongan() {
         placeholder="pilih status"
       />
       <FlatList
-        scrollEnabled={false}
         data={getHistory.data?.data.filter((f) =>
           filter !== "Semua" ? f.status === filter : true
         )}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={getHistory.isRefetching}
+            onRefresh={() => getHistory.refetch()}
+            progressViewOffset={20}
+          />
+        }
         renderItem={({ item }) => (
           <Pressable
             style={{
@@ -62,7 +83,15 @@ export default function HistoryLowongan() {
               borderColor: Colors["line-stroke-30"],
               backgroundColor: Colors.white,
             }}
-            onPress={() => router.push(`/jobVacancy/${item.Vacancy.slug}`)}
+            onPress={() =>
+              router.push({
+                pathname: `/jobVacancy/[slug]`,
+                params: {
+                  slug: item.Vacancy.slug,
+                  applied: "true",
+                },
+              })
+            }
           >
             <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
               <Image
@@ -140,19 +169,20 @@ export default function HistoryLowongan() {
                 padding: 7,
                 paddingHorizontal: 25,
                 paddingVertical: 12,
-                backgroundColor: Colors["secondary-40"],
+                backgroundColor: handleChangeBgColor(item.status),
                 borderRadius: 100,
                 textAlign: "center",
               }}
               color="white"
             >
-              Dilihat
+              {item.status}
             </Typography>
           </Pressable>
         )}
         style={{ marginTop: 20 }}
         contentContainerStyle={{
           rowGap: 20,
+          paddingBottom: 90,
         }}
       />
     </View>

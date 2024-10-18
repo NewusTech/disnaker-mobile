@@ -300,7 +300,7 @@ export default function Index() {
             marginVertical: 20,
           }}
         >
-          Upload Kartu Keluarga
+          File Pendukung
         </Typography>
 
         <Typography

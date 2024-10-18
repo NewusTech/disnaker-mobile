@@ -2,9 +2,7 @@ import Appbar from "@/components/ui/appBar";
 import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
-import {
-  useGetUserTransmigrationById,
-} from "@/services/user";
+import { useGetUserTransmigrationById } from "@/services/user";
 import { useLocalSearchParams } from "expo-router";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
@@ -13,6 +11,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Pdf from "react-native-pdf";
 import { Button } from "@/components/ui/button";
 import { IconDownload } from "@/components/icons";
+import downloadFile from "@/helpers/downloadFile";
+import Toast from "react-native-toast-message";
 
 export default function index() {
   const router = useRouter();
@@ -26,6 +26,25 @@ export default function index() {
   const getTransmigration = useGetUserTransmigrationById(params.id);
   const detail = getTransmigration.data?.data;
 
+  const handleDownloadFile = async () => {
+    try {
+      await downloadFile(
+        "https://newus-bucket.s3.ap-southeast-2.amazonaws.com/assets_disnaker/file/cv/1729084777892-Hamdan -20241014022834191-cv.pdf",
+        `Transmigrasi-${detail?.submissionNumber}-${detail?.User.UserProfile.name}`
+      );
+      Toast.show({
+        type: "success",
+        text1: "Berhasil Mendownload Kartu Kuning",
+      });
+    } catch (error) {
+      console.error(error);
+      Toast.show({
+        type: "error",
+        text1: "Gagal Mendownload Kartu Kuning",
+      });
+    }
+  };
+
   return (
     <View style={{ flex: 1 }} backgroundColor="white">
       <Appbar
@@ -34,7 +53,7 @@ export default function index() {
         backIconPress={() => router.back()}
       />
       <View style={{ flex: 1, paddingTop: 20, paddingHorizontal: 20, gap: 10 }}>
-        {!getTransmigration.isFetching && detail?.status === "Pengajuan" && (
+        {!getTransmigration.isFetching && detail?.status === "Proses" && (
           <Typography
             fontFamily="Poppins-LightItalic"
             fontSize={14}
@@ -54,7 +73,7 @@ export default function index() {
             menunggu informasi selanjutnya. Terima kasih."
           </Typography>
         )}
-        {!getTransmigration.isFetching && detail?.status === "Ditolak" && (
+        {!getTransmigration.isFetching && detail?.status === "Ditutup" && (
           <Typography
             fontFamily="Poppins-LightItalic"
             fontSize={14}
@@ -74,7 +93,7 @@ export default function index() {
             pengajuan ulang.
           </Typography>
         )}
-        {!getTransmigration.isFetching && detail?.status === "Terbit" && (
+        {!getTransmigration.isFetching && detail?.status === "Diterima" && (
           <ScrollView style={{ flex: 1 }}>
             <View
               style={{
@@ -205,7 +224,7 @@ export default function index() {
                   }}
                 />
               </Pressable>
-              <Button>
+              <Button onPress={handleDownloadFile}>
                 <View style={{ flexDirection: "row", gap: 10 }}>
                   <IconDownload color="white" />
                   <Typography color="white">Download Kartu Kuning</Typography>

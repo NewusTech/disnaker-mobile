@@ -43,10 +43,27 @@ export default function EditProfile() {
   const { Colors } = useAppTheme();
   const insets = useSafeAreaInsets();
 
+  const { control, handleSubmit, formState, setValue, watch } =
+    useForm<profileForm>({
+      defaultValues: {
+        birthDate: new Date(),
+      },
+      resolver: zodResolver(profile),
+      mode: "all",
+    });
+
   const getProvinsi = useGetProvinsi();
   const getKabupaten = useGetKabupaten();
-  const getKecamatan = useGetkecamatan();
-  const getKelurahan = useGetkelurahan();
+  const getKecamatan = useGetkecamatan(
+    getKabupaten.data?.data
+      .find((f) => f.name === watch("kabupaten") || "")
+      ?.id.toString() || ""
+  );
+  const getKelurahan = useGetkelurahan(
+    getKecamatan.data?.data
+      .find((f) => f.name === watch("kecamatan") || "")
+      ?.id.toString() || ""
+  );
   const profileQuery = useGetProfile();
   const user = profileQuery.data?.data;
 
@@ -63,15 +80,6 @@ export default function EditProfile() {
   const [fileKK, setFileKK] = useState<DocumentPickerAsset>();
   const [newFotoProfile, setNewFotoProfile] = useState("");
   const [modalProfile, setModalProfile] = useState(false);
-
-  const { control, handleSubmit, formState, setValue, watch } =
-    useForm<profileForm>({
-      defaultValues: {
-        birthDate: new Date(),
-      },
-      resolver: zodResolver(profile),
-      mode: "all",
-    });
 
   const updateProfile = useUpdatePrfoile();
   const uploadFotoProfile = useUploadFotoProfile();
@@ -223,8 +231,8 @@ export default function EditProfile() {
         >
           <Image
             source={
-              user?.UserProfile.image
-                ? { uri: user.UserProfile.image }
+              user?.UserProfile?.image
+                ? { uri: user.UserProfile?.image }
                 : require("@/assets/images/dummy1.jpg")
             }
             style={{ width: 90, height: 90, borderRadius: 100 }}

@@ -2,13 +2,13 @@ import { getTraining, getTrainingById } from "@/api";
 import { useAccessToken } from "@/store/userStore";
 import { useQuery } from "@tanstack/react-query";
 
-export const useGetTraining = (query?: string) => {
+export const useGetTraining = (search: string) => {
   const accessToken = useAccessToken();
 
   return useQuery({
-    queryKey: ["useGetTraining", accessToken],
+    queryKey: ["useGetTraining", search, accessToken],
     // TODO replace with actual get Profile API
-    queryFn: () => getTraining(),
+    queryFn: () => getTraining(search),
     enabled: !!accessToken,
   });
 };

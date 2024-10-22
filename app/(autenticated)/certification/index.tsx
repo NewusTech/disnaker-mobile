@@ -3,10 +3,11 @@ import { SearchBox } from "@/components/ui/searchBox";
 import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
-import { removeHtmlTags } from "@/helper";
+import { removeHtmlTags } from "@/helpers";
+import useDebounce from "@/hooks/useDebounce";
 import { useGetCertification } from "@/services/certification";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 import { Dimensions, Image, Pressable, RefreshControl } from "react-native";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -16,7 +17,9 @@ export default function Certification() {
   const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
 
-  const getCertification = useGetCertification();
+  const [search, setSearch] = useState<string>("");
+  const searchValueDebounce = useDebounce(search, 1000);
+  const getCertification = useGetCertification(searchValueDebounce);
 
   return (
     <View style={{ flex: 1, paddingTop: insets.top }} backgroundColor="white">
@@ -43,7 +46,11 @@ export default function Certification() {
         }
       >
         <View style={{ paddingHorizontal: 20, marginVertical: 20 }}>
-          <SearchBox placeholder="Search" />
+          <SearchBox
+            placeholder="Search"
+            value={search}
+            onChangeText={setSearch}
+          />
         </View>
         <Animated.FlatList
           numColumns={1}

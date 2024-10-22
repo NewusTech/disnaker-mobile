@@ -475,7 +475,7 @@ export type ExperienceHistoryResponseSuccess = {
 export const getExperienceHistory = async () => {
   const response = await apiClient<ExperienceHistoryResponseSuccess>({
     method: "GET",
-    url: "/user/experience/get",
+    url: "/user/experience/get?limit=1000",
   });
   return response.data;
 };
@@ -527,7 +527,7 @@ export type SkillsResponseSuccess = {
 export const getSkills = async () => {
   const response = await apiClient<SkillsResponseSuccess>({
     method: "GET",
-    url: "/user/skill/get",
+    url: "/user/skill/get?limit=1000",
   });
   return response.data;
 };
@@ -621,7 +621,7 @@ export type SertificateResponseSuccess = {
 export const getSertificate = async () => {
   const response = await apiClient<SertificateResponseSuccess>({
     method: "GET",
-    url: "/user/certificate/get",
+    url: "/user/certificate/get?limit=1000",
   });
   return response.data;
 };
@@ -659,49 +659,6 @@ export const postUserApplyVacancy = async (payload: { vacancy_id: string }) => {
   return response.data;
 };
 
-export type UserHistoryApplicationResponseSuccess = {
-  status: HttpStatusCode;
-  message: string;
-  data: {
-    id: number;
-    user_id: number;
-    vacancy_id: number;
-    status: string;
-    createdAt: string;
-    updatedAt: string;
-    Vacancy: {
-      id: number;
-      category_id: number;
-      company_id: number;
-      title: string;
-      slug: string;
-      desc: string;
-      responsibility: string;
-      requirement: string;
-      location: string;
-      gender: string;
-      minExperience: number;
-      maxAge: number;
-      workingDay: string;
-      workingHour: string;
-      jobType: string;
-      workLocation: string;
-      isPublished: string;
-      applicationDeadline: string;
-      salary: string;
-      createdAt: string;
-      updatedAt: string;
-    };
-  }[];
-};
-export const getUserHistoryApplication = async () => {
-  const response = await apiClient<UserHistoryApplicationResponseSuccess>({
-    method: "GET",
-    url: "/user/application/get",
-  });
-  return response.data;
-};
-
 export type UserSavedVacancyResponseSuccess = {
   status: HttpStatusCode;
   message: string;
@@ -734,12 +691,39 @@ export type UserSavedVacancyResponseSuccess = {
       createdAt: string;
       updatedAt: string;
     };
+    Company: {
+      id: number;
+      user_id: number;
+      department: string;
+      name: string;
+      desc: string;
+      address: string;
+      numberEmployee: number;
+      website: string;
+      phone: string | null;
+      linkedin: string | null;
+      instagram: string;
+      imageLogo: string;
+      imageBanner: string;
+      createdAt: string;
+      updatedAt: string;
+    };
+    EducationLevels: {
+      id: number;
+      level: string;
+      VacancyEducationLevel: {
+        vacancy_id: number;
+        educationLevel_id: number;
+        createdAt: string;
+        updatedAt: string;
+      };
+    }[];
   }[];
 };
 export const getUserSavedVacancy = async () => {
   const response = await apiClient<UserSavedVacancyResponseSuccess>({
     method: "GET",
-    url: "/user/savedvacancy/get",
+    url: "/user/savedvacancy/get?limit=1000",
   });
   return response.data;
 };
@@ -785,10 +769,10 @@ export type ArticleResponseSuccess = {
     };
   }[];
 };
-export const getArticle = async () => {
+export const getArticle = async (search: string) => {
   const response = await apiClient<ArticleResponseSuccess>({
     method: "GET",
-    url: "/artikel/get",
+    url: `/artikel/get?limit=1000&search=${search ?? ""}`,
   });
   return response.data;
 };
@@ -840,10 +824,10 @@ export type EventResponseSuccess = {
     updatedAt: string;
   }[];
 };
-export const getEvent = async () => {
+export const getEvent = async (search: string) => {
   const response = await apiClient<EventResponseSuccess>({
     method: "GET",
-    url: "/event/get",
+    url: `/event/get?search=${search ?? ""}`,
   });
   return response.data;
 };
@@ -942,10 +926,10 @@ export type TrainingResponseSuccess = {
     };
   }[];
 };
-export const getTraining = async () => {
+export const getTraining = async (search: string) => {
   const response = await apiClient<TrainingResponseSuccess>({
     method: "GET",
-    url: "/training/get",
+    url: `/training/get?search=${search ?? ""}`,
   });
   return response.data;
 };
@@ -1020,10 +1004,10 @@ export type CertificationResponseSuccess = {
     };
   }[];
 };
-export const getCertification = async () => {
+export const getCertification = async (search: string) => {
   const response = await apiClient<CertificationResponseSuccess>({
     method: "GET",
-    url: "/certification/get",
+    url: `/certification/get?search=${search ?? ""}`,
   });
   return response.data;
 };
@@ -1085,6 +1069,24 @@ export const getTnc = async () => {
   return response.data;
 };
 
+export type PnpResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    desc: string;
+    createdAt: string;
+    updatedAt: string;
+  };
+};
+export const getPnp = async () => {
+  const response = await apiClient<PnpResponseSuccess>({
+    method: "GET",
+    url: "/kebijakanprivasi/get",
+  });
+  return response.data;
+};
+
 export type ConsultationResponseSuccess = {
   status: HttpStatusCode;
   message: string;
@@ -1114,10 +1116,10 @@ export type ConsultationResponseSuccess = {
     };
   }[];
 };
-export const getConsultation = async () => {
+export const getConsultation = async (search: string) => {
   const response = await apiClient<ConsultationResponseSuccess>({
     method: "GET",
-    url: "/consultation/get",
+    url: `/consultation/get?search=${search ?? ""}`,
   });
   return response.data;
 };
@@ -1162,12 +1164,71 @@ export const getConsultationById = async (id: string) => {
 export type UserNotificationResponseSuccess = {
   status: HttpStatusCode;
   message: string;
-  data: {}[];
+  data: {
+    id: number;
+    user_id: number;
+    desc: string;
+    vacancy_id: number;
+    createdAt: string;
+    status: string;
+    isReading: string;
+    updatedAt: string;
+    Vacancy: {
+      id: number;
+      category_id: number;
+      company_id: number;
+      title: string;
+      slug: string;
+      desc: string;
+      responsibility: string;
+      requirement: string;
+      location: string;
+      gender: string;
+      minExperience: number;
+      maxAge: number;
+      workingDay: string;
+      workingHour: string;
+      jobType: string;
+      workLocation: string;
+      isPublished: string;
+      applicationDeadline: string;
+      salary: string;
+      createdAt: string;
+      updatedAt: string;
+    };
+  }[];
 };
 export const getUserNotification = async () => {
   const response = await apiClient<UserNotificationResponseSuccess>({
     method: "GET",
     url: "/user/invitation/get",
+  });
+  return response.data;
+};
+
+export type UserNotificationByIdResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    user_id: number;
+    vacancy_id: number;
+    isReading: string;
+    desc: string | null;
+    status: string;
+    invitationDate: string;
+    responseDate: null;
+    createdAt: string;
+    updatedAt: string;
+    Vacancy: {
+      slug: string;
+    };
+  };
+};
+export const getUserNotificationById = async (id: string) => {
+  const response = await apiClient<UserNotificationByIdResponseSuccess>({
+    method: "GET",
+    url: `/user/invitation/get/${id}`,
   });
   return response.data;
 };
@@ -1184,10 +1245,10 @@ export type InformationResponseSuccess = {
     updatedAt: string;
   }[];
 };
-export const getInformation = async () => {
+export const getInformation = async (search: string) => {
   const response = await apiClient<InformationResponseSuccess>({
     method: "GET",
-    url: "/information/get",
+    url: `/information/get?search=${search ?? ""}`,
   });
   return response.data;
 };
@@ -1226,7 +1287,7 @@ export type FacilityResponseSuccess = {
 export const getFacility = async () => {
   const response = await apiClient<FacilityResponseSuccess>({
     method: "GET",
-    url: "/facility/get",
+    url: "/facility/get?limit=1000",
   });
   return response.data;
 };
@@ -1243,7 +1304,7 @@ export type provinsiResponseSuccess = {
 export const getProvinsi = async () => {
   const response = await apiClient<provinsiResponseSuccess>({
     method: "GET",
-    url: "/region/provinsi/get",
+    url: "/region/provinsi/get?limit=1000",
   });
   return response.data;
 };
@@ -1274,10 +1335,12 @@ export type kecamatanResponseSuccess = {
   }[];
 };
 
-export const getKecamatan = async () => {
+export const getKecamatan = async (kabupaten_id: string) => {
   const response = await apiClient<kecamatanResponseSuccess>({
     method: "GET",
-    url: "region/kecamatan/get?limit=1000",
+    url: `region/kecamatan/get?limit=1000&${
+      kabupaten_id && `kabupaten_id=${kabupaten_id}`
+    }`,
   });
   return response.data;
 };
@@ -1292,10 +1355,12 @@ export type kelurahanResponseSuccess = {
   }[];
 };
 
-export const getKelurahan = async () => {
+export const getKelurahan = async (kecamatan_id: string) => {
   const response = await apiClient<kelurahanResponseSuccess>({
     method: "GET",
-    url: "region/kelurahan/get?limit=1000",
+    url: `region/kelurahan/get?limit=1000&${
+      kecamatan_id && `kecamatan_id=${kecamatan_id}`
+    }`,
   });
   return response.data;
 };

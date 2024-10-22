@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import View from "../view";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { useAppTheme } from "@/context/theme-context";
 import { LayoutChangeEvent, Pressable, TouchableOpacity } from "react-native";
 import { Typography } from "../ui/typography";
@@ -44,6 +44,20 @@ export default function SectionPendidikan({
     const { height } = event.nativeEvent.layout;
     contentHeight.value = height;
   };
+
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     if (isOpen && contentHeight.value != animatedHeight.value) {
+  //       animatedHeight.value = withTiming(contentHeight.value, {
+  //         duration: 300,
+  //       });
+  //       console.log("content != animate");
+  //     }
+  //     return () => {
+  //       console.log("This route is now unfocused.");
+  //     };
+  //   }, [isOpen, contentHeight, contentHeight.value])
+  // );
 
   return (
     <View style={{ marginTop: 15 }}>
@@ -159,7 +173,9 @@ export default function SectionPendidikan({
                   )}
                 </Pressable>
               </View>
-              <Separator style={{ marginTop: 5, marginBottom: 10 }} />
+              {index + 1 !== education.length && (
+                <Separator style={{ marginTop: 5, marginBottom: 10 }} />
+              )}
             </View>
           ))}
         </View>

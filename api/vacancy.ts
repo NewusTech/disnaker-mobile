@@ -28,6 +28,7 @@ export type vacancyByIdResponseSuccess = {
     updatedAt: string;
     Company: {
       id: number;
+      department: string;
       name: string;
       imageLogo: string;
       imageBanner: string;

@@ -195,7 +195,9 @@ export default function SectionKerja({
                   )}
                 </Pressable>
               </View>
-              <Separator style={{ marginTop: 5, marginBottom: 10 }} />
+              {index + 1 !== experience.length && (
+                <Separator style={{ marginTop: 5, marginBottom: 10 }} />
+              )}
             </View>
           ))}
         </View>

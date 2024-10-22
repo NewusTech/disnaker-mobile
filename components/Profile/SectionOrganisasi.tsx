@@ -193,7 +193,9 @@ export default function SectionOrganisasi({
                   )}
                 </Pressable>
               </View>
-              <Separator style={{ marginTop: 5, marginBottom: 10 }} />
+              {index + 1 !== organization.length && (
+                <Separator style={{ marginTop: 5, marginBottom: 10 }} />
+              )}
             </View>
           ))}
         </View>

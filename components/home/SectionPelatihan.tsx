@@ -9,7 +9,7 @@ import { Dimensions, FlatList, Image, Pressable } from "react-native";
 import Animated from "react-native-reanimated";
 import { Button } from "../ui/button";
 import { useGetTraining } from "@/services/training";
-import { removeHtmlTags } from "@/helper";
+import { removeHtmlTags } from "@/helpers";
 
 export default function SectionPelatihan() {
   const router = useRouter();
@@ -18,7 +18,7 @@ export default function SectionPelatihan() {
 
   const flatListRef = useRef<FlatList>(null);
 
-  const getTraining = useGetTraining();
+  const getTraining = useGetTraining("");
 
   return (
     <View backgroundColor="white" style={{ paddingVertical: 20, gap: 10 }}>

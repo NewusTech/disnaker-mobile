@@ -2,13 +2,13 @@ import { getInformation, getInformationById } from "@/api";
 import { useAccessToken } from "@/store/userStore";
 import { useQuery } from "@tanstack/react-query";
 
-export const useGetInformation = (query?: string) => {
+export const useGetInformation = (search: string) => {
   const accessToken = useAccessToken();
 
   return useQuery({
-    queryKey: ["useGetInformation", accessToken],
+    queryKey: ["useGetInformation",search, accessToken],
     // TODO replace with actual get Profile API
-    queryFn: () => getInformation(),
+    queryFn: () => getInformation(search),
     enabled: !!accessToken,
   });
 };

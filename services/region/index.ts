@@ -22,23 +22,23 @@ export const useGetKabupaten = () => {
     enabled: !!accessToken,
   });
 };
-export const useGetkecamatan = () => {
+export const useGetkecamatan = (kabupaten_id: string) => {
   const accessToken = useAccessToken();
 
   return useQuery({
-    queryKey: ["useGetkecamatan", accessToken],
+    queryKey: ["useGetkecamatan", kabupaten_id, accessToken],
     // TODO replace with actual get Profile API
-    queryFn: () => getKecamatan(),
+    queryFn: () => getKecamatan(kabupaten_id),
     enabled: !!accessToken,
   });
 };
-export const useGetkelurahan = () => {
+export const useGetkelurahan = (kecamatan_id: string) => {
   const accessToken = useAccessToken();
 
   return useQuery({
-    queryKey: ["useGetkelurahan", accessToken],
+    queryKey: ["useGetkelurahan", kecamatan_id, accessToken],
     // TODO replace with actual get Profile API
-    queryFn: () => getKelurahan(),
+    queryFn: () => getKelurahan(kecamatan_id),
     enabled: !!accessToken,
   });
 };

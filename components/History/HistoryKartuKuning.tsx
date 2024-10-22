@@ -31,7 +31,7 @@ export default function HistoryKartuKuning() {
   };
 
   const handleChangeBgColor = (status: string) => {
-    if (status === "Pengajuan") return "656565";
+    if (status === "Pengajuan") return "#656565";
     if (status === "Proses") return Colors["primary-50"];
     if (status === "Terbit") return Colors["success-60"];
     return Colors["error-60"];

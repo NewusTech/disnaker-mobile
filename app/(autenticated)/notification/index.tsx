@@ -1,7 +1,7 @@
 import Appbar from "@/components/ui/appBar";
 import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Dimensions, Image, Pressable, RefreshControl } from "react-native";
@@ -10,13 +10,14 @@ import { useGetUserNotification } from "@/services/user";
 import { Typography } from "@/components/ui/typography";
 import RenderHTML, { defaultSystemFonts } from "react-native-render-html";
 import { Button } from "@/components/ui/button";
+import { calculateDateDifference } from "@/constants/dateTime";
 
 export default function index() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
 
-    const getNotification = useGetUserNotification();
+  const getNotification = useGetUserNotification();
 
   return (
     <View>
@@ -54,12 +55,34 @@ export default function index() {
                 flexDirection: "column",
                 justifyContent: "flex-start",
                 padding: 10,
+                rowGap: 20,
+                position: "relative",
               },
             ]}
-            onPress={() => router.push("/notification/1")}
+            onPress={() =>
+              router.push({
+                pathname: "/notification/[id]",
+                params: {
+                  id: data.id,
+                },
+              })
+            }
           >
             {({ pressed }) => (
               <>
+                {data.isReading === "false" && (
+                  <View
+                    style={{
+                      backgroundColor: Colors["error-60"],
+                      width: 10,
+                      height: 10,
+                      borderRadius: 100,
+                      position: "absolute",
+                      right: 5,
+                      top: 5,
+                    }}
+                  />
+                )}
                 <View
                   style={{
                     flexDirection: "row",
@@ -82,17 +105,31 @@ export default function index() {
                     fontSize={13}
                     style={{ marginLeft: "auto" }}
                   >
-                    23 Menit
+                    {calculateDateDifference(
+                      new Date(data.updatedAt),
+                      new Date()
+                    )}
                   </Typography>
                 </View>
                 <RenderHTML
                   systemFonts={[...defaultSystemFonts, "Poppins-Regular"]}
                   contentWidth={Dimensions.get("screen").width - 48}
                   source={{
-                    html: "<p>Halo Dunia.</p>",
+                    html: data.desc || "<p>Halo Dunia.</p>",
                   }}
                 />
-                <Button>Selengkapnya</Button>
+                <Button
+                  onPress={() =>
+                    router.push({
+                      pathname: "/notification/[id]",
+                      params: {
+                        id: data.id,
+                      },
+                    })
+                  }
+                >
+                  Selengkapnya
+                </Button>
               </>
             )}
           </Pressable>

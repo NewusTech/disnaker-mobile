@@ -4,6 +4,7 @@ import { Modal, TouchableOpacity } from "react-native";
 import { Typography } from "../typography";
 import { useAppTheme } from "@/context/theme-context";
 import Loader from "../loader";
+import Animated, { SlideInDown } from "react-native-reanimated";
 
 type ModalAction = {
   visible: boolean;
@@ -22,7 +23,7 @@ export default function ModalAction({
 }: ModalAction) {
   const { Colors } = useAppTheme();
   return (
-    <Modal visible={visible} transparent={true} animationType="slide">
+    <Modal visible={visible} transparent={true} animationType="fade">
       <View
         style={{
           flex: 1,
@@ -33,8 +34,8 @@ export default function ModalAction({
           alignItems: "center",
         }}
       >
-        <View
-          backgroundColor="white"
+        <Animated.View
+          entering={SlideInDown}
           style={{
             width: "80%",
             height: "auto",
@@ -42,9 +43,14 @@ export default function ModalAction({
             borderRadius: 15,
             justifyContent: "center",
             gap: 20,
+            backgroundColor: Colors.white,
           }}
         >
-          <Typography fontFamily="Poppins-Medium" fontSize={16}>
+          <Typography
+            fontFamily="Poppins-Medium"
+            fontSize={16}
+            style={{ textAlign: "center" }}
+          >
             {title}
           </Typography>
           <View
@@ -93,7 +99,7 @@ export default function ModalAction({
               </Typography>
             </TouchableOpacity>
           </View>
-        </View>
+        </Animated.View>
       </View>
     </Modal>
   );

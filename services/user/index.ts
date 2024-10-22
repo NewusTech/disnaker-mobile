@@ -20,6 +20,7 @@ import {
   getUserHistoryApplication,
   getUserLinkById,
   getUserNotification,
+  getUserNotificationById,
   getUserProfile,
   getUserSavedVacancy,
   getUserTransmigration,
@@ -39,6 +40,7 @@ import {
   postUserSaveVacancy,
   postUserSkills,
   postUserTransmigration,
+  postUserUpdatePassword,
   putAbout,
   putCvPortofolio,
   putEditProfile,
@@ -47,7 +49,9 @@ import {
   putFotoProfile,
   putOrganizationHistory,
   putSertificate,
+  putUserInvitation,
   putUserLink,
+  putUserNotification,
   ResponseError,
 } from "@/api";
 import {
@@ -58,6 +62,7 @@ import {
   userLinkForm,
   userOrganizationForm,
   userRegisterYellowCardForm,
+  userUpdatePasswordForm,
 } from "@/validation";
 import { useAccessToken } from "@/store/userStore";
 
@@ -379,6 +384,36 @@ export const useGetUserNotification = () => {
   });
 };
 
+export const useGetUserNotificationById = (id: string) => {
+  const accessToken = useAccessToken();
+
+  return useQuery({
+    queryKey: ["useGetUserNotificationById", id, accessToken],
+    // TODO replace with actual get Profile API
+    queryFn: () => getUserNotificationById(id),
+    enabled: !!accessToken,
+  });
+};
+
+export const useUserPutInvitation = () => {
+  return useMutation({
+    mutationFn: (payload: {
+      data: {
+        status: string;
+      };
+      id: string;
+    }) => putUserInvitation(payload.data, payload.id),
+    onError: (error: AxiosError<ResponseError>) => error,
+  });
+};
+
+export const usePutNotificationIsReading = () => {
+  return useMutation({
+    mutationFn: (payload: { id: string }) => putUserNotification(payload.id),
+    onError: (error: AxiosError<ResponseError>) => error,
+  });
+};
+
 export const useUserComplaint = () => {
   return useMutation({
     mutationFn: (payload: FormData) => postUserComplaint(payload),
@@ -463,5 +498,15 @@ export const useGetUserTransmigrationById = (id: string) => {
     // TODO replace with actual get Profile API
     queryFn: () => getUserTransmigrationById(id),
     enabled: !!accessToken,
+  });
+};
+
+export const useUserUpdatePassword = () => {
+  return useMutation({
+    mutationFn: (payload: {
+      data: userUpdatePasswordForm;
+      user_slug: string;
+    }) => postUserUpdatePassword(payload.data, payload.user_slug),
+    onError: (error: AxiosError<ResponseError>) => error,
   });
 };

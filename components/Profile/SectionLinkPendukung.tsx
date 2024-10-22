@@ -17,7 +17,6 @@ import Animated, {
 } from "react-native-reanimated";
 import { IconPencilLine } from "../icons/IconPencilLine";
 import { IconPlus } from "../icons/IconPlus";
-import { IconDot } from "../icons/IconDot";
 import Separator from "../ui/separator";
 import TextLink from "../ui/textLink";
 import { userLinkResponseSuccess } from "@/api";
@@ -116,7 +115,19 @@ export default function SectionLinkPendukung({
                     {link.linkType}
                   </Typography>
                 </View>
-                <TextLink label={link.link} fontSize={15} style={{}} />
+                <TextLink
+                  label={link.link}
+                  fontSize={15}
+                  style={{}}
+                  onPress={() =>
+                    router.push({
+                      pathname: "/(public)/webView",
+                      params: {
+                        link: link.link,
+                      },
+                    })
+                  }
+                />
                 <Pressable
                   style={({ pressed }) => [
                     {
@@ -147,7 +158,9 @@ export default function SectionLinkPendukung({
                   )}
                 </Pressable>
               </View>
-              <Separator style={{ marginTop: 5, marginBottom: 10 }} />
+              {index + 1 !== linkPendukung.length && (
+                <Separator style={{ marginTop: 5, marginBottom: 10 }} />
+              )}
             </View>
           ))}
           {linkPendukung.length === 0 && (

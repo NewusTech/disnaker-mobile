@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAppTheme } from "@/context/theme-context";
 import TextLink from "../ui/textLink";
 import { Dimensions, FlatList, Image, Pressable } from "react-native";
-import Animated from "react-native-reanimated";
+import Animated, { SlideInDown } from "react-native-reanimated";
 import { Button } from "../ui/button";
 import { Modal } from "react-native";
 import { useGetFacility } from "@/services/facility";
@@ -104,14 +104,15 @@ export default function SectionFasilitas() {
           }}
           onPress={() => setModalFoto(false)}
         >
-          <View
-            backgroundColor="white"
+          <Animated.View
+            entering={SlideInDown}
             style={{
               width: "80%",
               height: 300,
               borderRadius: 15,
               flexDirection: "column",
               overflow: "hidden",
+              backgroundColor: Colors.white,
             }}
           >
             <Image
@@ -129,7 +130,7 @@ export default function SectionFasilitas() {
             >
               {contenctModal.title}
             </Typography>
-          </View>
+          </Animated.View>
         </Pressable>
       </Modal>
     </View>

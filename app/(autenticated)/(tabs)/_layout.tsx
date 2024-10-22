@@ -1,16 +1,11 @@
 import { Tabs } from "expo-router";
 import React, { useEffect, useState } from "react";
-
-import { TabBarIcon } from "@/components/navigation/TabBarIcon";
-import { Colors } from "@/constants/Colors";
-import { useColorScheme } from "@/hooks/useColorScheme";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   Dimensions,
-  Pressable,
+  PixelRatio,
   StyleSheet,
   TouchableOpacity,
-  TouchableWithoutFeedback,
 } from "react-native";
 import View from "@/components/view";
 import { Typography } from "@/components/ui/typography";
@@ -50,40 +45,56 @@ export default function TabLayout() {
     ],
   }));
 
-  const dimensionWidth = Dimensions.get("window").width - 20;
+  // const dimensionWidth = Dimensions.get("window").width - 20;
 
   // const calculateGap = (dimensionWidth - (60 * 3 + 120)) / 4;
-  const calculateGap = (dimensionWidth - (60 * 3 + 120)) / 4;
+
   // useEffect(() => {
-  //   if (activePage === "Home") {
+  //   if (activePage === 0) {
   //     translateX.value = 0;
   //   }
-  //   if (activePage === "Riwayat") {
-  //     translateX.value = 50 + calculateGap * 2;
+  //   if (activePage === 1) {
+  //     translateX.value = 30 + calculateGap * 2;
   //   }
-  //   if (activePage === "Informasi") {
-  //     translateX.value = 115 + calculateGap * 3;
+  //   if (activePage === 2) {
+  //     translateX.value = 74 + calculateGap * 3;
   //   }
-  //   if (activePage === "Profile") {
-  //     translateX.value = 180 + calculateGap * 4;
+  //   if (activePage === 3) {
+  //     translateX.value = 59 * 2 + calculateGap * 4;
+  //   }
+  //   if (activePage === 4) {
+  //     translateX.value = 55 * 3 + calculateGap * 5;
   //   }
   // }, [activePage]);
+
+  // const dimensionWidth = Dimensions.get("window").width - 20;
+  // const scale = (size: number) => size * PixelRatio.get();
+
+  // const calculateGap = (dimensionWidth - (60 * 3 + 120)) / 4;
+
+  const { width: SCREEN_WIDTH } = Dimensions.get("window");
+  const guidelineBaseWidth = 375; // Sesuaikan dengan ukuran layar referensi Anda (misal, iPhone X)
+
+  const scale = (size: number) => (SCREEN_WIDTH / guidelineBaseWidth) * size;
+
+  const dimensionWidth = scale(355); // Misal, ukuran tampilan yang diinginkan setelah dikurangi padding
+  const calculateGap = (dimensionWidth - (scale(60) * 3 + scale(120))) / 4;
 
   useEffect(() => {
     if (activePage === 0) {
       translateX.value = 0;
     }
     if (activePage === 1) {
-      translateX.value = 30 + calculateGap * 2;
+      translateX.value = scale(33) + calculateGap * 2;
     }
     if (activePage === 2) {
-      translateX.value = 74 + calculateGap * 3;
+      translateX.value = scale(80) + calculateGap * 3;
     }
     if (activePage === 3) {
-      translateX.value = 59 * 2 + calculateGap * 4;
+      translateX.value = scale(64) * 2 + calculateGap * 4;
     }
     if (activePage === 4) {
-      translateX.value = 55 * 3 + calculateGap * 5;
+      translateX.value = scale(59) * 3 + calculateGap * 5;
     }
   }, [activePage]);
 

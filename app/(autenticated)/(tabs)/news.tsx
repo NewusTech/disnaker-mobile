@@ -3,10 +3,11 @@ import { SearchBox } from "@/components/ui/searchBox";
 import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
-import { removeHtmlTags } from "@/helper";
+import { removeHtmlTags } from "@/helpers";
+import useDebounce from "@/hooks/useDebounce";
 import { useGetArticle } from "@/services/article/insex";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 import { Dimensions, Image, Pressable } from "react-native";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -16,7 +17,10 @@ export default function Information() {
   const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
 
-  const article = useGetArticle();
+  const [search, setSearch] = useState<string>("");
+  const searchValueDebounce = useDebounce(search, 1000);
+
+  const article = useGetArticle(searchValueDebounce);
 
   console.log(article.data?.data);
 
@@ -36,8 +40,12 @@ export default function Information() {
         </Typography>
       </View>
       <Animated.ScrollView>
-        <View style={{ paddingHorizontal: 20, marginVertical: 40 }}>
-          <SearchBox placeholder="Search" />
+        <View style={{ paddingHorizontal: 20, marginVertical: 20 }}>
+          <SearchBox
+            placeholder="Search"
+            value={search}
+            onChangeText={setSearch}
+          />
         </View>
         <Animated.FlatList
           numColumns={1}
@@ -126,7 +134,7 @@ export default function Information() {
           contentContainerStyle={{
             alignItems: "center",
             paddingHorizontal: 20,
-            rowGap:20
+            rowGap: 20,
           }}
         />
       </Animated.ScrollView>

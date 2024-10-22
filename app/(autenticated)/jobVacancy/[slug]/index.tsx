@@ -40,12 +40,17 @@ import { useApplyVacancy } from "@/services/user";
 import Toast from "react-native-toast-message";
 import Loader from "@/components/ui/loader";
 import ModalSuccess from "@/components/ui/modalSuccess";
+import TextLink from "@/components/ui/textLink";
 
 export default function DetailVacancy() {
   const router = useRouter();
   const { Colors } = useAppTheme();
   const insets = useSafeAreaInsets();
-  const params = useLocalSearchParams<{ slug: string; applied: string }>();
+  const params = useLocalSearchParams<{
+    slug: string;
+    applied: string;
+    disabled: string;
+  }>();
 
   const [tabDetail, setTabDetail] = useState<
     "Detail Pekerjaan" | "Detail Perusahaan"
@@ -473,7 +478,7 @@ export default function DetailVacancy() {
                   style={{}}
                   color="black-50"
                 >
-                  It Consultan (belum)
+                  {detail.Company.department}
                 </Typography>
               </View>
             </View>
@@ -551,9 +556,18 @@ export default function DetailVacancy() {
                     Website
                   </Typography>
                 </View>
-                <Typography fontSize={14} style={{}} color="black-80">
-                  {detail?.Company.website}
-                </Typography>
+                <TextLink
+                  label={detail?.Company.website}
+                  fontSize={14}
+                  onPress={() =>
+                    router.push({
+                      pathname: "/(public)/webView",
+                      params: {
+                        link: detail.Company.website,
+                      },
+                    })
+                  }
+                />
               </View>
               <Separator />
               <View style={{}}>
@@ -576,13 +590,15 @@ export default function DetailVacancy() {
             </View>
           </Animated.View>
         )}
-        <Button
-          disabled={params.applied === "true"}
-          style={{ marginVertical: 0, marginHorizontal: 20 }}
-          onPress={() => setModalLamar(true)}
-        >
-          {params.applied === "true" ? "Telah Dilamar" : "Lamar Sekarang"}
-        </Button>
+        {params.disabled !== "true" && (
+          <Button
+            disabled={params.applied === "true"}
+            style={{ marginVertical: 0, marginHorizontal: 20 }}
+            onPress={() => setModalLamar(true)}
+          >
+            {params.applied === "true" ? "Telah Dilamar" : "Lamar Sekarang"}
+          </Button>
+        )}
       </ScrollView>
       <ModalSwipe modalVisible={modalLamar} setModalVisible={setModalLamar}>
         <View>

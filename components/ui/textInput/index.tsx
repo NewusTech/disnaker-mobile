@@ -48,7 +48,7 @@ export default function TextInput(props: TextInputProps) {
         </Typography>
       )}
       <View
-        backgroundColor={editable ? "transparent" : "line-stroke-30"}
+        backgroundColor={editable ? "transparent" : "line-stroke-20"}
         style={[
           styles.inputWrapper,
           {

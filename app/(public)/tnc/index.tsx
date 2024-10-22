@@ -4,13 +4,12 @@ import { useRouter } from "expo-router";
 import Appbar from "@/components/ui/appBar";
 import RenderHTML, { defaultSystemFonts } from "react-native-render-html";
 import { useGetTnc } from "@/services/tnc";
+import Loader from "@/components/ui/loader";
 
 export default function Tnc() {
   const router = useRouter();
 
   const getTnc = useGetTnc();
-
-  console.log(getTnc.data?.data)
 
   return (
     <View style={{ flex: 1 }}>
@@ -19,14 +18,22 @@ export default function Tnc() {
         variant="light"
         backIconPress={() => router.back()}
       />
-      <ScrollView style={{ flex: 1, paddingHorizontal: 20, marginTop: 20 }}>
-        <RenderHTML
-          systemFonts={[...defaultSystemFonts, "Poppins-Regular"]}
-          contentWidth={Dimensions.get("screen").width - 48}
-          source={{
-            html: getTnc.data?.data.desc || "<p>Hello World</p>",
-          }}
-        />
+      <ScrollView
+        style={{ flex: 1, paddingHorizontal: 20, marginTop: 5 }}
+        contentContainerStyle={{ width: "100%", paddingBottom: 40 }}
+        scrollEnabled={true}
+      >
+        {!getTnc.isFetching ? (
+          <RenderHTML
+            systemFonts={[...defaultSystemFonts, "Poppins-Regular"]}
+            contentWidth={Dimensions.get("screen").width - 48}
+            source={{
+              html: getTnc.data?.data.desc || "<p>Hello World</p>",
+            }}
+          />
+        ) : (
+          <Loader />
+        )}
       </ScrollView>
     </View>
   );

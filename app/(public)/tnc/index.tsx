@@ -19,8 +19,9 @@ export default function Tnc() {
         backIconPress={() => router.back()}
       />
       <ScrollView
-        style={{ flex: 1, paddingHorizontal: 20, marginTop: 20 }}
-        contentContainerStyle={{ flex: 1, width: "100%" }}
+        style={{ flex: 1, paddingHorizontal: 20, marginTop: 5 }}
+        contentContainerStyle={{ width: "100%", paddingBottom: 40 }}
+        scrollEnabled={true}
       >
         {!getTnc.isFetching ? (
           <RenderHTML

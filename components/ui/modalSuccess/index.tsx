@@ -1,6 +1,6 @@
 import View from "@/components/view";
 import React, { useRef } from "react";
-import { Modal, TouchableOpacity } from "react-native";
+import { Modal, Pressable, TouchableOpacity } from "react-native";
 import { Typography } from "../typography";
 import { useAppTheme } from "@/context/theme-context";
 import LottieView from "lottie-react-native";
@@ -24,7 +24,7 @@ export default function ModalSuccess({
   const animationRef = useRef<LottieView>(null);
   return (
     <Modal visible={visible} transparent={true} animationType="slide">
-      <View
+      <Pressable
         style={{
           flex: 1,
           width: "100%",
@@ -33,6 +33,7 @@ export default function ModalSuccess({
           justifyContent: "center",
           alignItems: "center",
         }}
+        onPress={() => setVisible(false)}
       >
         <View
           backgroundColor="white"
@@ -100,7 +101,7 @@ export default function ModalSuccess({
             </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </Pressable>
     </Modal>
   );
 }

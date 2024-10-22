@@ -475,7 +475,7 @@ export type ExperienceHistoryResponseSuccess = {
 export const getExperienceHistory = async () => {
   const response = await apiClient<ExperienceHistoryResponseSuccess>({
     method: "GET",
-    url: "/user/experience/get",
+    url: "/user/experience/get?limit=1000",
   });
   return response.data;
 };
@@ -527,7 +527,7 @@ export type SkillsResponseSuccess = {
 export const getSkills = async () => {
   const response = await apiClient<SkillsResponseSuccess>({
     method: "GET",
-    url: "/user/skill/get",
+    url: "/user/skill/get?limit=1000",
   });
   return response.data;
 };
@@ -621,7 +621,7 @@ export type SertificateResponseSuccess = {
 export const getSertificate = async () => {
   const response = await apiClient<SertificateResponseSuccess>({
     method: "GET",
-    url: "/user/certificate/get",
+    url: "/user/certificate/get?limit=1000",
   });
   return response.data;
 };
@@ -659,49 +659,6 @@ export const postUserApplyVacancy = async (payload: { vacancy_id: string }) => {
   return response.data;
 };
 
-export type UserHistoryApplicationResponseSuccess = {
-  status: HttpStatusCode;
-  message: string;
-  data: {
-    id: number;
-    user_id: number;
-    vacancy_id: number;
-    status: string;
-    createdAt: string;
-    updatedAt: string;
-    Vacancy: {
-      id: number;
-      category_id: number;
-      company_id: number;
-      title: string;
-      slug: string;
-      desc: string;
-      responsibility: string;
-      requirement: string;
-      location: string;
-      gender: string;
-      minExperience: number;
-      maxAge: number;
-      workingDay: string;
-      workingHour: string;
-      jobType: string;
-      workLocation: string;
-      isPublished: string;
-      applicationDeadline: string;
-      salary: string;
-      createdAt: string;
-      updatedAt: string;
-    };
-  }[];
-};
-export const getUserHistoryApplication = async () => {
-  const response = await apiClient<UserHistoryApplicationResponseSuccess>({
-    method: "GET",
-    url: "/user/application/get",
-  });
-  return response.data;
-};
-
 export type UserSavedVacancyResponseSuccess = {
   status: HttpStatusCode;
   message: string;
@@ -734,12 +691,39 @@ export type UserSavedVacancyResponseSuccess = {
       createdAt: string;
       updatedAt: string;
     };
+    Company: {
+      id: number;
+      user_id: number;
+      department: string;
+      name: string;
+      desc: string;
+      address: string;
+      numberEmployee: number;
+      website: string;
+      phone: string | null;
+      linkedin: string | null;
+      instagram: string;
+      imageLogo: string;
+      imageBanner: string;
+      createdAt: string;
+      updatedAt: string;
+    };
+    EducationLevels: {
+      id: number;
+      level: string;
+      VacancyEducationLevel: {
+        vacancy_id: number;
+        educationLevel_id: number;
+        createdAt: string;
+        updatedAt: string;
+      };
+    }[];
   }[];
 };
 export const getUserSavedVacancy = async () => {
   const response = await apiClient<UserSavedVacancyResponseSuccess>({
     method: "GET",
-    url: "/user/savedvacancy/get",
+    url: "/user/savedvacancy/get?limit=1000",
   });
   return response.data;
 };
@@ -788,7 +772,7 @@ export type ArticleResponseSuccess = {
 export const getArticle = async (search: string) => {
   const response = await apiClient<ArticleResponseSuccess>({
     method: "GET",
-    url: `/artikel/get?search=${search ?? ""}`,
+    url: `/artikel/get?limit=1000&search=${search ?? ""}`,
   });
   return response.data;
 };
@@ -1098,7 +1082,7 @@ export type PnpResponseSuccess = {
 export const getPnp = async () => {
   const response = await apiClient<PnpResponseSuccess>({
     method: "GET",
-    url: "/pnp/get",
+    url: "/kebijakanprivasi/get",
   });
   return response.data;
 };
@@ -1183,6 +1167,7 @@ export type UserNotificationResponseSuccess = {
   data: {
     id: number;
     user_id: number;
+    desc: string;
     vacancy_id: number;
     createdAt: string;
     status: string;
@@ -1228,39 +1213,22 @@ export type UserNotificationByIdResponseSuccess = {
     id: number;
     user_id: number;
     vacancy_id: number;
-    createdAt: string;
-    status: string;
     isReading: string;
+    desc: string | null;
+    status: string;
+    invitationDate: string;
+    responseDate: null;
+    createdAt: string;
     updatedAt: string;
     Vacancy: {
-      id: number;
-      category_id: number;
-      company_id: number;
-      title: string;
       slug: string;
-      desc: string;
-      responsibility: string;
-      requirement: string;
-      location: string;
-      gender: string;
-      minExperience: number;
-      maxAge: number;
-      workingDay: string;
-      workingHour: string;
-      jobType: string;
-      workLocation: string;
-      isPublished: string;
-      applicationDeadline: string;
-      salary: string;
-      createdAt: string;
-      updatedAt: string;
     };
   };
 };
-export const getUserNotificationById = async () => {
+export const getUserNotificationById = async (id: string) => {
   const response = await apiClient<UserNotificationByIdResponseSuccess>({
     method: "GET",
-    url: "/user/invitation/get",
+    url: `/user/invitation/get/${id}`,
   });
   return response.data;
 };
@@ -1319,7 +1287,7 @@ export type FacilityResponseSuccess = {
 export const getFacility = async () => {
   const response = await apiClient<FacilityResponseSuccess>({
     method: "GET",
-    url: "/facility/get",
+    url: "/facility/get?limit=1000",
   });
   return response.data;
 };
@@ -1336,7 +1304,7 @@ export type provinsiResponseSuccess = {
 export const getProvinsi = async () => {
   const response = await apiClient<provinsiResponseSuccess>({
     method: "GET",
-    url: "/region/provinsi/get",
+    url: "/region/provinsi/get?limit=1000",
   });
   return response.data;
 };
@@ -1367,10 +1335,12 @@ export type kecamatanResponseSuccess = {
   }[];
 };
 
-export const getKecamatan = async () => {
+export const getKecamatan = async (kabupaten_id: string) => {
   const response = await apiClient<kecamatanResponseSuccess>({
     method: "GET",
-    url: "region/kecamatan/get?limit=1000",
+    url: `region/kecamatan/get?limit=1000&${
+      kabupaten_id && `kabupaten_id=${kabupaten_id}`
+    }`,
   });
   return response.data;
 };
@@ -1385,10 +1355,12 @@ export type kelurahanResponseSuccess = {
   }[];
 };
 
-export const getKelurahan = async () => {
+export const getKelurahan = async (kecamatan_id: string) => {
   const response = await apiClient<kelurahanResponseSuccess>({
     method: "GET",
-    url: "region/kelurahan/get?limit=1000",
+    url: `region/kelurahan/get?limit=1000&${
+      kecamatan_id && `kecamatan_id=${kecamatan_id}`
+    }`,
   });
   return response.data;
 };

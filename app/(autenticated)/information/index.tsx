@@ -33,7 +33,7 @@ export default function Information() {
         }}
       >
         <Typography fontSize={18} style={{ textAlign: "center" }}>
-          Innformasi
+          Informasi
         </Typography>
       </View>
       <Animated.ScrollView>

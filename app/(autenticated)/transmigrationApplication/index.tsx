@@ -47,12 +47,6 @@ export default function Index() {
   const userProfile = useGetProfile();
   const user = userProfile.data?.data;
 
-  const getProvinsi = useGetProvinsi();
-  const getKabupaten = useGetKabupaten();
-  const getKecamatan = useGetkecamatan();
-  const getKelurahan = useGetkelurahan();
-  const createTransmigration = useUserTransmigration();
-
   const { control, handleSubmit, formState, setValue, watch } =
     useForm<userTransmigrationForm>({
       defaultValues: {
@@ -61,6 +55,20 @@ export default function Index() {
       resolver: zodResolver(userTransmigration),
       mode: "all",
     });
+
+  const getProvinsi = useGetProvinsi();
+  const getKabupaten = useGetKabupaten();
+  const getKecamatan = useGetkecamatan(
+    getKabupaten.data?.data
+      .find((f) => f.name === watch("kabupaten") || "")
+      ?.id.toString() || ""
+  );
+  const getKelurahan = useGetkelurahan(
+    getKecamatan.data?.data
+      .find((f) => f.name === watch("kecamatan") || "")
+      ?.id.toString() || ""
+  );
+  const createTransmigration = useUserTransmigration();
 
   const [dataAnggotaJiwa, setDataAnggotaJiwa] = useState<anggota[]>([]);
   const [openModal, setOpenModal] = useState<boolean>(false);
@@ -308,14 +316,17 @@ export default function Index() {
             marginVertical: 20,
           }}
         >
-          File Pendukung
+          2 File Pendukung
         </Typography>
 
         <Typography
           fontSize={16}
           style={{ marginHorizontal: 20, marginBottom: 10 }}
         >
-          Kartu Keluarga
+          Kartu Keluarga{" "}
+          <Typography fontFamily="Poppins-LightItalic">
+            (update dari profile)
+          </Typography>
         </Typography>
         {user?.UserProfile.kk ? (
           <Pressable

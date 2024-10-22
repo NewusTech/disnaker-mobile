@@ -20,6 +20,7 @@ import {
   getUserHistoryApplication,
   getUserLinkById,
   getUserNotification,
+  getUserNotificationById,
   getUserProfile,
   getUserSavedVacancy,
   getUserTransmigration,
@@ -48,7 +49,9 @@ import {
   putFotoProfile,
   putOrganizationHistory,
   putSertificate,
+  putUserInvitation,
   putUserLink,
+  putUserNotification,
   ResponseError,
 } from "@/api";
 import {
@@ -378,6 +381,36 @@ export const useGetUserNotification = () => {
     // TODO replace with actual get Profile API
     queryFn: () => getUserNotification(),
     enabled: !!accessToken,
+  });
+};
+
+export const useGetUserNotificationById = (id: string) => {
+  const accessToken = useAccessToken();
+
+  return useQuery({
+    queryKey: ["useGetUserNotificationById", id, accessToken],
+    // TODO replace with actual get Profile API
+    queryFn: () => getUserNotificationById(id),
+    enabled: !!accessToken,
+  });
+};
+
+export const useUserPutInvitation = () => {
+  return useMutation({
+    mutationFn: (payload: {
+      data: {
+        status: string;
+      };
+      id: string;
+    }) => putUserInvitation(payload.data, payload.id),
+    onError: (error: AxiosError<ResponseError>) => error,
+  });
+};
+
+export const usePutNotificationIsReading = () => {
+  return useMutation({
+    mutationFn: (payload: { id: string }) => putUserNotification(payload.id),
+    onError: (error: AxiosError<ResponseError>) => error,
   });
 };
 

@@ -139,7 +139,7 @@ export default function index() {
             >
               <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
                 <Image
-                  source={require("@/assets/images/dummy1.jpg")}
+                  source={{ uri: item.Company?.imageLogo || "" }}
                   style={{ width: 50, height: 50, borderRadius: 100 }}
                 />
                 <View
@@ -159,7 +159,7 @@ export default function index() {
                     style={{}}
                     color="black-50"
                   >
-                    -
+                    {item.Company?.name || "-"}
                   </Typography>
                 </View>
                 <TouchableOpacity
@@ -192,7 +192,13 @@ export default function index() {
                 >
                   <IconGraduation width={20} height={20} color="black-80" />
                   <Typography fontSize={13} style={{}} color="black-80">
-                    -
+                    {item.EducationLevels
+                      ? item?.EducationLevels.sort((a, b) => a.id - b.id)
+                          .map((el) => {
+                            return el.level;
+                          })
+                          .join("/")
+                      : "-"}
                   </Typography>
                 </View>
                 <View

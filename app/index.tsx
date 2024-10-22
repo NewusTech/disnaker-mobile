@@ -43,7 +43,7 @@ export default function InitialScreen() {
       if (storageAccessToken) {
         setAccessToken(storageAccessToken);
         router.replace("/(autenticated)/(tabs)/home");
-        // router.replace("/(autenticated)/notification/[id]")
+        // router.replace("/(autenticated)/notification")
       } else {
         router.replace("/(public)/onboard");
       }

@@ -3,7 +3,6 @@ import apiClient from "@/lib/fatcher";
 import { getAccessToken } from "@/store/userStore";
 import {
   userRegisterYellowCardForm,
-  userTransmigrationForm,
   userUpdatePasswordForm,
 } from "@/validation";
 import { HttpStatusCode } from "axios";
@@ -73,7 +72,7 @@ export const getUserComplaintById = async (id: string) => {
 };
 
 export type userComplaintResponseSuccess = {
-  status: 200;
+  status: HttpStatusCode;
   message: "Success Get User Profiles";
   data: userComplaintByIdResponseSuccess["data"][];
 };
@@ -81,7 +80,7 @@ export type userComplaintResponseSuccess = {
 export const getUserComplaint = async () => {
   const response = await apiClient<userComplaintResponseSuccess>({
     method: "GET",
-    url: "/complaint/get/",
+    url: "/complaint/get?limit=1000",
   });
   return response.data;
 };
@@ -153,7 +152,7 @@ export type userYellowCardResponseSuccess = {
 export const getUserYellowCard = async () => {
   const response = await apiClient<userYellowCardResponseSuccess>({
     method: "GET",
-    url: "/yellowcard/get",
+    url: "/yellowcard/get?limit=1000",
   });
   return response.data;
 };
@@ -277,7 +276,7 @@ export type userTransmigrationResponseSuccess = {
 export const getUserTransmigration = async () => {
   const response = await apiClient<userTransmigrationResponseSuccess>({
     method: "GET",
-    url: "/transmigration/get",
+    url: "/transmigration/get?limit=1000",
   });
   return response.data;
 };
@@ -358,6 +357,100 @@ export const postUserUpdatePassword = async (
     method: "POST",
     url: "/user/password/change/" + slug,
     data: payload,
+  });
+
+  return response.data;
+};
+
+export type UserHistoryApplicationResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    user_id: number;
+    vacancy_id: number;
+    status: string;
+    createdAt: string;
+    updatedAt: string;
+    Vacancy: {
+      id: number;
+      category_id: number;
+      company_id: number;
+      title: string;
+      slug: string;
+      desc: string;
+      responsibility: string;
+      requirement: string;
+      location: string;
+      gender: string;
+      minExperience: number;
+      maxAge: number;
+      workingDay: string;
+      workingHour: string;
+      jobType: string;
+      workLocation: string;
+      isPublished: string;
+      applicationDeadline: string;
+      salary: string;
+      createdAt: string;
+      updatedAt: string;
+      EducationLevels: {
+        id: number;
+        level: string;
+        VacancyEducationLevel: {
+          vacancy_id: number;
+          educationLevel_id: number;
+          createdAt: string;
+          updatedAt: string;
+        };
+      }[];
+      Company: {
+        id: number;
+        user_id: number;
+        department: string;
+        name: string;
+        desc: string;
+        address: string;
+        numberEmployee: number;
+        website: string;
+        phone: string | null;
+        linkedin: string | null;
+        instagram: string;
+        imageLogo: string;
+        imageBanner: string;
+        createdAt: string;
+        updatedAt: string;
+      };
+    };
+  }[];
+};
+export const getUserHistoryApplication = async () => {
+  const response = await apiClient<UserHistoryApplicationResponseSuccess>({
+    method: "GET",
+    url: "/user/application/get?limit=1000",
+  });
+  return response.data;
+};
+
+export const putUserInvitation = async (
+  payload: {
+    status: string;
+  },
+  id: string
+) => {
+  const response = await apiClient<PostResponseSuccess>({
+    method: "PUT",
+    url: `/user/invitation/update/${id}`,
+    data: payload,
+  });
+
+  return response.data;
+};
+
+export const putUserNotification = async (id: string) => {
+  const response = await apiClient<PostResponseSuccess>({
+    method: "PUT",
+    url: `/user/notification/update/${id}`,
   });
 
   return response.data;

@@ -26,12 +26,14 @@ export default function History() {
     | "Daftar Kartu Kuning"
     | "Pengaduan"
     | "Daftar Tansmigrasi"
-  >(() => (params.tabRiwayat ? params.tabRiwayat : "Lowongan Pekerjaan"));
+  >();
 
   useFocusEffect(
     useCallback(() => {
       console.log("Hello, I am focused!");
-      setTabRiwayat(params.tabRiwayat);
+      setTabRiwayat(
+        params.tabRiwayat ? params.tabRiwayat : "Lowongan Pekerjaan"
+      );
       return () => {
         console.log("This route is now unfocused.");
       };

@@ -1,7 +1,7 @@
 import Appbar from "@/components/ui/appBar";
 import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Dimensions, Image, Pressable, RefreshControl } from "react-native";
@@ -55,12 +55,34 @@ export default function index() {
                 flexDirection: "column",
                 justifyContent: "flex-start",
                 padding: 10,
+                rowGap: 20,
+                position: "relative",
               },
             ]}
-            onPress={() => router.push("/notification/1")}
+            onPress={() =>
+              router.push({
+                pathname: "/notification/[id]",
+                params: {
+                  id: data.id,
+                },
+              })
+            }
           >
             {({ pressed }) => (
               <>
+                {data.isReading === "false" && (
+                  <View
+                    style={{
+                      backgroundColor: Colors["error-60"],
+                      width: 10,
+                      height: 10,
+                      borderRadius: 100,
+                      position: "absolute",
+                      right: 5,
+                      top: 5,
+                    }}
+                  />
+                )}
                 <View
                   style={{
                     flexDirection: "row",
@@ -93,10 +115,21 @@ export default function index() {
                   systemFonts={[...defaultSystemFonts, "Poppins-Regular"]}
                   contentWidth={Dimensions.get("screen").width - 48}
                   source={{
-                    html: "<p>Halo Dunia.</p>",
+                    html: data.desc || "<p>Halo Dunia.</p>",
                   }}
                 />
-                <Button>Selengkapnya</Button>
+                <Button
+                  onPress={() =>
+                    router.push({
+                      pathname: "/notification/[id]",
+                      params: {
+                        id: data.id,
+                      },
+                    })
+                  }
+                >
+                  Selengkapnya
+                </Button>
               </>
             )}
           </Pressable>

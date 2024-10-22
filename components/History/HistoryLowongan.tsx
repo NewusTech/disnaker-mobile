@@ -2,12 +2,7 @@ import React, { useState } from "react";
 import View from "../view";
 import { DataItem, SelectInput } from "../selectInput";
 import { IconCaretDown } from "../icons/IconCeretDown";
-import {
-  Dimensions,
-  FlatList,
-  Image,
-  RefreshControl,
-} from "react-native";
+import { Dimensions, FlatList, Image, RefreshControl } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAppTheme } from "@/context/theme-context";
@@ -95,8 +90,13 @@ export default function HistoryLowongan() {
           >
             <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
               <Image
-                source={require("@/assets/images/dummy1.jpg")}
-                style={{ width: 50, height: 50, borderRadius: 100 }}
+                source={{ uri: item.Vacancy.Company.imageLogo }}
+                style={{
+                  width: 50,
+                  height: 50,
+                  borderRadius: 100,
+                  backgroundColor: Colors["black-10"],
+                }}
               />
               <View
                 style={{
@@ -114,19 +114,9 @@ export default function HistoryLowongan() {
                   style={{}}
                   color="black-50"
                 >
-                  -
+                  {item.Vacancy.Company.name}
                 </Typography>
               </View>
-              {/* <TouchableOpacity
-                style={{
-                  width: 30,
-                  height: 30,
-                  padding: 3,
-                  marginLeft: "auto",
-                }}
-              >
-                <IconBookmarks width={27} height={27} color="black-80" />
-              </TouchableOpacity> */}
             </View>
             <View style={{ gap: 5 }}>
               <View
@@ -134,7 +124,13 @@ export default function HistoryLowongan() {
               >
                 <IconGraduation width={20} height={20} color="black-80" />
                 <Typography fontSize={13} style={{}} color="black-80">
-                  -
+                  {item.Vacancy.EducationLevels
+                    ? item.Vacancy.EducationLevels.sort((a, b) => a.id - b.id)
+                        .map((el) => {
+                          return el.level;
+                        })
+                        .join("/")
+                    : "-"}
                 </Typography>
               </View>
               <View

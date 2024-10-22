@@ -10,13 +10,14 @@ import { useGetUserNotification } from "@/services/user";
 import { Typography } from "@/components/ui/typography";
 import RenderHTML, { defaultSystemFonts } from "react-native-render-html";
 import { Button } from "@/components/ui/button";
+import { calculateDateDifference } from "@/constants/dateTime";
 
 export default function index() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
 
-    const getNotification = useGetUserNotification();
+  const getNotification = useGetUserNotification();
 
   return (
     <View>
@@ -82,7 +83,10 @@ export default function index() {
                     fontSize={13}
                     style={{ marginLeft: "auto" }}
                   >
-                    23 Menit
+                    {calculateDateDifference(
+                      new Date(data.updatedAt),
+                      new Date()
+                    )}
                   </Typography>
                 </View>
                 <RenderHTML

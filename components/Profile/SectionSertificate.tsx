@@ -104,10 +104,12 @@ export default function SectionSertificate({
                   fontSize={15}
                   style={{}}
                 >
-                  { item.isNonExpire === "true" ? "Tidak Kadaluarsa" : formatDate(new Date(item.expiredDate), {
-                    month: "short",
-                    year: "numeric",
-                  })}
+                  {item.isNonExpire === "true"
+                    ? "Tidak Kadaluarsa"
+                    : formatDate(new Date(item.expiredDate), {
+                        month: "short",
+                        year: "numeric",
+                      })}
                 </Typography>
                 <Typography color="black-40" fontSize={15} style={{}}>
                   {item.desc}
@@ -138,7 +140,9 @@ export default function SectionSertificate({
                   )}
                 </Pressable>
               </View>
-              <Separator style={{ marginTop: 5, marginBottom: 10 }} />
+              {index + 1 !== sertificate.length && (
+                <Separator style={{ marginTop: 5, marginBottom: 10 }} />
+              )}
             </View>
           ))}
         </View>

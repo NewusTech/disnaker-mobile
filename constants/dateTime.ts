@@ -32,6 +32,8 @@ export function calculateDateDifference(
     showYears?: boolean;
     showMonths?: boolean;
     showDays?: boolean;
+    showHours?: boolean;
+    showMinutes?: boolean;
   } = {}
 ): string {
   const start = new Date(startDate);
@@ -41,8 +43,20 @@ export function calculateDateDifference(
   let years = end.getFullYear() - start.getFullYear();
   let months = end.getMonth() - start.getMonth();
   let days = end.getDate() - start.getDate();
+  let hours = end.getHours() - start.getHours();
+  let minutes = end.getMinutes() - start.getMinutes();
 
-  // Jika selisih bulan atau hari negatif, sesuaikan hasilnya
+  // Jika selisih hari, jam, atau menit negatif, sesuaikan hasilnya
+  if (minutes < 0) {
+    hours--;
+    minutes += 60; // Tambahkan 60 menit jika negatif
+  }
+
+  if (hours < 0) {
+    days--;
+    hours += 24; // Tambahkan 24 jam jika negatif
+  }
+
   if (days < 0) {
     months--;
     const previousMonth = new Date(end.getFullYear(), end.getMonth(), 0);
@@ -69,6 +83,14 @@ export function calculateDateDifference(
     result.push(`${days} hari`);
   }
 
-  // Jika tidak ada hasil, tampilkan "0 hari"
-  return result.length > 0 ? result.join(" ") : "0 hari";
+  if (options.showHours !== false && hours > 0) {
+    result.push(`${hours} jam`);
+  }
+
+  if (options.showMinutes !== false && minutes > 0) {
+    result.push(`${minutes} menit`);
+  }
+
+  // Jika tidak ada hasil, tampilkan "0 menit"
+  return result.length > 0 ? result.join(" ") : "0 menit";
 }

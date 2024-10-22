@@ -75,7 +75,7 @@ export function SelectInput(props: SelectInputProps) {
                 borderRadius,
                 gap,
                 backgroundColor: disabled
-                  ? Colors["line-stroke-30"]
+                  ? Colors["line-stroke-20"]
                   : "transparent",
               },
             ]}

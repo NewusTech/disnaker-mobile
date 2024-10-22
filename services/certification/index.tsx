@@ -2,13 +2,13 @@ import { getCertification, getCertificationById } from "@/api";
 import { useAccessToken } from "@/store/userStore";
 import { useQuery } from "@tanstack/react-query";
 
-export const useGetCertification = (query?: string) => {
+export const useGetCertification = (search: string) => {
   const accessToken = useAccessToken();
 
   return useQuery({
-    queryKey: ["useGetCertification", accessToken],
+    queryKey: ["useGetCertification", search, accessToken],
     // TODO replace with actual get Profile API
-    queryFn: () => getCertification(),
+    queryFn: () => getCertification(search),
     enabled: !!accessToken,
   });
 };

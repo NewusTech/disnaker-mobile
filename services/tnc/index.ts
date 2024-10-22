@@ -9,6 +9,5 @@ export const useGetTnc = () => {
     queryKey: ["useGetTnc", accessToken],
     // TODO replace with actual get Profile API
     queryFn: () => getTnc(),
-    enabled: !!accessToken,
   });
 };

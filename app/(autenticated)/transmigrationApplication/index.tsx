@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAppTheme } from "@/context/theme-context";
@@ -93,6 +93,14 @@ export default function Index() {
       }
     );
   });
+
+  useEffect(() => {
+    if (user?.UserProfile) {
+      setValue("domicile", user.UserProfile.address || "");
+      setValue("kecamatan", user.UserProfile.kecamatan || "");
+      setValue("kelurahan", user.UserProfile.kelurahan || "");
+    }
+  }, [user]);
 
   return (
     <View style={{ flex: 1 }} backgroundColor="white">

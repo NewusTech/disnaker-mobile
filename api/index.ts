@@ -785,10 +785,10 @@ export type ArticleResponseSuccess = {
     };
   }[];
 };
-export const getArticle = async () => {
+export const getArticle = async (search: string) => {
   const response = await apiClient<ArticleResponseSuccess>({
     method: "GET",
-    url: "/artikel/get",
+    url: `/artikel/get?search=${search ?? ""}`,
   });
   return response.data;
 };
@@ -840,10 +840,10 @@ export type EventResponseSuccess = {
     updatedAt: string;
   }[];
 };
-export const getEvent = async () => {
+export const getEvent = async (search: string) => {
   const response = await apiClient<EventResponseSuccess>({
     method: "GET",
-    url: "/event/get",
+    url: `/event/get?search=${search ?? ""}`,
   });
   return response.data;
 };
@@ -942,10 +942,10 @@ export type TrainingResponseSuccess = {
     };
   }[];
 };
-export const getTraining = async () => {
+export const getTraining = async (search: string) => {
   const response = await apiClient<TrainingResponseSuccess>({
     method: "GET",
-    url: "/training/get",
+    url: `/training/get?search=${search ?? ""}`,
   });
   return response.data;
 };
@@ -1020,10 +1020,10 @@ export type CertificationResponseSuccess = {
     };
   }[];
 };
-export const getCertification = async () => {
+export const getCertification = async (search: string) => {
   const response = await apiClient<CertificationResponseSuccess>({
     method: "GET",
-    url: "/certification/get",
+    url: `/certification/get?search=${search ?? ""}`,
   });
   return response.data;
 };
@@ -1085,6 +1085,24 @@ export const getTnc = async () => {
   return response.data;
 };
 
+export type PnpResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    desc: string;
+    createdAt: string;
+    updatedAt: string;
+  };
+};
+export const getPnp = async () => {
+  const response = await apiClient<PnpResponseSuccess>({
+    method: "GET",
+    url: "/pnp/get",
+  });
+  return response.data;
+};
+
 export type ConsultationResponseSuccess = {
   status: HttpStatusCode;
   message: string;
@@ -1114,10 +1132,10 @@ export type ConsultationResponseSuccess = {
     };
   }[];
 };
-export const getConsultation = async () => {
+export const getConsultation = async (search: string) => {
   const response = await apiClient<ConsultationResponseSuccess>({
     method: "GET",
-    url: "/consultation/get",
+    url: `/consultation/get?search=${search ?? ""}`,
   });
   return response.data;
 };
@@ -1162,10 +1180,85 @@ export const getConsultationById = async (id: string) => {
 export type UserNotificationResponseSuccess = {
   status: HttpStatusCode;
   message: string;
-  data: {}[];
+  data: {
+    id: number;
+    user_id: number;
+    vacancy_id: number;
+    createdAt: string;
+    status: string;
+    isReading: string;
+    updatedAt: string;
+    Vacancy: {
+      id: number;
+      category_id: number;
+      company_id: number;
+      title: string;
+      slug: string;
+      desc: string;
+      responsibility: string;
+      requirement: string;
+      location: string;
+      gender: string;
+      minExperience: number;
+      maxAge: number;
+      workingDay: string;
+      workingHour: string;
+      jobType: string;
+      workLocation: string;
+      isPublished: string;
+      applicationDeadline: string;
+      salary: string;
+      createdAt: string;
+      updatedAt: string;
+    };
+  }[];
 };
 export const getUserNotification = async () => {
   const response = await apiClient<UserNotificationResponseSuccess>({
+    method: "GET",
+    url: "/user/invitation/get",
+  });
+  return response.data;
+};
+
+export type UserNotificationByIdResponseSuccess = {
+  status: HttpStatusCode;
+  message: string;
+  data: {
+    id: number;
+    user_id: number;
+    vacancy_id: number;
+    createdAt: string;
+    status: string;
+    isReading: string;
+    updatedAt: string;
+    Vacancy: {
+      id: number;
+      category_id: number;
+      company_id: number;
+      title: string;
+      slug: string;
+      desc: string;
+      responsibility: string;
+      requirement: string;
+      location: string;
+      gender: string;
+      minExperience: number;
+      maxAge: number;
+      workingDay: string;
+      workingHour: string;
+      jobType: string;
+      workLocation: string;
+      isPublished: string;
+      applicationDeadline: string;
+      salary: string;
+      createdAt: string;
+      updatedAt: string;
+    };
+  };
+};
+export const getUserNotificationById = async () => {
+  const response = await apiClient<UserNotificationByIdResponseSuccess>({
     method: "GET",
     url: "/user/invitation/get",
   });
@@ -1184,10 +1277,10 @@ export type InformationResponseSuccess = {
     updatedAt: string;
   }[];
 };
-export const getInformation = async () => {
+export const getInformation = async (search: string) => {
   const response = await apiClient<InformationResponseSuccess>({
     method: "GET",
-    url: "/information/get",
+    url: `/information/get?search=${search ?? ""}`,
   });
   return response.data;
 };

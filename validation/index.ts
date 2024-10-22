@@ -134,3 +134,11 @@ export const userTransmigration = z.object({
 });
 
 export type userTransmigrationForm = z.infer<typeof userTransmigration>;
+
+export const userUpdatePassword = z.object({
+  oldPassword: z.string({ message: "Password Lama Harus diisi" }),
+  newPassword: z.string({ message: "Password Baru Harus diisi" }),
+  confirmNewPassword: z.string({ message: "Password Lama Harus diisi" }),
+});
+
+export type userUpdatePasswordForm = z.infer<typeof userUpdatePassword>;

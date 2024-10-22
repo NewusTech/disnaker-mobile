@@ -2,13 +2,13 @@ import { getConsultation, getConsultationById } from "@/api";
 import { useAccessToken } from "@/store/userStore";
 import { useQuery } from "@tanstack/react-query";
 
-export const useGetConsultation = (query?: string) => {
+export const useGetConsultation = (search: string) => {
   const accessToken = useAccessToken();
 
   return useQuery({
-    queryKey: ["useGetConsultation", accessToken],
+    queryKey: ["useGetConsultation", search, accessToken],
     // TODO replace with actual get Profile API
-    queryFn: () => getConsultation(),
+    queryFn: () => getConsultation(search),
     enabled: !!accessToken,
   });
 };

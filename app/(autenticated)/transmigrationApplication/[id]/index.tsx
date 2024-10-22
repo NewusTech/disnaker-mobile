@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { IconDownload } from "@/components/icons";
 import downloadFile from "@/helpers/downloadFile";
 import Toast from "react-native-toast-message";
+import AnggotaJiwa from "@/components/tansmigrationApplication/AnggotaJiwa";
 
 export default function index() {
   const router = useRouter();
@@ -97,7 +98,6 @@ export default function index() {
           <ScrollView style={{ flex: 1 }}>
             <View
               style={{
-                padding: 20,
                 width: Dimensions.get("window").width - 40,
                 borderRadius: 15,
                 gap: 15,
@@ -106,7 +106,7 @@ export default function index() {
                 backgroundColor: Colors.white,
               }}
             >
-              <View style={{ gap: 10 }}>
+              <View style={{ gap: 10, padding: 20 }}>
                 <View>
                   <Typography
                     fontSize={13}
@@ -204,7 +204,24 @@ export default function index() {
                   </Typography>
                 </View>
               </View>
-              <Pressable onPress={() => setOpenModal(true)}>
+              <View style={{ marginBottom: 20 }}>
+                <AnggotaJiwa
+                  editable={false}
+                  members={detail.TransmigrationMembers.map((d) => {
+                    return {
+                      id: Number.parseInt(d.id.toString()),
+                      familyStatus: d.familyStatus,
+                      gender: d.gender,
+                      name: d.name,
+                      nik: d.nik,
+                    };
+                  })}
+                />
+              </View>
+              <Pressable
+                onPress={() => setOpenModal(true)}
+                style={{ paddingHorizontal: 20 }}
+              >
                 <Pdf
                   trustAllCerts={false}
                   source={{

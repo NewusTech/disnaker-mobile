@@ -2,30 +2,12 @@ import SecctionHeader from "@/components/home/SecctionHeader";
 import SectionBerita from "@/components/home/SectionBerita";
 import SectionFasilitas from "@/components/home/SectionFasilitas";
 import SectionPelatihan from "@/components/home/SectionPelatihan";
-import { IconKemenker } from "@/components/icons";
-import PromoItem from "@/components/promoItem";
 import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
 import { useRouter } from "expo-router";
-import React, { ForwardedRef, useMemo, useRef, useState } from "react";
-import {
-  Dimensions,
-  FlatList,
-  Image,
-  Pressable,
-  ScrollView,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-} from "react-native";
-import PagerView from "react-native-pager-view";
-import Animated, {
-  Easing,
-  useAnimatedStyle,
-  useSharedValue,
-  withDelay,
-  withTiming,
-} from "react-native-reanimated";
+import React from "react";
+import { Image, ScrollView, TouchableOpacity } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type coreMenu = {

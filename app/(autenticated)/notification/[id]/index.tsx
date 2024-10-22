@@ -2,18 +2,29 @@ import Appbar from "@/components/ui/appBar";
 import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Dimensions, Image, Pressable, RefreshControl } from "react-native";
+import {
+  Dimensions,
+  Image,
+  Pressable,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import Animated from "react-native-reanimated";
 import { Typography } from "@/components/ui/typography";
 import RenderHTML, { defaultSystemFonts } from "react-native-render-html";
 import { Button } from "@/components/ui/button";
+import ModalAction from "@/components/ui/modalAction";
+import { calculateDateDifference } from "@/constants/dateTime";
 
 export default function index() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
+
+  const [modalTermia, setModalTerima] = useState<boolean>(false);
+  const [modalTolak, setModalTolak] = useState<boolean>(false);
 
   //   const getNotification = useGetUserNotification();
 
@@ -71,14 +82,14 @@ export default function index() {
                   style={{ width: 24, height: 24 }}
                 />
                 <Typography fontFamily="Poppins-Regular" fontSize={16}>
-                  Undangan Pekerjaan
+                  Undangan Pekerjaan (belum)
                 </Typography>
                 <Typography
                   fontFamily="Poppins-Light"
                   fontSize={13}
                   style={{ marginLeft: "auto" }}
                 >
-                  23 Menit
+                  {calculateDateDifference(new Date(), new Date())}
                 </Typography>
               </View>
               <RenderHTML
@@ -91,21 +102,67 @@ export default function index() {
               <View
                 style={{
                   flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "center",
                   gap: 10,
                   paddingTop: 10,
                   borderTopWidth: 1,
                   borderColor: Colors["line-stroke-30"],
+                  justifyContent: "center",
+                  marginVertical: 10,
+                  paddingHorizontal: 10,
                 }}
               >
-                <Button>Lihat Lamaran</Button>
-                <Button color="error-60">Tolak Lamaran</Button>
+                <TouchableOpacity
+                  style={[
+                    styles.button,
+                    {
+                      backgroundColor: Colors["success-60"],
+                    },
+                  ]}
+                  onPress={() => setModalTerima(true)}
+                >
+                  <Typography color="white">Terima Lamaran</Typography>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.button,
+                    { backgroundColor: Colors["error-60"] },
+                  ]}
+                  onPress={() => setModalTolak(true)}
+                >
+                  <Typography color="white">Tolak Lamaran</Typography>
+                </TouchableOpacity>
               </View>
+              <Button>Lihat Lamaran</Button>
             </>
           )}
         </Pressable>
       </Animated.ScrollView>
+      <ModalAction
+        setVisible={setModalTerima}
+        visible={modalTermia}
+        onAction={() => {}}
+        isLoading={false}
+        title="Yakin Ingin Menerima Lamaran Ini ?"
+      />
+      <ModalAction
+        setVisible={setModalTolak}
+        visible={modalTolak}
+        onAction={() => {}}
+        isLoading={false}
+        title="Yakin Ingin Menolak Lamaran Ini ?"
+      />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  button: {
+    paddingVertical: 15,
+    paddingHorizontal: 10,
+    width: "50%",
+    borderRadius: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    overflow: "hidden",
+  },
+});

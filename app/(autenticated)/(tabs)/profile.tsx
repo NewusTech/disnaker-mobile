@@ -103,14 +103,13 @@ export default function Profile() {
     }
   }, [router, setAccessToken, setProfile, profileQuery.data, route.path]);
 
-
   useFocusEffect(
     useCallback(() => {
-      console.log('Hello, I am focused!');
-      profileQuery.refetch()
+      console.log("Hello, I am focused!");
+      profileQuery.refetch();
       return () => {
-        console.log('This route is now unfocused.');
-      }
+        console.log("This route is now unfocused.");
+      };
     }, [])
   );
 
@@ -127,14 +126,17 @@ export default function Profile() {
           padding: 20,
         }}
       >
+        {userProfile?.UserProfile?.image != null ? (
         <Image
-          source={
-            userProfile?.UserProfile.image
-              ? { uri: userProfile.UserProfile.image }
-              : require("@/assets/images/dummy1.jpg")
-          }
+          source={ {uri: userProfile.UserProfile.image}}
           style={{ width: 75, height: 75, borderRadius: 100 }}
         />
+      ):(
+        <Image
+          source={require("@/assets/images/dummy1.jpg")}
+          style={{ width: 75, height: 75, borderRadius: 100 }}
+        />
+      )}
         <View
           style={{
             marginTop: 20,
@@ -197,7 +199,14 @@ export default function Profile() {
               flexDirection: "column",
               justifyContent: "center",
             }}
-            onPress={() => router.push("/(autenticated)/history")}
+            onPress={() =>
+              router.replace({
+                pathname: "/(autenticated)/history",
+                params: {
+                  tabRiwayat: "Lowongan Pekerjaan",
+                },
+              })
+            }
           >
             <Typography
               style={{ textAlign: "center" }}

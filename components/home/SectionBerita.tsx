@@ -20,7 +20,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { Button } from "../ui/button";
 import { useGetArticle } from "@/services/article/insex";
-import { removeHtmlTags } from "@/helper";
+import { removeHtmlTags } from "@/helpers";
 
 export default function SectionBerita() {
   const router = useRouter();
@@ -31,7 +31,7 @@ export default function SectionBerita() {
 
   const flatListRef = useRef<FlatList>(null);
 
-  const getNews = useGetArticle();
+  const getNews = useGetArticle("");
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [

@@ -23,16 +23,18 @@ type anggota = {
 
 export default function AnggotaJiwa({
   setDataAnggota,
+  editable = true,
+  members,
 }: {
-  setDataAnggota: (data: anggota[]) => void;
+  setDataAnggota?: (data: anggota[]) => void;
+  editable?: boolean;
+  members?: anggota[];
 }) {
-  const router = useRouter();
-  const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
 
-  const [dataAnggotaJiwa, setDataAnggotaJiwa] = useState<anggota[]>([
-    { id: 0, name: "", nik: "", gender: "", familyStatus: "" },
-  ]);
+  const [dataAnggotaJiwa, setDataAnggotaJiwa] = useState<anggota[]>(
+    members || [{ id: 0, name: "", nik: "", gender: "", familyStatus: "" }]
+  );
 
   const handleAddAnggota = () => {
     setDataAnggotaJiwa((prevData) => [
@@ -58,7 +60,7 @@ export default function AnggotaJiwa({
   };
 
   useEffect(() => {
-    setDataAnggota(dataAnggotaJiwa);
+    if (setDataAnggota) setDataAnggota(dataAnggotaJiwa);
   }, [dataAnggotaJiwa]);
 
   useEffect(() => {
@@ -115,12 +117,12 @@ export default function AnggotaJiwa({
                 keyboardType="numeric"
                 borderRadius={17}
                 color="primary-50"
-                textAlignVertical="top"
                 value={data.nik}
                 onChangeText={(text) =>
                   handleUpdateAnggota(data.id, "nik", text)
                 }
                 maxLength={16}
+                editable={editable}
               />
               <TextInput
                 label="Nama"
@@ -128,11 +130,11 @@ export default function AnggotaJiwa({
                 keyboardType="default"
                 borderRadius={17}
                 color="primary-50"
-                textAlignVertical="top"
                 value={data.name}
                 onChangeText={(text) =>
                   handleUpdateAnggota(data.id, "name", text)
                 }
+                editable={editable}
               />
               <SelectInput
                 label="Jenis Klamin"
@@ -149,6 +151,7 @@ export default function AnggotaJiwa({
                 trailingIcon={<IconCaretDown color="black-80" />}
                 padding={12}
                 borderRadius={15}
+                disabled={!editable}
               />
               <SelectInput
                 label="Status Kartu Keluarga"
@@ -165,25 +168,30 @@ export default function AnggotaJiwa({
                 trailingIcon={<IconCaretDown color="black-80" />}
                 padding={12}
                 borderRadius={15}
+                disabled={!editable}
               />
-              <Button
-                color="error-60"
-                style={{ marginHorizontal: 20 }}
-                onPress={() => handleDeleteAnggota(data.id)}
-              >
-                Hapus
-              </Button>
+              {editable && (
+                <Button
+                  color="error-60"
+                  style={{ marginHorizontal: 20 }}
+                  onPress={() => handleDeleteAnggota(data.id)}
+                >
+                  Hapus
+                </Button>
+              )}
             </View>
           </Animated.View>
         </View>
       ))}
-      <Button
-        color="success-60"
-        style={{ marginHorizontal: 40 }}
-        onPress={handleAddAnggota}
-      >
-        Tambah
-      </Button>
+      {editable && (
+        <Button
+          color="success-60"
+          style={{ marginHorizontal: 40 }}
+          onPress={handleAddAnggota}
+        >
+          Tambah
+        </Button>
+      )}
     </View>
   );
 }

@@ -24,7 +24,7 @@ import {
 } from "@/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Image, ScrollView, TouchableOpacity } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -83,6 +83,20 @@ export default function index() {
       },
     });
   });
+
+  useEffect(() => {
+    if (user?.UserProfile) {
+      setValue("residance", user.UserProfile.address || "");
+      setValue("provinsi", user.UserProfile.provinsi || "");
+      setValue("kabupaten", user.UserProfile.kabupaten || "");
+      setValue("kecamatan", user.UserProfile.kecamatan || "");
+      setValue("kelurahan", user.UserProfile.kelurahan || "");
+      setValue(
+        "educationLevel_id",
+        user.UserEducationHistories[0].educationLevel_id
+      );
+    }
+  }, [user]);
   return (
     <View style={{ flex: 1 }} backgroundColor="white">
       <View

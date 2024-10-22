@@ -223,8 +223,8 @@ export default function EditProfile() {
         >
           <Image
             source={
-              user?.UserProfile.image
-                ? { uri: user.UserProfile.image }
+              user?.UserProfile?.image
+                ? { uri: user.UserProfile?.image }
                 : require("@/assets/images/dummy1.jpg")
             }
             style={{ width: 90, height: 90, borderRadius: 100 }}

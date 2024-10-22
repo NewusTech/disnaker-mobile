@@ -1,33 +1,38 @@
-import { View, Text, ScrollView, Image, Dimensions } from "react-native";
+import { View, ScrollView, Dimensions } from "react-native";
 import React from "react";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { useAppTheme } from "@/context/theme-context";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
 import Appbar from "@/components/ui/appBar";
-import { Typography } from "@/components/ui/typography";
 import RenderHTML, { defaultSystemFonts } from "react-native-render-html";
+import { useGetPnp } from "@/services/pnp";
+import Loader from "@/components/ui/loader";
 
 export default function Pnp() {
   const router = useRouter();
-  const { Colors } = useAppTheme();
-  const insets = useSafeAreaInsets();
-  const params = useLocalSearchParams<{ id: string }>();
+
+  const getPnp = useGetPnp();
 
   return (
     <View style={{ flex: 1 }}>
       <Appbar
-        title={"Kebijakan Privasi"}
+        title={"Syarat dan Ketentuan"}
         variant="light"
         backIconPress={() => router.back()}
       />
-      <ScrollView style={{ flex: 1, paddingHorizontal: 20, marginTop: 20 }}>
-        <RenderHTML
-          systemFonts={[...defaultSystemFonts, "Poppins-Regular"]}
-          contentWidth={Dimensions.get("screen").width - 48}
-          source={{
-            html: "<p>Hello World</p>",
-          }}
-        />
+      <ScrollView
+        style={{ flex: 1, paddingHorizontal: 20, marginTop: 20 }}
+        contentContainerStyle={{ flex: 1, width: "100%" }}
+      >
+        {!getPnp.isFetching ? (
+          <RenderHTML
+            systemFonts={[...defaultSystemFonts, "Poppins-Regular"]}
+            contentWidth={Dimensions.get("screen").width - 48}
+            source={{
+              html: getPnp.data?.data.desc || "<p>Hello World</p>",
+            }}
+          />
+        ) : (
+          <Loader />
+        )}
       </ScrollView>
     </View>
   );

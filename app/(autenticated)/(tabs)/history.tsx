@@ -2,22 +2,16 @@ import HistoryKartuKuning from "@/components/History/HistoryKartuKuning";
 import HistoryLowongan from "@/components/History/HistoryLowongan";
 import HistoryPengaduan from "@/components/History/HistoryPengaduan";
 import HistoryTransmigrasi from "@/components/History/HistoryTrnasmigrasi";
-import { SelectInput } from "@/components/selectInput";
 import Appbar from "@/components/ui/appBar";
 import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { useState } from "react";
-import { RefreshControl, ScrollView, TouchableOpacity } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useCallback, useState } from "react";
+import { ScrollView, TouchableOpacity } from "react-native";
 
 export default function History() {
-  const router = useRouter();
-  const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
-
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const params = useLocalSearchParams<{
     tabRiwayat:
@@ -33,6 +27,16 @@ export default function History() {
     | "Pengaduan"
     | "Daftar Tansmigrasi"
   >(() => (params.tabRiwayat ? params.tabRiwayat : "Lowongan Pekerjaan"));
+
+  useFocusEffect(
+    useCallback(() => {
+      console.log("Hello, I am focused!");
+      setTabRiwayat(params.tabRiwayat);
+      return () => {
+        console.log("This route is now unfocused.");
+      };
+    }, [])
+  );
 
   return (
     <View backgroundColor="white" style={{ flex: 1 }}>

@@ -39,6 +39,7 @@ import {
   postUserSaveVacancy,
   postUserSkills,
   postUserTransmigration,
+  postUserUpdatePassword,
   putAbout,
   putCvPortofolio,
   putEditProfile,
@@ -58,6 +59,7 @@ import {
   userLinkForm,
   userOrganizationForm,
   userRegisterYellowCardForm,
+  userUpdatePasswordForm,
 } from "@/validation";
 import { useAccessToken } from "@/store/userStore";
 
@@ -463,5 +465,15 @@ export const useGetUserTransmigrationById = (id: string) => {
     // TODO replace with actual get Profile API
     queryFn: () => getUserTransmigrationById(id),
     enabled: !!accessToken,
+  });
+};
+
+export const useUserUpdatePassword = () => {
+  return useMutation({
+    mutationFn: (payload: {
+      data: userUpdatePasswordForm;
+      user_slug: string;
+    }) => postUserUpdatePassword(payload.data, payload.user_slug),
+    onError: (error: AxiosError<ResponseError>) => error,
   });
 };

@@ -1,11 +1,4 @@
-import {
-  Image,
-  Dimensions,
-  Animated,
-  FlatList,
-  Pressable,
-  Modal,
-} from "react-native";
+import { Image, Dimensions, FlatList, Pressable, Modal } from "react-native";
 import React, { useRef, useState } from "react";
 import { useRouter } from "expo-router";
 import { useAppTheme } from "@/context/theme-context";
@@ -14,6 +7,7 @@ import Appbar from "@/components/ui/appBar";
 import { Typography } from "@/components/ui/typography";
 import { useGetFacility } from "@/services/facility";
 import View from "@/components/view";
+import Animated, { SlideInDown } from "react-native-reanimated";
 
 export default function Facility() {
   const router = useRouter();
@@ -89,14 +83,15 @@ export default function Facility() {
           }}
           onPress={() => setModalFoto(false)}
         >
-          <View
-            backgroundColor="white"
+          <Animated.View
+            entering={SlideInDown}
             style={{
               width: "80%",
               height: 300,
               borderRadius: 15,
               flexDirection: "column",
               overflow: "hidden",
+              backgroundColor: Colors.white,
             }}
           >
             <Image
@@ -114,7 +109,7 @@ export default function Facility() {
             >
               {contenctModal.title}
             </Typography>
-          </View>
+          </Animated.View>
         </Pressable>
       </Modal>
     </View>

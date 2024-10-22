@@ -2,13 +2,13 @@ import { getArticle, getArticleBySlug } from "@/api";
 import { useAccessToken } from "@/store/userStore";
 import { useQuery } from "@tanstack/react-query";
 
-export const useGetArticle = (query?: string) => {
+export const useGetArticle = (search: string) => {
   const accessToken = useAccessToken();
 
   return useQuery({
-    queryKey: ["useGetArticle", accessToken],
+    queryKey: ["useGetArticle", search, accessToken],
     // TODO replace with actual get Profile API
-    queryFn: () => getArticle(),
+    queryFn: () => getArticle(search),
     enabled: !!accessToken,
   });
 };

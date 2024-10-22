@@ -40,6 +40,7 @@ import { useApplyVacancy } from "@/services/user";
 import Toast from "react-native-toast-message";
 import Loader from "@/components/ui/loader";
 import ModalSuccess from "@/components/ui/modalSuccess";
+import TextLink from "@/components/ui/textLink";
 
 export default function DetailVacancy() {
   const router = useRouter();
@@ -551,9 +552,18 @@ export default function DetailVacancy() {
                     Website
                   </Typography>
                 </View>
-                <Typography fontSize={14} style={{}} color="black-80">
-                  {detail?.Company.website}
-                </Typography>
+                <TextLink
+                  label={detail?.Company.website}
+                  fontSize={14}
+                  onPress={() =>
+                    router.push({
+                      pathname: "/(public)/webView",
+                      params: {
+                        link: detail.Company.website,
+                      },
+                    })
+                  }
+                />
               </View>
               <Separator />
               <View style={{}}>

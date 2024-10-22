@@ -1,16 +1,10 @@
 import { Tabs } from "expo-router";
 import React, { useEffect, useState } from "react";
-
-import { TabBarIcon } from "@/components/navigation/TabBarIcon";
-import { Colors } from "@/constants/Colors";
-import { useColorScheme } from "@/hooks/useColorScheme";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   Dimensions,
-  Pressable,
   StyleSheet,
   TouchableOpacity,
-  TouchableWithoutFeedback,
 } from "react-native";
 import View from "@/components/view";
 import { Typography } from "@/components/ui/typography";
@@ -52,23 +46,8 @@ export default function TabLayout() {
 
   const dimensionWidth = Dimensions.get("window").width - 20;
 
-  // const calculateGap = (dimensionWidth - (60 * 3 + 120)) / 4;
   const calculateGap = (dimensionWidth - (60 * 3 + 120)) / 4;
-  // useEffect(() => {
-  //   if (activePage === "Home") {
-  //     translateX.value = 0;
-  //   }
-  //   if (activePage === "Riwayat") {
-  //     translateX.value = 50 + calculateGap * 2;
-  //   }
-  //   if (activePage === "Informasi") {
-  //     translateX.value = 115 + calculateGap * 3;
-  //   }
-  //   if (activePage === "Profile") {
-  //     translateX.value = 180 + calculateGap * 4;
-  //   }
-  // }, [activePage]);
-
+  
   useEffect(() => {
     if (activePage === 0) {
       translateX.value = 0;

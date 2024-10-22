@@ -4,6 +4,7 @@ import { getAccessToken } from "@/store/userStore";
 import {
   userRegisterYellowCardForm,
   userTransmigrationForm,
+  userUpdatePasswordForm,
 } from "@/validation";
 import { HttpStatusCode } from "axios";
 import { PostResponseSuccess } from ".";
@@ -328,6 +329,16 @@ export type userTransmigrationByIdResponseSuccess = {
         citizenship: string;
       };
     };
+    TransmigrationMembers: {
+      id: number;
+      transmigration_id: number;
+      nik: string;
+      name: string;
+      gender: string;
+      familyStatus: string;
+      createdAt: string;
+      updatedAt: string;
+    }[];
   };
 };
 
@@ -336,5 +347,18 @@ export const getUserTransmigrationById = async (id: string) => {
     method: "GET",
     url: "/transmigration/get/" + id,
   });
+  return response.data;
+};
+
+export const postUserUpdatePassword = async (
+  payload: userUpdatePasswordForm,
+  slug: string
+) => {
+  const response = await apiClient<PostResponseSuccess>({
+    method: "POST",
+    url: "/user/password/change/" + slug,
+    data: payload,
+  });
+
   return response.data;
 };

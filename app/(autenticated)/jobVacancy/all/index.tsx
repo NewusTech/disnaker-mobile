@@ -36,6 +36,7 @@ import { Button } from "@/components/ui/button";
 import useDebounce from "@/hooks/useDebounce";
 import { useAuthActions, useSavedVacancy } from "@/store/userStore";
 import Toast from "react-native-toast-message";
+import LottieView from "lottie-react-native";
 
 export default function index() {
   const router = useRouter();
@@ -365,12 +366,24 @@ export default function index() {
           {!vacancy.isFetching &&
             vacancy.data?.data &&
             vacancy.data.data.length === 0 && (
-              <Typography
-                fontFamily="OpenSans-LightItalic"
-                style={{ textAlign: "center", marginVertical: "auto", flex: 1 }}
-              >
-                Opps Sepertinya Lowongan yang diacri tidak tersedia
-              </Typography>
+              <>
+                <LottieView
+                  source={require("@/assets/lottie/Animation-Empty.json")}
+                  style={{ width: "100%", height: 200 }}
+                  autoPlay
+                  loop={true}
+                />
+                <Typography
+                  fontFamily="Poppins-Medium"
+                  style={{
+                    textAlign: "center",
+                    marginVertical: "auto",
+                    flex: 1,
+                  }}
+                >
+                  Opps Sepertinya Lowongan yang diacri tidak tersedia
+                </Typography>
+              </>
             )}
         </View>
       </ScrollView>

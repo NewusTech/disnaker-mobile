@@ -26,6 +26,7 @@ import { useUserDeleteVacancy, useUserSaveVacancy } from "@/services/user";
 import useDebounce from "@/hooks/useDebounce";
 import { useAuthActions, useSavedVacancy } from "@/store/userStore";
 import Toast from "react-native-toast-message";
+import LottieView from "lottie-react-native";
 
 export default function Recomendation() {
   const router = useRouter();
@@ -46,7 +47,11 @@ export default function Recomendation() {
   const saveVacancy = useUserSaveVacancy();
   const unsaveVacancy = useUserDeleteVacancy();
 
-  const vacancy = useGetVacancyRecomend();
+  const getVacancy = useGetVacancyRecomend();
+  const vacancy = getVacancy.data?.data.filter((f) => {
+    if (search === "") return true; // Tampilkan semua jika search kosong
+    return f.title.toLowerCase().includes(searchValueDebounce.toLowerCase()); // Pencarian case-insensitive dan menggunakan substring matching
+  });
 
   const updateVacancyDate = (date: string) => {
     return calculateDateDifference(new Date(date || 0), new Date());
@@ -142,14 +147,14 @@ export default function Recomendation() {
         contentContainerStyle={{ paddingHorizontal: 20, paddingVertical: 0 }}
         refreshControl={
           <RefreshControl
-            refreshing={vacancy.isRefetching}
-            onRefresh={() => vacancy.refetch()}
+            refreshing={getVacancy.isRefetching}
+            onRefresh={() => getVacancy.refetch()}
             progressViewOffset={20}
           />
         }
       >
         <View style={{ marginTop: 20, gap: 20 }}>
-          {vacancy.data?.data.map((data, index) => {
+          {vacancy?.map((data, index) => {
             const isSaved = dataSavedVacancy.some((d) => d.id === data.id);
             return (
               <Pressable
@@ -304,17 +309,29 @@ export default function Recomendation() {
               </Pressable>
             );
           })}
-
-          {!vacancy.isFetching &&
-            vacancy.data?.data &&
-            vacancy.data.data.length === 0 && (
-              <Typography
-                fontFamily="OpenSans-LightItalic"
-                style={{ textAlign: "center", marginVertical: "auto", flex: 1 }}
-              >
-                Opps Sepertinya Lowongan yang diacri tidak tersedia
-              </Typography>
-            )}
+          {(!getVacancy.isFetching &&
+            getVacancy.data?.data &&
+            getVacancy.data.data.length === 0) ||
+            (vacancy?.length === 0 && (
+              <>
+                <LottieView
+                  source={require("@/assets/lottie/Animation-Empty.json")}
+                  style={{ width: "100%", height: 200 }}
+                  autoPlay
+                  loop={true}
+                />
+                <Typography
+                  fontFamily="OpenSans-LightItalic"
+                  style={{
+                    textAlign: "center",
+                    marginVertical: "auto",
+                    flex: 1,
+                  }}
+                >
+                  Opps Sepertinya Lowongan yang diacri tidak tersedia
+                </Typography>
+              </>
+            ))}
         </View>
       </ScrollView>
     </View>

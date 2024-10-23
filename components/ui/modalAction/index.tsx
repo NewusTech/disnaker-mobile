@@ -12,12 +12,14 @@ type ModalAction = {
   onAction: () => void;
   isLoading: boolean;
   title?: string;
+  onNegativeAction?: () => void;
 };
 
 export default function ModalAction({
   visible,
   setVisible,
   onAction,
+  onNegativeAction,
   isLoading = false,
   title = " Yakin Ingin Menghapus Data Ini?",
 }: ModalAction) {
@@ -87,7 +89,10 @@ export default function ModalAction({
                 borderRadius: 15,
                 padding: 10,
               }}
-              onPress={() => setVisible(false)}
+              onPress={() => {
+                !onNegativeAction;
+                setVisible(false);
+              }}
             >
               <Typography
                 fontFamily="Poppins-Medium"

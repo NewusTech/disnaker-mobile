@@ -11,6 +11,7 @@ import { Typography } from "@/components/ui/typography";
 import RenderHTML, { defaultSystemFonts } from "react-native-render-html";
 import { Button } from "@/components/ui/button";
 import { calculateDateDifference } from "@/constants/dateTime";
+import LottieView from "lottie-react-native";
 
 export default function index() {
   const router = useRouter();
@@ -134,6 +135,29 @@ export default function index() {
             )}
           </Pressable>
         ))}
+        {(!getNotification.isFetching &&
+          getNotification.data?.data &&
+          getNotification.data.data.length === 0) ||
+          (getNotification.isError && (
+            <>
+              <LottieView
+                source={require("@/assets/lottie/Animation-Empty.json")}
+                style={{ width: "100%", height: 200 }}
+                autoPlay
+                loop={true}
+              />
+              <Typography
+                fontFamily="OpenSans-LightItalic"
+                style={{
+                  textAlign: "center",
+                  marginVertical: "auto",
+                  flex: 1,
+                }}
+              >
+                Opps Sepertinya Belum ada undangan yang tersedia
+              </Typography>
+            </>
+          ))}
       </Animated.ScrollView>
     </View>
   );

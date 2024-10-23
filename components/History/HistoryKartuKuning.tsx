@@ -10,6 +10,7 @@ import { formatDate } from "@/constants/dateTime";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAppTheme } from "@/context/theme-context";
+import LottieView from "lottie-react-native";
 
 export default function HistoryKartuKuning() {
   const router = useRouter();
@@ -161,6 +162,19 @@ export default function HistoryKartuKuning() {
           paddingBottom: 90,
         }}
       />
+      {getUserYellowCard.isError && (
+        <>
+          <LottieView
+            source={require("@/assets/lottie/Animation-Empty.json")}
+            style={{ width: "100%", height: 200 }}
+            autoPlay
+            loop={true}
+          />
+          <Typography style={{ textAlign: "center" }}>
+            Belum ada kartu kuning yang di ajukan
+          </Typography>
+        </>
+      )}
     </View>
   );
 }

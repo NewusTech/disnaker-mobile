@@ -3,6 +3,7 @@ import { IconCaretDown } from "@/components/icons/IconCeretDown";
 import { SelectInput } from "@/components/selectInput";
 import { Button } from "@/components/ui/button";
 import Loader from "@/components/ui/loader";
+import ModalAction from "@/components/ui/modalAction";
 import TextInput from "@/components/ui/textInput";
 import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";
@@ -24,7 +25,7 @@ import {
 } from "@/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Image, ScrollView, TouchableOpacity } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -34,6 +35,8 @@ export default function index() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
+
+  const [modalSkm, setModalSkm] = useState<boolean>(false);
 
   const { control, handleSubmit, formState, setValue, watch } =
     useForm<userRegisterYellowCardForm>({
@@ -74,12 +77,7 @@ export default function index() {
           text1: "Buat Kartu Kuning Berhasil!",
           text2: response.message,
         });
-        router.replace({
-          pathname: "/(autenticated)/(tabs)/history",
-          params: {
-            tabRiwayat: "Daftar Kartu Kuning",
-          },
-        });
+        setModalSkm(true);
       },
       onError: (reponse) => {
         console.error(reponse);
@@ -99,10 +97,11 @@ export default function index() {
       setValue("kabupaten", user.UserProfile.kabupaten || "");
       setValue("kecamatan", user.UserProfile.kecamatan || "");
       setValue("kelurahan", user.UserProfile.kelurahan || "");
-      setValue(
-        "educationLevel_id",
-        user.UserEducationHistories[0].educationLevel_id
-      );
+      if (user?.UserEducationHistories[0]?.educationLevel_id)
+        setValue(
+          "educationLevel_id",
+          user.UserEducationHistories[0].educationLevel_id
+        );
     }
   }, [user]);
   return (
@@ -364,6 +363,21 @@ export default function index() {
           )}
         </Button>
       </ScrollView>
+      <ModalAction
+        isLoading={false}
+        setVisible={setModalSkm}
+        visible={modalSkm}
+        onAction={() => router.replace("/(autenticated)/skm")}
+        onNegativeAction={() =>
+          router.replace({
+            pathname: "/(autenticated)/(tabs)/history",
+            params: {
+              tabRiwayat: "Daftar Kartu Kuning",
+            },
+          })
+        }
+        title="Apakah Anda Ingin Mengisi Survei Kepuasan?"
+      />
     </View>
   );
 }

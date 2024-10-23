@@ -39,6 +39,7 @@ import {
   postUserRegisterYellowCard,
   postUserSaveVacancy,
   postUserSkills,
+  postUserSkm,
   postUserTransmigration,
   postUserUpdatePassword,
   putAbout,
@@ -507,6 +508,13 @@ export const useUserUpdatePassword = () => {
       data: userUpdatePasswordForm;
       user_slug: string;
     }) => postUserUpdatePassword(payload.data, payload.user_slug),
+    onError: (error: AxiosError<ResponseError>) => error,
+  });
+};
+
+export const useCreateUserSkm = () => {
+  return useMutation({
+    mutationFn: (payload: any) => postUserSkm(payload),
     onError: (error: AxiosError<ResponseError>) => error,
   });
 };

@@ -17,6 +17,7 @@ import {
 } from "@/services/user";
 import { useAuthActions, useSavedVacancy } from "@/store/userStore";
 import { useRouter } from "expo-router";
+import LottieView from "lottie-react-native";
 import React, { useEffect } from "react";
 import {
   Dimensions,
@@ -118,163 +119,181 @@ export default function index() {
         variant="light"
         backIconPress={() => router.back()}
       />
-      <FlatList
-        data={favorites}
-        renderItem={({ item }) => {
-          const isSaved = dataSavedVacancy.some(
-            (d) => d.id === item.vacancy_id
-          );
-          return (
-            <Pressable
-              style={{
-                padding: 20,
-                width: Dimensions.get("window").width - 40,
-                borderRadius: 15,
-                gap: 15,
-                borderWidth: 1,
-                borderColor: Colors["line-stroke-30"],
-                backgroundColor: Colors.white,
-              }}
-              onPress={() => router.push(`/jobVacancy/${item.Vacancy.slug}`)}
-            >
-              <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
-                <Image
-                  source={{ uri: item.Company?.imageLogo || "" }}
-                  style={{ width: 50, height: 50, borderRadius: 100 }}
-                />
+      {favorites && favorites?.length > 0 && (
+        <FlatList
+          data={favorites}
+          renderItem={({ item }) => {
+            const isSaved = dataSavedVacancy.some(
+              (d) => d.id === item.vacancy_id
+            );
+            return (
+              <Pressable
+                style={{
+                  padding: 20,
+                  width: Dimensions.get("window").width - 40,
+                  borderRadius: 15,
+                  gap: 15,
+                  borderWidth: 1,
+                  borderColor: Colors["line-stroke-30"],
+                  backgroundColor: Colors.white,
+                }}
+                onPress={() => router.push(`/jobVacancy/${item.Vacancy.slug}`)}
+              >
                 <View
-                  style={{
-                    justifyContent: "center",
-                    alignItems: "flex-start",
-                    marginLeft: 15,
-                    width: "70%",
-                  }}
+                  style={{ flexDirection: "row", alignItems: "flex-start" }}
                 >
-                  <Typography fontSize={17} style={{}} color="black-80">
-                    {item.Vacancy.title}
+                  <Image
+                    source={{ uri: item.Company?.imageLogo || "" }}
+                    style={{ width: 50, height: 50, borderRadius: 100 }}
+                  />
+                  <View
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "flex-start",
+                      marginLeft: 15,
+                      width: "70%",
+                    }}
+                  >
+                    <Typography fontSize={17} style={{}} color="black-80">
+                      {item.Vacancy.title}
+                    </Typography>
+                    <Typography
+                      fontSize={15}
+                      fontFamily="Poppins-Light"
+                      style={{}}
+                      color="black-50"
+                    >
+                      {item.Company?.name || "-"}
+                    </Typography>
+                  </View>
+                  <TouchableOpacity
+                    style={{
+                      width: 30,
+                      height: 30,
+                      padding: 3,
+                      marginLeft: "auto",
+                    }}
+                    onPress={() => handleSaveVacancy(item.vacancy_id, isSaved)}
+                  >
+                    {isSaved ? (
+                      <IconBookmarksFill
+                        width={27}
+                        height={27}
+                        color="primary-50"
+                      />
+                    ) : (
+                      <IconBookmarks width={27} height={27} color="black-80" />
+                    )}
+                  </TouchableOpacity>
+                </View>
+                <View style={{ gap: 5 }}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      gap: 5,
+                      alignItems: "flex-end",
+                    }}
+                  >
+                    <IconGraduation width={20} height={20} color="black-80" />
+                    <Typography fontSize={13} style={{}} color="black-80">
+                      {item.EducationLevels
+                        ? item?.EducationLevels.sort((a, b) => a.id - b.id)
+                            .map((el) => {
+                              return el.level;
+                            })
+                            .join("/")
+                        : "-"}
+                    </Typography>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      gap: 5,
+                      alignItems: "flex-end",
+                    }}
+                  >
+                    <IconTipJar width={20} height={20} color="black-80" />
+                    <Typography fontSize={13} style={{}} color="black-80">
+                      {formatCurrency(
+                        Number.parseInt(item.Vacancy.salary || "0")
+                      )}
+                    </Typography>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      gap: 5,
+                      alignItems: "flex-end",
+                    }}
+                  >
+                    <IconLocation width={20} height={20} color="black-80" />
+                    <Typography fontSize={13} style={{}} color="black-80">
+                      {item.Vacancy.location}
+                    </Typography>
+                  </View>
+                </View>
+                <View style={{ width: "100%", flexDirection: "row", gap: 10 }}>
+                  <Typography
+                    fontSize={12}
+                    style={{
+                      padding: 7,
+                      paddingHorizontal: 25,
+                      backgroundColor: Colors["primary-50"],
+                      borderRadius: 100,
+                    }}
+                    color="white"
+                  >
+                    {item.Vacancy.jobType}
                   </Typography>
                   <Typography
-                    fontSize={15}
-                    fontFamily="Poppins-Light"
-                    style={{}}
-                    color="black-50"
+                    fontSize={12}
+                    style={{
+                      padding: 7,
+                      paddingHorizontal: 25,
+                      backgroundColor: Colors["secondary-40"],
+                      borderRadius: 100,
+                    }}
+                    color="white"
                   >
-                    {item.Company?.name || "-"}
+                    {item.Vacancy.workLocation}
                   </Typography>
                 </View>
-                <TouchableOpacity
-                  style={{
-                    width: 30,
-                    height: 30,
-                    padding: 3,
-                    marginLeft: "auto",
-                  }}
-                  onPress={() => handleSaveVacancy(item.vacancy_id, isSaved)}
-                >
-                  {isSaved ? (
-                    <IconBookmarksFill
-                      width={27}
-                      height={27}
-                      color="primary-50"
-                    />
-                  ) : (
-                    <IconBookmarks width={27} height={27} color="black-80" />
-                  )}
-                </TouchableOpacity>
-              </View>
-              <View style={{ gap: 5 }}>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    gap: 5,
-                    alignItems: "flex-end",
-                  }}
-                >
-                  <IconGraduation width={20} height={20} color="black-80" />
-                  <Typography fontSize={13} style={{}} color="black-80">
-                    {item.EducationLevels
-                      ? item?.EducationLevels.sort((a, b) => a.id - b.id)
-                          .map((el) => {
-                            return el.level;
-                          })
-                          .join("/")
-                      : "-"}
-                  </Typography>
-                </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    gap: 5,
-                    alignItems: "flex-end",
-                  }}
-                >
-                  <IconTipJar width={20} height={20} color="black-80" />
-                  <Typography fontSize={13} style={{}} color="black-80">
-                    {formatCurrency(
-                      Number.parseInt(item.Vacancy.salary || "0")
-                    )}
-                  </Typography>
-                </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    gap: 5,
-                    alignItems: "flex-end",
-                  }}
-                >
-                  <IconLocation width={20} height={20} color="black-80" />
-                  <Typography fontSize={13} style={{}} color="black-80">
-                    {item.Vacancy.location}
-                  </Typography>
-                </View>
-              </View>
-              <View style={{ width: "100%", flexDirection: "row", gap: 10 }}>
                 <Typography
-                  fontSize={12}
-                  style={{
-                    padding: 7,
-                    paddingHorizontal: 25,
-                    backgroundColor: Colors["primary-50"],
-                    borderRadius: 100,
-                  }}
-                  color="white"
+                  fontSize={14}
+                  fontFamily="Poppins-LightItalic"
+                  style={{}}
+                  color="black-80"
                 >
-                  {item.Vacancy.jobType}
+                  Note : Update{" "}
+                  {updateVacancyDate(item.updatedAt) === "0 hari"
+                    ? "hari ini"
+                    : updateVacancyDate(item.updatedAt) + " yang lalu"}
                 </Typography>
-                <Typography
-                  fontSize={12}
-                  style={{
-                    padding: 7,
-                    paddingHorizontal: 25,
-                    backgroundColor: Colors["secondary-40"],
-                    borderRadius: 100,
-                  }}
-                  color="white"
-                >
-                  {item.Vacancy.workLocation}
-                </Typography>
-              </View>
-              <Typography
-                fontSize={14}
-                fontFamily="Poppins-LightItalic"
-                style={{}}
-                color="black-80"
-              >
-                Note : Update{" "}
-                {updateVacancyDate(item.updatedAt) === "0 hari"
-                  ? "hari ini"
-                  : updateVacancyDate(item.updatedAt) + " yang lalu"}
-              </Typography>
-            </Pressable>
-          );
-        }}
-        style={{ marginTop: 20 }}
-        contentContainerStyle={{
-          rowGap: 20,
-          marginHorizontal: "auto",
-          paddingBottom: 20,
-        }}
-      />
+              </Pressable>
+            );
+          }}
+          style={{ marginTop: 20 }}
+          contentContainerStyle={{
+            rowGap: 20,
+            marginHorizontal: "auto",
+            paddingBottom: 20,
+          }}
+        />
+      )}
+
+      {favorites?.length === 0 && (
+        <>
+          <LottieView
+            source={require("@/assets/lottie/Animation-Empty.json")}
+            style={{ width: "100%", height: 200 }}
+            autoPlay
+            loop={true}
+          />
+          <Typography style={{ textAlign: "center" }}>
+            Belum ada Lowongan yang di Simpan
+          </Typography>
+        </>
+      )}
     </View>
   );
 }

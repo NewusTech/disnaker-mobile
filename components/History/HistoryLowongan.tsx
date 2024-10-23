@@ -15,6 +15,7 @@ import { Pressable } from "react-native";
 import { useUserHistoryApplication } from "@/services/user";
 import { formatCurrency } from "@/constants";
 import { formatDate } from "@/constants/dateTime";
+import LottieView from "lottie-react-native";
 
 export default function HistoryLowongan() {
   const router = useRouter();
@@ -24,6 +25,9 @@ export default function HistoryLowongan() {
   const [filter, setFilter] = useState("Semua");
 
   const getHistory = useUserHistoryApplication();
+  const history = getHistory.data?.data.filter((f) =>
+    filter !== "Semua" ? f.status === filter : true
+  );
 
   const dataFilter: DataItem[] = [
     { title: "Semua" },
@@ -55,10 +59,9 @@ export default function HistoryLowongan() {
         trailingIcon={<IconCaretDown />}
         placeholder="pilih status"
       />
+      {/* {getHistory.isSuccess && ( */}
       <FlatList
-        data={getHistory.data?.data.filter((f) =>
-          filter !== "Semua" ? f.status === filter : true
-        )}
+        data={history}
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
@@ -120,7 +123,11 @@ export default function HistoryLowongan() {
             </View>
             <View style={{ gap: 5 }}>
               <View
-                style={{ flexDirection: "row", gap: 5, alignItems: "flex-end" }}
+                style={{
+                  flexDirection: "row",
+                  gap: 5,
+                  alignItems: "flex-end",
+                }}
               >
                 <IconGraduation width={20} height={20} color="black-80" />
                 <Typography fontSize={13} style={{}} color="black-80">
@@ -134,7 +141,11 @@ export default function HistoryLowongan() {
                 </Typography>
               </View>
               <View
-                style={{ flexDirection: "row", gap: 5, alignItems: "flex-end" }}
+                style={{
+                  flexDirection: "row",
+                  gap: 5,
+                  alignItems: "flex-end",
+                }}
               >
                 <IconTipJar width={20} height={20} color="black-80" />
                 <Typography fontSize={13} style={{}} color="black-80">
@@ -142,7 +153,11 @@ export default function HistoryLowongan() {
                 </Typography>
               </View>
               <View
-                style={{ flexDirection: "row", gap: 5, alignItems: "flex-end" }}
+                style={{
+                  flexDirection: "row",
+                  gap: 5,
+                  alignItems: "flex-end",
+                }}
               >
                 <IconLocation width={20} height={20} color="black-80" />
                 <Typography fontSize={13} style={{}} color="black-80">
@@ -181,6 +196,22 @@ export default function HistoryLowongan() {
           paddingBottom: 90,
         }}
       />
+      {/* )} */}
+
+      {getHistory.isError ||
+        (history?.length === 0 && (
+          <>
+            <LottieView
+              source={require("@/assets/lottie/Animation-Empty.json")}
+              style={{ width: "100%", height: 200 }}
+              autoPlay
+              loop={true}
+            />
+            <Typography style={{ textAlign: "center" }}>
+              Belum ada lowongan yang di daftar
+            </Typography>
+          </>
+        ))}
     </View>
   );
 }

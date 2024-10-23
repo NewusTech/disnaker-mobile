@@ -3,6 +3,7 @@ import { Stack, useRouter } from "expo-router";
 import { useAccessToken, useAuthActions } from "@/store/userStore";
 import { useGetProfile } from "@/services/user";
 import Toast from "react-native-toast-message";
+import React from "react";
 
 export default function AuthenticatedLayout() {
   const router = useRouter();
@@ -39,11 +40,13 @@ export default function AuthenticatedLayout() {
   if (!accessToken) return null;
 
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-        animation: "ios",
-      }}
-    />
+    <>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          animation: "ios",
+        }}
+      />
+    </>
   );
 }

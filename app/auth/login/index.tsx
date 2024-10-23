@@ -27,8 +27,8 @@ export default function Login() {
 
   const { control, handleSubmit, formState } = useForm<PostLoginPayload>({
     defaultValues: {
-      email: DEVELOPMENT_MODE ? "test9@gmail.com" : "",
-      password: DEVELOPMENT_MODE ? "123456" : "",
+      email: "",
+      password: "",
     },
     resolver: zodResolver(postLoginPayloadSchema),
     mode: "all",

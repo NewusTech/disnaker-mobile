@@ -10,6 +10,7 @@ import { formatDate } from "@/constants/dateTime";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAppTheme } from "@/context/theme-context";
+import LottieView from "lottie-react-native";
 
 export default function HistoryTransmigrasi() {
   const router = useRouter();
@@ -38,6 +39,9 @@ export default function HistoryTransmigrasi() {
   };
 
   const getUserTransmigration = useGetUserTransmigration();
+  const transmigration = getUserTransmigration.data?.data.filter((f) =>
+    filter !== "Semua" ? f.status === filter : true
+  );
 
   return (
     <View style={{ marginTop: 20 }}>
@@ -57,9 +61,7 @@ export default function HistoryTransmigrasi() {
             progressViewOffset={20}
           />
         }
-        data={getUserTransmigration.data?.data.filter((f) =>
-          filter !== "Semua" ? f.status === filter : true
-        )}
+        data={transmigration}
         renderItem={({ item }) => (
           <Pressable
             style={{
@@ -161,6 +163,20 @@ export default function HistoryTransmigrasi() {
           paddingBottom: 90,
         }}
       />
+      {getUserTransmigration.isError ||
+        (transmigration?.length === 0 && (
+          <>
+            <LottieView
+              source={require("@/assets/lottie/Animation-Empty.json")}
+              style={{ width: "100%", height: 200 }}
+              autoPlay
+              loop={true}
+            />
+            <Typography style={{ textAlign: "center" }}>
+              Belum ada Transmigrasi yang di ajukan
+            </Typography>
+          </>
+        ))}
     </View>
   );
 }

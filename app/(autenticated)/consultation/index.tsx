@@ -7,6 +7,7 @@ import { removeHtmlTags } from "@/helpers";
 import useDebounce from "@/hooks/useDebounce";
 import { useGetConsultation } from "@/services/consultation";
 import { useRouter } from "expo-router";
+import LottieView from "lottie-react-native";
 import React, { useState } from "react";
 import { Dimensions, Image, Pressable } from "react-native";
 import Animated from "react-native-reanimated";
@@ -135,6 +136,19 @@ export default function Consultation() {
             gap: 20,
           }}
         />
+        {getConsultation.isError && (
+          <>
+            <LottieView
+              source={require("@/assets/lottie/Animation-Empty.json")}
+              style={{ width: "100%", height: 200 }}
+              autoPlay
+              loop={true}
+            />
+            <Typography style={{ textAlign: "center" }}>
+              Konsultasi yang dicari tidak ada
+            </Typography>
+          </>
+        )}
       </Animated.ScrollView>
     </View>
   );

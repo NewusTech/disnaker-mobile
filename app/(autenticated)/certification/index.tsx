@@ -7,6 +7,7 @@ import { removeHtmlTags } from "@/helpers";
 import useDebounce from "@/hooks/useDebounce";
 import { useGetCertification } from "@/services/certification";
 import { useRouter } from "expo-router";
+import LottieView from "lottie-react-native";
 import React, { useState } from "react";
 import { Dimensions, Image, Pressable, RefreshControl } from "react-native";
 import Animated from "react-native-reanimated";
@@ -142,6 +143,19 @@ export default function Certification() {
             gap: 20,
           }}
         />
+        {getCertification.isError && (
+          <>
+            <LottieView
+              source={require("@/assets/lottie/Animation-Empty.json")}
+              style={{ width: "100%", height: 200 }}
+              autoPlay
+              loop={true}
+            />
+            <Typography style={{ textAlign: "center" }}>
+              Sertifikasi yang dicari tidak ada
+            </Typography>
+          </>
+        )}
       </Animated.ScrollView>
     </View>
   );

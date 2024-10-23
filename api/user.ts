@@ -455,3 +455,13 @@ export const putUserNotification = async (id: string) => {
 
   return response.data;
 };
+
+export const postUserSkm = async (payload: any) => {
+  const response = await apiClient<PostResponseSuccess>({
+    method: "POST",
+    url: "/skm/create",
+    data: payload,
+  });
+
+  return response.data;
+};

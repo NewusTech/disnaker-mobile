@@ -119,7 +119,7 @@ export default function index() {
           fontSize={20}
           style={{ textAlign: "center", marginTop: 15 }}
         >
-          Pengaduan Onlie
+          Pengaduan Online
         </Typography>
         <Typography
           fontSize={18}

@@ -7,6 +7,7 @@ import { removeHtmlTags } from "@/helpers";
 import useDebounce from "@/hooks/useDebounce";
 import { useGetInformation } from "@/services/information";
 import { useRouter } from "expo-router";
+import LottieView from "lottie-react-native";
 import React, { useState } from "react";
 import { Dimensions, Pressable } from "react-native";
 import Animated from "react-native-reanimated";
@@ -130,6 +131,19 @@ export default function Information() {
             gap: 20,
           }}
         />
+        {getInformation.isError && (
+          <>
+            <LottieView
+              source={require("@/assets/lottie/Animation-Empty.json")}
+              style={{ width: "100%", height: 200 }}
+              autoPlay
+              loop={true}
+            />
+            <Typography style={{ textAlign: "center" }}>
+              Informasi yang dicari tidak ada
+            </Typography>
+          </>
+        )}
       </Animated.ScrollView>
     </View>
   );

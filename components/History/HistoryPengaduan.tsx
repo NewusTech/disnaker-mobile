@@ -37,6 +37,9 @@ export default function HistoryPengaduan() {
   };
 
   const getComplaint = useGetUserComplaint();
+  const complaint = getComplaint.data?.data.filter((f) =>
+    filter !== "Semua" ? f.status === filter : true
+  );
 
   return (
     <View style={{ marginTop: 20 }}>
@@ -56,9 +59,7 @@ export default function HistoryPengaduan() {
             progressViewOffset={20}
           />
         }
-        data={getComplaint.data?.data.filter((f) =>
-          filter !== "Semua" ? f.status === filter : true
-        )}
+        data={complaint}
         renderItem={({ item }) => (
           <Pressable
             style={{
@@ -160,19 +161,20 @@ export default function HistoryPengaduan() {
           paddingBottom: 90,
         }}
       />
-      {getComplaint.isError && (
-        <>
-          <LottieView
-            source={require("@/assets/lottie/Animation-Empty.json")}
-            style={{ width: "100%", height: 200 }}
-            autoPlay
-            loop={true}
-          />
-          <Typography style={{ textAlign: "center" }}>
-            Belum ada pengaduan yang di ajukan
-          </Typography>
-        </>
-      )}
+      {getComplaint.isError ||
+        (complaint?.length === 0 && (
+          <>
+            <LottieView
+              source={require("@/assets/lottie/Animation-Empty.json")}
+              style={{ width: "100%", height: 200 }}
+              autoPlay
+              loop={true}
+            />
+            <Typography style={{ textAlign: "center" }}>
+              Belum ada pengaduan yang di ajukan
+            </Typography>
+          </>
+        ))}
     </View>
   );
 }

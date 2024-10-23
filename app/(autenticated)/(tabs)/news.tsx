@@ -7,6 +7,7 @@ import { removeHtmlTags } from "@/helpers";
 import useDebounce from "@/hooks/useDebounce";
 import { useGetArticle } from "@/services/article/insex";
 import { useRouter } from "expo-router";
+import LottieView from "lottie-react-native";
 import React, { useState } from "react";
 import { Dimensions, Image, Pressable } from "react-native";
 import Animated from "react-native-reanimated";
@@ -137,6 +138,20 @@ export default function Information() {
             rowGap: 20,
           }}
         />
+        {article.isError ||
+          (article.data?.data.length === 0 && (
+            <>
+              <LottieView
+                source={require("@/assets/lottie/Animation-Empty.json")}
+                style={{ width: "100%", height: 200 }}
+                autoPlay
+                loop={true}
+              />
+              <Typography style={{ textAlign: "center" }}>
+                Berita yang dicari tidak ada
+              </Typography>
+            </>
+          ))}
       </Animated.ScrollView>
     </View>
   );

@@ -18,8 +18,9 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useRoute } from "@react-navigation/native";
 import React, { useCallback, useEffect } from "react";
-import { Image, Pressable, RefreshControl, ScrollView } from "react-native";
+import { Pressable, RefreshControl, ScrollView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Image from "@/components/ui/image/image";
 
 export default function index() {
   const router = useRouter();
@@ -48,11 +49,11 @@ export default function index() {
 
   useFocusEffect(
     useCallback(() => {
-      console.log('Hello, I am focused!');
-      profileQuery.refetch()
+      console.log("Hello, I am focused!");
+      profileQuery.refetch();
       return () => {
-        console.log('This route is now unfocused.');
-      }
+        console.log("This route is now unfocused.");
+      };
     }, [])
   );
 

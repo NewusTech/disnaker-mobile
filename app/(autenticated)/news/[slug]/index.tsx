@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Image, Dimensions } from "react-native";
+import { View, Text, ScrollView, Dimensions } from "react-native";
 import React from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useAppTheme } from "@/context/theme-context";
@@ -9,6 +9,7 @@ import RenderHTML, { defaultSystemFonts } from "react-native-render-html";
 import { useGetArticleBySlug } from "@/services/article/insex";
 import { formatDate } from "@/constants/dateTime";
 import Separator from "@/components/ui/separator";
+import Image from "@/components/ui/image/image";
 
 export default function DetailNews() {
   const router = useRouter();
@@ -41,6 +42,7 @@ export default function DetailNews() {
             marginTop: 20,
             borderRadius: 15,
           }}
+          viewAspectRatio={2 / 1}
         />
         <Separator style={{ marginVertical: 20 }} />
         <RenderHTML

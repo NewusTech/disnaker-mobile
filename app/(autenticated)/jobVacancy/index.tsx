@@ -4,21 +4,16 @@ import SectionEvent from "@/components/jobVacancy/sectionEvent";
 import SectionLowonganDibutuhkanSegera from "@/components/jobVacancy/sectionLowonganDibutuhkanSegera";
 import SectionLowonganPendidikan from "@/components/jobVacancy/sectionLowonganPendidikan";
 import SectionRekomendasi from "@/components/jobVacancy/sectionRekomendasi";
+import CustomImage from "@/components/ui/image/image";
 import { SearchBox } from "@/components/ui/searchBox";
 import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
 import { useGetProfile, useGetUserSavedVacancy } from "@/services/user";
-import { useAuthActions, useAuthProfile } from "@/store/userStore";
+import { useAuthActions } from "@/store/userStore";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import {
-  Image,
-  Pressable,
-  RefreshControl,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
+import { Image, ScrollView, TouchableOpacity } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 
@@ -135,7 +130,7 @@ export default function JobVacancy() {
           backgroundColor="primary-50"
           style={{ padding: 20, paddingTop: 60, paddingBottom: 25, gap: 20 }}
         >
-          <Pressable
+          <View
             style={{
               flexDirection: "row",
               width: "100%",
@@ -143,9 +138,8 @@ export default function JobVacancy() {
               justifyContent: "flex-start",
               gap: 10,
             }}
-            onPress={() => router.push("/profile/userProfile")}
           >
-            <Image
+            <CustomImage
               source={
                 userProfile?.UserProfile.image
                   ? { uri: userProfile.UserProfile.image }
@@ -153,7 +147,12 @@ export default function JobVacancy() {
               }
               style={{ width: 50, height: 50, borderRadius: 100 }}
             />
-            <Typography fontSize={18} style={{}} color="white">
+            <Typography
+              fontSize={18}
+              style={{}}
+              color="white"
+              onPress={() => router.push("/profile/userProfile")}
+            >
               Hi, {userProfile?.UserProfile.name}
             </Typography>
             <TouchableOpacity
@@ -162,7 +161,7 @@ export default function JobVacancy() {
             >
               <IconNotification color="white" />
             </TouchableOpacity>
-          </Pressable>
+          </View>
           <SearchBox
             placeholder="Search"
             value={search}

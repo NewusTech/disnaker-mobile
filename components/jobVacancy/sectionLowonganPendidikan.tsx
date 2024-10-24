@@ -119,15 +119,21 @@ export default function SectionLowonganPendidikan() {
           const isSaved = dataSavedVacancy.some((d) => d.id === item.id);
           return (
             <Pressable
-              style={{
-                padding: 20,
-                width: 342,
-                borderRadius: 15,
-                gap: 15,
-                borderWidth: 1,
-                borderColor: Colors["line-stroke-30"],
-                backgroundColor: Colors.white,
-              }}
+              style={({ pressed }) => [
+                {
+                  padding: 20,
+                  width: 342,
+                  borderRadius: 15,
+                  gap: 15,
+                  borderWidth: 1,
+                  borderColor: pressed
+                    ? Colors["primary-50"]
+                    : Colors["line-stroke-30"],
+                  backgroundColor: pressed
+                    ? Colors["primary-10"]
+                    : Colors.white,
+                },
+              ]}
               onPress={() => router.push(`/jobVacancy/${item.slug}`)}
             >
               <View style={{ flexDirection: "row", alignItems: "flex-start" }}>

@@ -72,15 +72,21 @@ export default function HistoryLowongan() {
         }
         renderItem={({ item }) => (
           <Pressable
-            style={{
-              padding: 20,
-              width: Dimensions.get("window").width - 40,
-              borderRadius: 15,
-              gap: 15,
-              borderWidth: 1,
-              borderColor: Colors["line-stroke-30"],
-              backgroundColor: Colors.white,
-            }}
+            style={({ pressed }) => [
+              {
+                padding: 20,
+                width: Dimensions.get("window").width - 40,
+                borderRadius: 15,
+                gap: 15,
+                borderWidth: 1,
+                borderColor: pressed
+                  ? Colors["primary-50"]
+                  : Colors["line-stroke-30"],
+                backgroundColor: pressed
+                  ? Colors["primary-10"]
+                  : Colors.transparent,
+              },
+            ]}
             onPress={() =>
               router.push({
                 pathname: `/jobVacancy/[slug]`,
@@ -198,20 +204,19 @@ export default function HistoryLowongan() {
       />
       {/* )} */}
 
-      {getHistory.isError ||
-        (history?.length === 0 && (
-          <>
-            <LottieView
-              source={require("@/assets/lottie/Animation-Empty.json")}
-              style={{ width: "100%", height: 200 }}
-              autoPlay
-              loop={true}
-            />
-            <Typography style={{ textAlign: "center" }}>
-              Belum ada lowongan yang di daftar
-            </Typography>
-          </>
-        ))}
+      {getHistory.isError || history?.length === 0 ? (
+        <>
+          <LottieView
+            source={require("@/assets/lottie/Animation-Empty.json")}
+            style={{ width: "100%", height: 200 }}
+            autoPlay
+            loop={true}
+          />
+          <Typography style={{ textAlign: "center" }}>
+            Belum ada lowongan yang di daftar
+          </Typography>
+        </>
+      ) : null}
     </View>
   );
 }

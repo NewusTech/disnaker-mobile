@@ -2,7 +2,8 @@ import * as FileSystem from "expo-file-system";
 
 export default async function downloadFile(
   urlDownload: string,
-  fileName: string
+  fileName: string,
+  accessToken?: string
 ) {
   try {
     // Request directory permissions from the user
@@ -15,7 +16,12 @@ export default async function downloadFile(
       // Download the PDF to a temporary location
       const downloadResult = await FileSystem.downloadAsync(
         pdfUrl,
-        FileSystem.cacheDirectory + "temp.pdf"
+        FileSystem.cacheDirectory + "temp.pdf",
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
       );
 
       // Read the file content

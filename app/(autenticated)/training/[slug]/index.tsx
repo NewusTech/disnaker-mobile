@@ -1,22 +1,16 @@
-import {
-  View,
-  Text,
-  ScrollView,
-  Image,
-  Dimensions,
-  TouchableOpacity,
-} from "react-native";
-import React, { useState } from "react";
+import { View, ScrollView, Dimensions, TouchableOpacity } from "react-native";
+import React from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useAppTheme } from "@/context/theme-context";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Appbar from "@/components/ui/appBar";
 import { Typography } from "@/components/ui/typography";
 import RenderHTML, { defaultSystemFonts } from "react-native-render-html";
-import { IconBuilding, IconInfo, IconInformation } from "@/components/icons";
+import { IconBuilding, IconInfo } from "@/components/icons";
 import { useGetTrainingById } from "@/services/training";
 import Separator from "@/components/ui/separator";
 import { formatDate } from "@/constants/dateTime";
+import Image from "@/components/ui/image/image";
 
 export default function DetailTraining() {
   const router = useRouter();
@@ -46,6 +40,7 @@ export default function DetailTraining() {
             marginTop: 20,
             borderRadius: 15,
           }}
+          viewAspectRatio={2 / 1}
         />
         <View style={{ marginTop: 10 }}>
           <Typography fontFamily="Poppins-Medium" fontSize={20}>

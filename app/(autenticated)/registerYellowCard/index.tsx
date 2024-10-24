@@ -2,6 +2,7 @@ import { IconNotification } from "@/components/icons";
 import { IconCaretDown } from "@/components/icons/IconCeretDown";
 import { SelectInput } from "@/components/selectInput";
 import { Button } from "@/components/ui/button";
+import Image from "@/components/ui/image/image";
 import Loader from "@/components/ui/loader";
 import ModalAction from "@/components/ui/modalAction";
 import TextInput from "@/components/ui/textInput";
@@ -27,7 +28,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Image, ScrollView, TouchableOpacity } from "react-native";
+import { ScrollView, TouchableOpacity } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 

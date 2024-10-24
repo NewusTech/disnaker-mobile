@@ -1,11 +1,4 @@
-import {
-  View,
-  Text,
-  ScrollView,
-  Image,
-  Dimensions,
-  TouchableOpacity,
-} from "react-native";
+import { View, ScrollView, Dimensions } from "react-native";
 import React, { useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useAppTheme } from "@/context/theme-context";
@@ -17,6 +10,7 @@ import { IconBuilding, IconInfo } from "@/components/icons";
 import Separator from "@/components/ui/separator";
 import { formatDate } from "@/constants/dateTime";
 import { useGetCertificationgById } from "@/services/certification";
+import Image from "@/components/ui/image/image";
 
 export default function DetailCertification() {
   const router = useRouter();
@@ -46,6 +40,7 @@ export default function DetailCertification() {
             marginTop: 20,
             borderRadius: 15,
           }}
+          viewAspectRatio={2 / 1}
         />
         <View style={{ marginTop: 10 }}>
           <Typography fontFamily="Poppins-Medium" fontSize={20}>

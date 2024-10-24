@@ -15,7 +15,7 @@ import { useAppTheme } from "@/context/theme-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { Dimensions, Image, Pressable, TouchableOpacity } from "react-native";
+import { Dimensions, Pressable, TouchableOpacity } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { IconLogout } from "@/components/icons/IconLogout";
 import { handleLogoutSession } from "@/services/auth.service";
@@ -26,6 +26,7 @@ import { DocumentPickerAsset } from "expo-document-picker";
 import Toast from "react-native-toast-message";
 import Loader from "@/components/ui/loader";
 import { useRoute } from "@react-navigation/native";
+import Image from "@/components/ui/image/image";
 
 export default function Profile() {
   const router = useRouter();
@@ -126,17 +127,14 @@ export default function Profile() {
           padding: 20,
         }}
       >
-        {userProfile?.UserProfile?.image != null ? (
         <Image
-          source={ {uri: userProfile.UserProfile.image}}
+          source={
+            userProfile?.UserProfile?.image
+              ? { uri: userProfile.UserProfile?.image }
+              : require("@/assets/images/dummy1.jpg")
+          }
           style={{ width: 75, height: 75, borderRadius: 100 }}
         />
-      ):(
-        <Image
-          source={require("@/assets/images/dummy1.jpg")}
-          style={{ width: 75, height: 75, borderRadius: 100 }}
-        />
-      )}
         <View
           style={{
             marginTop: 20,
@@ -269,6 +267,7 @@ export default function Profile() {
             padding: 10,
             borderColor: Colors["line-stroke-30"],
           }}
+          onPress={() => router.push("/(autenticated)/profile/cvDisnaker")}
         >
           <IconFilwArrowDown color="black-80" height={30} width={30} />
           <Typography

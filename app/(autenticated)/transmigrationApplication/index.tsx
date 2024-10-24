@@ -3,13 +3,7 @@ import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAppTheme } from "@/context/theme-context";
 import View from "@/components/view";
-import {
-  Image,
-  Modal,
-  Pressable,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
+import { Modal, Pressable, ScrollView, TouchableOpacity } from "react-native";
 import { Typography } from "@/components/ui/typography";
 import { IconNotification } from "@/components/icons";
 import TextInput from "@/components/ui/textInput";
@@ -30,6 +24,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Toast from "react-native-toast-message";
 import Pdf from "react-native-pdf";
 import Loader from "@/components/ui/loader";
+import Image from "@/components/ui/image/image";
 
 type anggota = {
   id: number;

@@ -159,15 +159,21 @@ export default function Recomendation() {
             return (
               <Pressable
                 key={index}
-                style={{
-                  backgroundColor: Colors.white,
-                  borderColor: Colors["line-stroke-30"],
-                  borderWidth: 1,
-                  padding: 20,
-                  width: Dimensions.get("window").width - 40,
-                  borderRadius: 15,
-                  gap: 15,
-                }}
+                style={({ pressed }) => [
+                  {
+                    borderColor: pressed
+                      ? Colors["primary-50"]
+                      : Colors["line-stroke-30"],
+                    backgroundColor: pressed
+                      ? Colors["primary-10"]
+                      : Colors.white,
+                    borderWidth: 1,
+                    padding: 20,
+                    width: Dimensions.get("window").width - 40,
+                    borderRadius: 15,
+                    gap: 15,
+                  },
+                ]}
                 onPress={() => router.push(`/jobVacancy/${data.slug}`)}
               >
                 <View style={{ flexDirection: "row", alignItems: "center" }}>

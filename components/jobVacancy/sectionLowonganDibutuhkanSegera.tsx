@@ -100,9 +100,7 @@ export default function SectionLowonganDibutuhkanSegera() {
         <TextLink
           fontSize={14}
           label="Lihat Semua"
-          onPress={() =>
-            router.push("/jobVacancy/urgent")
-          }
+          onPress={() => router.push("/jobVacancy/urgent")}
         />
       </View>
       {/*  */}
@@ -113,16 +111,22 @@ export default function SectionLowonganDibutuhkanSegera() {
           const isSaved = dataSavedVacancy.some((d) => d.id === item.id);
           return (
             <Pressable
-              style={{
-                padding: 20,
-                width: 342,
-                borderRadius: 15,
-                gap: 10,
-                borderWidth: 1,
-                borderColor: Colors["line-stroke-30"],
-                backgroundColor: Colors.white,
-                height: 280,
-              }}
+              style={({ pressed }) => [
+                {
+                  padding: 20,
+                  width: 342,
+                  borderRadius: 15,
+                  gap: 10,
+                  borderWidth: 1,
+                  height: 280,
+                  borderColor: pressed
+                    ? Colors["primary-50"]
+                    : Colors["line-stroke-30"],
+                  backgroundColor: pressed
+                    ? Colors["primary-10"]
+                    : Colors.white,
+                },
+              ]}
               onPress={() => router.push(`/jobVacancy/${item.slug}`)}
             >
               <View style={{ flexDirection: "row", alignItems: "flex-start" }}>

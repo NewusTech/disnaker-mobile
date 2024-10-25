@@ -13,11 +13,14 @@ import { Button } from "@/components/ui/button";
 import { IconDownload } from "@/components/icons";
 import downloadFile from "@/helpers/downloadFile";
 import Toast from "react-native-toast-message";
+import { getAccessToken } from "@/store/userStore";
+import { API_URL } from "@/constants";
 
 export default function index() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
+  const accessToken = getAccessToken();
 
   const [openModal, setOpenModal] = useState<boolean>(false);
 
@@ -29,8 +32,9 @@ export default function index() {
   const handleDownloadFile = async () => {
     try {
       await downloadFile(
-        "https://newus-bucket.s3.ap-southeast-2.amazonaws.com/assets_disnaker/file/cv/1729084777892-Hamdan -20241014022834191-cv.pdf",
-        `Kartu-kuning-${detail?.submissionNumber}-${detail?.User.UserProfile.name}`
+        `yellowcard/generate/${params.id}`,
+        `Kartu-kuning-${detail?.submissionNumber}-${detail?.User.UserProfile.name}`,
+        accessToken || ""
       );
       Toast.show({
         type: "success",
@@ -209,7 +213,10 @@ export default function index() {
                 <Pdf
                   trustAllCerts={false}
                   source={{
-                    uri: "https://newus-bucket.s3.ap-southeast-2.amazonaws.com/assets_disnaker/file/cv/1729084777892-Hamdan -20241014022834191-cv.pdf",
+                    uri: `${API_URL}/yellowcard/generate/${params.id}`,
+                    headers: {
+                      Authorization: `Bearer ${accessToken}`,
+                    },
                   }}
                   scale={2}
                   onError={(error) => {
@@ -252,7 +259,10 @@ export default function index() {
           <Pdf
             trustAllCerts={false}
             source={{
-              uri: "https://newus-bucket.s3.ap-southeast-2.amazonaws.com/assets_disnaker/file/cv/1729084777892-Hamdan -20241014022834191-cv.pdf",
+              uri: `${API_URL}/yellowcard/generate/${params.id}`,
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
             }}
             onError={(error) => {
               console.error(error);

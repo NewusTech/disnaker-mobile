@@ -185,7 +185,9 @@ export default function EditProfile() {
       setValue("nik", user.UserProfile.nik || "");
       setValue(
         "birthDate",
-        new Date(user.UserProfile.birthDate || "12-12-1999")
+        user.UserProfile.birthDate
+          ? new Date(user.UserProfile.birthDate)
+          : new Date()
       );
       setValue("department", user.UserProfile.department || "");
       setValue("gender", user.UserProfile.gender || "");
@@ -592,7 +594,7 @@ export default function EditProfile() {
                     title: value,
                   };
                 })}
-                placeholder="Pilih Status Pekerjaan"
+                placeholder="Pilih Status Pernikahan"
                 onSelect={(dataItem: any, index: any) =>
                   field.onChange(dataItem.title)
                 }

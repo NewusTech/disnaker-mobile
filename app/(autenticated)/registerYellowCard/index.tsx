@@ -17,6 +17,7 @@ import {
 } from "@/services/region";
 import {
   useGetEducationLevel,
+  useGetUserNotification,
   useUserRegisterYellowCard,
 } from "@/services/user";
 import { useAuthProfile } from "@/store/userStore";
@@ -67,6 +68,7 @@ export default function index() {
       id: data.id,
     };
   });
+  const getNotification = useGetUserNotification();
 
   const createYellowCard = useUserRegisterYellowCard();
 
@@ -139,6 +141,19 @@ export default function index() {
             onPress={() => router.push("/(autenticated)/notification")}
           >
             <IconNotification color="white" />
+            {getNotification.data?.data.some((s) => !s.isReading) && (
+                <View
+                  style={{
+                    backgroundColor: Colors["error-60"],
+                    width: 5,
+                    height: 5,
+                    borderRadius: 100,
+                    position: "absolute",
+                    right: 3.9,
+                    top: 3.1,
+                  }}
+                />
+              )}
           </TouchableOpacity>
         </View>
       </View>

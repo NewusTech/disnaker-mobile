@@ -158,7 +158,7 @@ export default function Profile() {
             style={{ textAlign: "center", paddingLeft: 10 }}
             color="white"
           >
-            {userProfile?.email || "emty@mail.com"}
+            {userProfile?.email || "empty@mail.com"}
           </Typography>
         </View>
         <Pressable

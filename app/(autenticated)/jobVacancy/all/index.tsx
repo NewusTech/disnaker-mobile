@@ -97,8 +97,8 @@ export default function index() {
           onSuccess: (res) => {
             Toast.show({
               type: "success",
-              text1: "Simpan Lowongan berhasil!",
-              text2: res.message,
+              text1: "Berhasil",
+              text2: "Simpan Lowongan berhasil!",
             });
             setSavedVacancy([...dataSavedVacancy, { id: res.data.vacancy_id }]);
           },

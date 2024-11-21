@@ -5,7 +5,7 @@ import { useRouter } from "expo-router";
 import React from "react";
 import Pdf from "react-native-pdf";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { getAccessToken } from "@/store/userStore";
+import { getAccessToken, useAuthProfile } from "@/store/userStore";
 import { API_URL } from "@/constants";
 import downloadFile from "@/helpers/downloadFile";
 import { IconDownload } from "@/components/icons";
@@ -17,6 +17,7 @@ export default function Index() {
   const { Colors } = useAppTheme();
   const insets = useSafeAreaInsets();
   const accessToken = getAccessToken();
+  const user = useAuthProfile();
 
   // Fungsi untuk menangani download ketika pengguna menekan tombol download
   const handleDownload = async () => {
@@ -25,7 +26,7 @@ export default function Index() {
 
     try {
       const message = await downloadFile(
-        `${API_URL}/user/cv/generate`,
+        `${API_URL}/user/cv/generate/${user?.id}`,
         fileName,
         accessToken || ""
       );
@@ -54,7 +55,7 @@ export default function Index() {
       <Pdf
         trustAllCerts={false}
         source={{
-          uri: `${API_URL}/user/cv/generate`,
+          uri: `${API_URL}/user/cv/generate/${user?.id}`,
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },

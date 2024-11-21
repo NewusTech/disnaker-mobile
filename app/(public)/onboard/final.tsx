@@ -17,13 +17,15 @@ export default function final() {
       <View
         style={{
           width: Dimensions.get("window").width,
-          height: 400,
+          height: 300,
           overflow: "hidden",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
         <Image
           source={require("@/assets/images/onboard_v.png")}
-          style={{ width: "100%", objectFit: "cover" }}
+          style={{ width: "100%", resizeMode: "center" }}
         />
       </View>
       <View style={{ paddingHorizontal: insets.left + 10 }}>
@@ -43,8 +45,18 @@ export default function final() {
           cepat. Semua lowongan dan status lamaranmu ada dalam satu platform.
         </Typography>
         <View style={{ marginHorizontal: 20 }}>
-          <Button style={{ marginTop: 20 }} onPress={()=>router.push("/auth/register")}>Daftar</Button>
-          <Button style={{ marginTop: 10 }} variant="secondary" textColor="primary-50" onPress={()=>router.push("/auth/login")}>
+          <Button
+            style={{ marginTop: 20 }}
+            onPress={() => router.push("/auth/register")}
+          >
+            Daftar
+          </Button>
+          <Button
+            style={{ marginTop: 10 }}
+            variant="secondary"
+            textColor="primary-50"
+            onPress={() => router.push("/auth/login")}
+          >
             Masuk
           </Button>
         </View>

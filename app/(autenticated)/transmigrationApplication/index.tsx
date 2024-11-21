@@ -11,7 +11,11 @@ import { SelectInput } from "@/components/selectInput";
 import { IconCaretDown } from "@/components/icons/IconCeretDown";
 import AnggotaJiwa from "@/components/tansmigrationApplication/AnggotaJiwa";
 import { Button } from "@/components/ui/button";
-import { useGetProfile, useUserTransmigration } from "@/services/user";
+import {
+  useGetProfile,
+  useGetUserNotification,
+  useUserTransmigration,
+} from "@/services/user";
 import {
   useGetKabupaten,
   useGetkecamatan,
@@ -63,6 +67,7 @@ export default function Index() {
       .find((f) => f.name === watch("kecamatan") || "")
       ?.id.toString() || ""
   );
+  const getNotification = useGetUserNotification();
   const createTransmigration = useUserTransmigration();
 
   const [dataAnggotaJiwa, setDataAnggotaJiwa] = useState<anggota[]>([]);
@@ -134,8 +139,24 @@ export default function Index() {
           >
             Hi, {user?.UserProfile.name}
           </Typography>
-          <TouchableOpacity style={{ marginLeft: "auto" }}>
+          <TouchableOpacity
+            style={{ marginLeft: "auto" }}
+            onPress={() => router.push("/(autenticated)/notification")}
+          >
             <IconNotification color="white" />
+            {getNotification.data?.data.some((s) => !s.isReading) && (
+              <View
+                style={{
+                  backgroundColor: Colors["error-60"],
+                  width: 5,
+                  height: 5,
+                  borderRadius: 100,
+                  position: "absolute",
+                  right: 3.9,
+                  top: 3.1,
+                }}
+              />
+            )}
           </TouchableOpacity>
         </View>
       </View>

@@ -7,7 +7,9 @@ import React, { useState } from "react";
 import View from "../view";
 import * as DocumentPicker from "expo-document-picker";
 import Pdf from "react-native-pdf";
-import { IconPdf } from "../icons";
+import { IconDownload, IconPdf } from "../icons";
+import downloadFile from "@/helpers/downloadFile";
+import Toast from "react-native-toast-message";
 
 export type InputFileProps = {
   label?: string;
@@ -45,6 +47,22 @@ export default function UploadFile(props: InputFileProps) {
       }
     } catch (error) {
       console.log("Error picking documents:", error);
+    }
+  };
+
+  const handleDownloadFile = async () => {
+    try {
+      if (fileUrl && label) await downloadFile(fileUrl, label);
+      Toast.show({
+        type: "success",
+        text1: "Berhasil Mendownload CV",
+      });
+    } catch (error) {
+      console.error(error);
+      Toast.show({
+        type: "error",
+        text1: "Gagal Mendownload CV",
+      });
     }
   };
 
@@ -131,6 +149,19 @@ export default function UploadFile(props: InputFileProps) {
                 borderWidth: 1,
               }}
             />
+            <Pressable
+              style={{
+                position: "absolute",
+                bottom: 30,
+                right: 40,
+                backgroundColor: Colors["primary-50"],
+                padding: 10,
+                borderRadius: 100,
+              }}
+              onPress={handleDownloadFile}
+            >
+              <IconDownload color="white" />
+            </Pressable>
           </View>
         )}
       </Modal>

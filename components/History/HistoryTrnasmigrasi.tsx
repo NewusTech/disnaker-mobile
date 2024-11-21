@@ -22,7 +22,7 @@ export default function HistoryTransmigrasi() {
   const dataFilter: DataItem[] = [
     { title: "Semua" },
     { title: "Proses" },
-    { title: "Diterima" },
+    { title: "Terbit" },
     { title: "Pengajuan" },
     { title: "Ditutup" },
   ];
@@ -34,7 +34,7 @@ export default function HistoryTransmigrasi() {
   const handleChangeBgColor = (status: string) => {
     if (status === "Pengajuan") return "#656565";
     if (status === "Proses") return Colors["primary-50"];
-    if (status === "Diterima") return Colors["success-60"];
+    if (status === "Terbit") return Colors["success-60"];
     return Colors["error-60"];
   };
 

@@ -9,7 +9,11 @@ import { SearchBox } from "@/components/ui/searchBox";
 import { Typography } from "@/components/ui/typography";
 import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
-import { useGetProfile, useGetUserSavedVacancy } from "@/services/user";
+import {
+  useGetProfile,
+  useGetUserNotification,
+  useGetUserSavedVacancy,
+} from "@/services/user";
 import { useAuthActions } from "@/store/userStore";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -92,6 +96,7 @@ export default function JobVacancy() {
   const getFavorites = useGetUserSavedVacancy();
   const favorites = getFavorites.data?.data;
   const { setSavedVacancy } = useAuthActions();
+  const getNotification = useGetUserNotification();
 
   if (userProfile?.Skills.length === 0) {
     Toast.show({
@@ -160,6 +165,19 @@ export default function JobVacancy() {
               onPress={() => router.push("/notification")}
             >
               <IconNotification color="white" />
+              {getNotification.data?.data.some((s) => !s.isReading) && (
+                <View
+                  style={{
+                    backgroundColor: Colors["error-60"],
+                    width: 5,
+                    height: 5,
+                    borderRadius: 100,
+                    position: "absolute",
+                    right: 3.9,
+                    top: 3.1,
+                  }}
+                />
+              )}
             </TouchableOpacity>
           </View>
           <SearchBox

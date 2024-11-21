@@ -9,7 +9,7 @@ import { Typography } from "@/components/ui/typography";
 import UploadFoto from "@/components/uploadFoto";
 import View from "@/components/view";
 import { useAppTheme } from "@/context/theme-context";
-import { useUserComplaint } from "@/services/user";
+import { useGetUserNotification, useUserComplaint } from "@/services/user";
 import { useAuthProfile } from "@/store/userStore";
 import { userComplaint, userComplaintForm } from "@/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -36,6 +36,8 @@ export default function index() {
     });
 
   const [fileBukti, setFileBukti] = useState<string>("");
+
+  const getNotification = useGetUserNotification();
 
   const createPengaduan = useUserComplaint();
 
@@ -110,8 +112,24 @@ export default function index() {
           >
             Hi, {user?.UserProfile.name}
           </Typography>
-          <TouchableOpacity style={{ marginLeft: "auto" }}>
+          <TouchableOpacity
+            style={{ marginLeft: "auto" }}
+            onPress={() => router.push("/(autenticated)/notification")}
+          >
             <IconNotification color="white" />
+            {getNotification.data?.data.some((s) => !s.isReading) && (
+              <View
+                style={{
+                  backgroundColor: Colors["error-60"],
+                  width: 5,
+                  height: 5,
+                  borderRadius: 100,
+                  position: "absolute",
+                  right: 3.9,
+                  top: 3.1,
+                }}
+              />
+            )}
           </TouchableOpacity>
         </View>
       </View>

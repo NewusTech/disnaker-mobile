@@ -61,7 +61,7 @@ function RootLayoutNav() {
 
   const { isConnected } = useNetInfo();
 
-  const [animationCompleted, setAnimationComplete] = useState<Boolean>(true);
+  const [animationCompleted, setAnimationComplete] = useState<Boolean>(false);
 
   const changeAnimationStatus = (param: Boolean) => {
     setAnimationComplete(param);

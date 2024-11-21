@@ -14,11 +14,14 @@ import { IconDownload } from "@/components/icons";
 import downloadFile from "@/helpers/downloadFile";
 import Toast from "react-native-toast-message";
 import AnggotaJiwa from "@/components/tansmigrationApplication/AnggotaJiwa";
+import { API_URL } from "@/constants";
+import { getAccessToken } from "@/store/userStore";
 
 export default function index() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
+  const accessToken = getAccessToken();
 
   const [openModal, setOpenModal] = useState<boolean>(false);
 
@@ -30,8 +33,9 @@ export default function index() {
   const handleDownloadFile = async () => {
     try {
       await downloadFile(
-        "https://newus-bucket.s3.ap-southeast-2.amazonaws.com/assets_disnaker/file/cv/1729084777892-Hamdan -20241014022834191-cv.pdf",
-        `Transmigrasi-${detail?.submissionNumber}-${detail?.User.UserProfile.name}`
+        `${API_URL}/transmigration/generate/${params.id}`,
+        `Nota-Pengambilan-${detail?.submissionNumber}-${detail?.User.UserProfile.name}`,
+        accessToken || ""
       );
       Toast.show({
         type: "success",
@@ -53,7 +57,15 @@ export default function index() {
         variant="light"
         backIconPress={() => router.back()}
       />
-      <View style={{ flex: 1, paddingTop: 20, paddingHorizontal: 20, gap: 10 }}>
+      <View
+        style={{
+          flex: 1,
+          paddingTop: 20,
+          paddingHorizontal: 20,
+          gap: 10,
+          paddingBottom: 20,
+        }}
+      >
         {!getTransmigration.isFetching && detail?.status === "Proses" && (
           <Typography
             fontFamily="Poppins-LightItalic"
@@ -94,7 +106,7 @@ export default function index() {
             pengajuan ulang.
           </Typography>
         )}
-        {!getTransmigration.isFetching && detail?.status === "Diterima" && (
+        {!getTransmigration.isFetching && detail?.status === "Terbit" && (
           <ScrollView style={{ flex: 1 }}>
             <View
               style={{
@@ -104,6 +116,7 @@ export default function index() {
                 borderWidth: 1,
                 borderColor: Colors["line-stroke-30"],
                 backgroundColor: Colors.white,
+                paddingBottom: 20,
               }}
             >
               <View style={{ gap: 10, padding: 20 }}>
@@ -225,7 +238,10 @@ export default function index() {
                 <Pdf
                   trustAllCerts={false}
                   source={{
-                    uri: "https://newus-bucket.s3.ap-southeast-2.amazonaws.com/assets_disnaker/file/cv/1729084777892-Hamdan -20241014022834191-cv.pdf",
+                    uri: `${API_URL}/transmigration/generate/${params.id}`,
+                    headers: {
+                      Authorization: `Bearer ${accessToken}`,
+                    },
                   }}
                   scale={2}
                   onError={(error) => {
@@ -241,10 +257,15 @@ export default function index() {
                   }}
                 />
               </Pressable>
-              <Button onPress={handleDownloadFile}>
+              <Button
+                onPress={handleDownloadFile}
+                style={{ marginHorizontal: 20 }}
+              >
                 <View style={{ flexDirection: "row", gap: 10 }}>
                   <IconDownload color="white" />
-                  <Typography color="white">Download Kartu Kuning</Typography>
+                  <Typography color="white">
+                    Download Nota Pengambilan
+                  </Typography>
                 </View>
               </Button>
             </View>
@@ -268,7 +289,10 @@ export default function index() {
           <Pdf
             trustAllCerts={false}
             source={{
-              uri: "https://newus-bucket.s3.ap-southeast-2.amazonaws.com/assets_disnaker/file/cv/1729084777892-Hamdan -20241014022834191-cv.pdf",
+              uri: `${API_URL}/transmigration/generate/${params.id}`,
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
             }}
             onError={(error) => {
               console.error(error);
